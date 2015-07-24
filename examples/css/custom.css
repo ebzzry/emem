@@ -1,0 +1,71 @@
+body {
+    max-width: 40em;
+    font-size: 80%;
+    background: #FFFAFD;
+    font-size: 80%;
+    font-family: Merriweather, Georgia, 'Times New Roman', Times, serif;
+}
+
+#page-wrap {
+    text-align: left:
+    width: 800px;
+    margin: 0 auto;
+}
+
+pre code {
+    line-height: 1.2em;
+}
+
+pre {
+    border-left: 11px solid #ccc;
+    margin: 0;
+    overflow: auto;
+    width: 100%;
+    font-size: 1.25em;
+}
+
+code, samp, kbd {
+    font-family: monospace, "Courier New", Courier, sans-serif;
+    text-align: left;
+    color: #555;
+}
+
+*:first-child+html pre {
+    padding-bottom: 2em;
+    overflow-y: hidden;
+    overflow: visible;
+    overflow-x: auto;
+}
+
+h1 {
+    font-size: 2.5em;
+    text-align: center;
+    line-height: 1;
+    text-transform: uppercase;
+    border-bottom: 6px solid black;
+    margin: 0.5em 0 0.5em 0;
+}
+
+h2 {
+    font-size: 2.0em;
+    text-align: left;
+    line-height: 1;
+    text-transform: uppercase;
+    border-bottom: 2px solid black;
+    margin: 1em auto 0.5em auto;
+}
+
+h3 {
+    font-size: 1.6em;
+    font-style: italic;
+    border-bottom: 1px solid lightgrey;
+}
+
+h4 {
+    font-size: 1.5em;
+    margin: 0.5em 0 0.5em 0;
+}
+
+p {
+    margin: 0.5em 0 0.5em 0;
+}
