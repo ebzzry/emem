@@ -1,5 +1,5 @@
 body {
-    max-width: 40em;
+    max-width: 45em;
     font-size: 80%;
     background: #FFFAFD;
     font-size: 80%;
@@ -17,10 +17,10 @@ pre code {
 }
 
 pre {
-    border-left: 11px solid #ccc;
-    margin: 0;
+    border-left: 5px solid #ccc;
+    margin-left: 1.5em;
     overflow: auto;
-    width: 100%;
+    width: 93%;
     font-size: 1.25em;
 }
 
@@ -63,9 +63,14 @@ h3 {
 
 h4 {
     font-size: 1.5em;
-    margin: 0.5em 0 0.5em 0;
+    margin: 1em 0 0.5em 0;
 }
 
 p {
     margin: 0.5em 0 0.5em 0;
+    line-height: 1.5em;
+}
+
+ul,ol {
+    padding-left: 2em;
 }
