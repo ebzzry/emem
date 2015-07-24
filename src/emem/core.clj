@@ -7,8 +7,7 @@
   (:gen-class))
 
 (def cli-opts
-  [
-   ["-o" "--output HTML_FILE" "Output file; defaults to stdout"]
+  [["-o" "--output HTML_FILE" "Output file; defaults to stdout"]
    ["-v" nil "Verbosity level; may be specified multiple times to increase value"
     :id :verb
     :default 0
