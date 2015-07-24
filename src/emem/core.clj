@@ -48,9 +48,9 @@
        [:title (doc-title lead)]
        [:meta {:http-equiv "Content-Type" :content "text/html;charset=utf-8"}]
        [:link {:rel "shortcut icon" :href "images/favicon.ico" :type "image/x-icon"}]
+       [:link {:rel "stylesheet" :href "css/custom.css" :media "all"}]
        [:link {:rel "stylesheet" :href "http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/zenburn.min.css"}]
        [:script {:src "http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"}]
-       [:link {:rel "stylesheet" :href "css/custom.css" :media "all"}]
        [:script "hljs.initHighlightingOnLoad();"]]
       [:body {:id "page-wrap"}
        text]])))
