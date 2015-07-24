@@ -16,12 +16,14 @@ pre code {
     line-height: 1.2em;
 }
 
-pre {
-    border-left: 5px solid #ccc;
+.code, pre {
+    border-left: 5px solid lightgray;
     margin-left: 1.5em;
     overflow: auto;
     width: 93%;
     font-size: 1.25em;
+    background: black;
+    color: lightgrey;
 }
 
 code, samp, kbd {
@@ -46,7 +48,7 @@ h1 {
     margin: 0.5em 0 0.5em 0;
 }
 
-h2 {
+h2, .chaptertitle {
     font-size: 2.0em;
     text-align: left;
     line-height: 1;
@@ -55,18 +57,26 @@ h2 {
     margin: 1em auto 0.5em auto;
 }
 
-h3 {
+h3, .chaptersubtitle {
     font-size: 1.6em;
     font-style: italic;
+    text-align: left;
     border-bottom: 1px solid lightgrey;
 }
 
-h4 {
+h4, .h {
     font-size: 1.5em;
+    text-align: left;
     margin: 1em 0 0.5em 0;
 }
 
-p {
+h5, .h1 {
+    font-size: 1.3em;
+    text-align: left;
+    margin: 1em 0 0.5em 0;
+}
+
+p, .para {
     margin: 0.5em 0 0.5em 0;
     line-height: 1.5em;
 }
