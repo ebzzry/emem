@@ -32,14 +32,9 @@ Examples of the output can be found in the `examples/` directory.
 
 ## Options
 
-Specify the output file. Defaults to stdout.
-
-    -o, --output FILE
-
-Specify the verbosity.
-
-    -v
-
+    -o, --output HTML_FILE  Output file; defaults to stdout
+    -v                      Verbosity level; may be specified multiple times to increase value
+    -h, --help
 
 ## Bugs
 
