@@ -7,8 +7,13 @@
   (:gen-class))
 
 (def cli-opts
-  [["-o" "--output HTML_FILE" "Output file; defaults to stdout"]
-   ["-v" nil "Verbosity level; may be specified multiple times to increase value"
+  [["-o" "--output=HTML_FILE" "output file"
+    :default "/dev/stdout"
+    ]
+   ["-t" "--title TITLE" "document title"]
+   ["-H" "--header HEADER" "document header"]
+   ["-T" "--titlehead TEXT" "like -t TEXT -H TEXT"]
+   ["-v" nil "increase verbosity"
     :id :verb
     :default 0
     ;; Use assoc-fn to create non-idempotent options
@@ -41,11 +46,15 @@
     (println text)))
 
 (defn html-wrapper [opts args text]
-  (let [[lead & _] args]
+  (let [[lead & _] args
+        title (or (or (:title opts) (:titlehead opts))
+                  (doc-title lead))
+        header (or (:header opts)
+                   (:titlehead opts))]
     (html
      [:html
       [:head
-       [:title (doc-title lead)]
+       [:title title]
        [:meta {:http-equiv "Content-Type" :content "text/html;charset=utf-8"}]
        [:link {:rel "shortcut icon" :href "images/favicon.ico" :type "image/x-icon"}]
        [:link {:rel "stylesheet" :href "css/custom.css" :media "all"}]
@@ -53,6 +62,7 @@
        [:script {:src "http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"}]
        [:script "hljs.initHighlightingOnLoad();"]]
       [:body {:id "page-wrap"}
+       (if header [:h1 header] "")
        text]])))
 
 (defn wrap [opts args]
@@ -62,7 +72,8 @@
 
 (defn dump [opts args]
   (msg "Writing output files ..." (:verb opts) 1)
-  (let [output (or (:output opts) "/dev/stdout")]
+  (let [output (or (:output opts) ;; "/dev/stdout"
+                   )]
     (with-open [w (writer output)]
       (.write w (wrap opts args)))))
 

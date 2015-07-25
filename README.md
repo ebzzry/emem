@@ -32,8 +32,11 @@ Examples of the output can be found in the `examples/` directory.
 
 ## Options
 
-    -o, --output HTML_FILE  Output file; defaults to stdout
-    -v                      Verbosity level; may be specified multiple times to increase value
+    -o, --output HTML_FILE      output file
+    -t, --title TITLE           document title
+    -H, --header HEADER         document header
+    -T, --titlehead TEXT        like -t TEXT -H TEXT
+    -v                          increase verbosity
     -h, --help
 
 ## Bugs
