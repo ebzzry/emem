@@ -7,29 +7,53 @@ A trivial Markdown to HTML converter that uses
 * [hiccup](https://github.com/weavejester/hiccup)
 * [tools.cli](https://github.com/clojure/tools.cli)
 * [highlight.js](https://github.com/isagalaev/highlight.js)
-
+* [fs](https://github.com/raynes/fs/)
+* [cpath-clj](https://github.com/xsc/cpath-clj)
 
 ## Installation
 
-Download from [https://ebzzry.github.io/emem](https://ebzzry.github.io/emem).
+    $ git clone git@github.com:ebzzry/emem.git
+    $ cd emem
+    $ lein uberjar
+    $ mkdir ~/jars
+    $ cp target/uberjar+uberjar/emem-0.1.1-SNAPSHOT.jar ~/jars
 
 ## Usage
 
-emem can be run via lein, or from the standalone jar:
+*emem* is typically ran from the jar:
 
-```bash
-$ lein run -- -o foo.html file.md
+    $ java -jar ~/jars/emem-0.1.1-SNAPSHOT-standalone.jar -o README.html README.md
+
+but you can always run it via lein:
+
+    $ lein run -- -o README.html README.md
+
+To save typing, use shell functions:
+
+    # zsh/bash
+    function emem () {
+        java -jar ~/jars/emem-0.1.1-SNAPSHOT-standalone.jar $@
+    }
+    
+    # zsh
+    function em () {
+        emem -o ${1:r}.html $1
+    }
+    
+    # bash
+    function em () {
+        emem -o ${1%%.*}.html $1
+    }
+
+Enabling us to just type:
+
+    $ emem -o README.html README.md
 
 OR
 
-$ java -jar emem-0.1.0-SNAPSHOT-standalone.jar -o foo.html file.md
-```
+    $ em README.md
 
-Specifying multiple input files will merge the output together:
-
-    $ java -jar emem-0.1.0-SNAPSHOT-standalone.jar -o foo.html file1.md file2.md ...
-
-Examples of the output can be found in the `examples/` directory.
+Examples can be found in the `examples/` directory.
 
 
 ## Options
@@ -39,7 +63,7 @@ Examples of the output can be found in the `examples/` directory.
     -H, --header HEADER         document header
     -T, --titlehead TEXT        like -t TEXT -H TEXT
     -v                          increase verbosity
-    -h, --help
+    -h, --help                  display this help
 
 ## Bugs
 

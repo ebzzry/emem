@@ -1,0 +1,86 @@
+body {
+    max-width: 45em;
+    font-size: 80%;
+    background: #FFFAFD;
+    font-size: 80%;
+    font-family: Merriweather, Georgia, 'Times New Roman', Times, serif;
+}
+
+#body {
+    text-align: left:
+    width: 800px;
+    margin: 0 auto;
+}
+
+pre code {
+    line-height: 1.2em;
+}
+
+.code, pre {
+    border-left: 5px solid lightgray;
+    margin-left: 1.5em;
+    overflow: auto;
+    width: 93%;
+    font-size: 1.25em;
+    background: black;
+    color: lightgrey;
+}
+
+code, samp, kbd {
+    font-family: monospace, "Courier New", Courier, sans-serif;
+    text-align: left;
+    color: #555;
+}
+
+*:first-child+html pre {
+    padding-bottom: 2em;
+    overflow-y: hidden;
+    overflow: visible;
+    overflow-x: auto;
+}
+
+h1 {
+    font-size: 2.5em;
+    text-align: center;
+    line-height: 1;
+    text-transform: uppercase;
+    border-bottom: 6px solid black;
+    margin: 0.5em 0 0.5em 0;
+}
+
+h2, .chaptertitle {
+    font-size: 2.0em;
+    text-align: left;
+    line-height: 1;
+    text-transform: uppercase;
+    border-bottom: 2px solid black;
+    margin: 1em auto 0.5em auto;
+}
+
+h3, .chaptersubtitle {
+    font-size: 1.6em;
+    font-style: italic;
+    text-align: left;
+    border-bottom: 1px solid lightgrey;
+}
+
+h4, .h {
+    font-size: 1.5em;
+    text-align: left;
+    margin: 1em 0 0.5em 0;
+}
+
+h5, .h1 {
+    font-size: 1.3em;
+    text-align: left;
+    margin: 1em 0 0.5em 0;
+}
+
+p, .para {
+    margin: 0.5em 0 0.5em 0;
+    line-height: 1.5em;
+}
+
+ul,ol {
+    padding-left: 2em;
+}
