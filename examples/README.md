@@ -17,24 +17,29 @@ Download from [https://ebzzry.github.io/emem](https://ebzzry.github.io/emem).
 
 emem can be run via lein, or from the standalone jar:
 
-    $ lein run -- -o file.html file.md
+```bash
+$ lein run -- -o foo.html file.md
 
-    OR
+OR
 
-    $ java -jar emem-0.1.0-SNAPSHOT-standalone.jar -o file.html file.md
+$ java -jar emem-0.1.0-SNAPSHOT-standalone.jar -o foo.html file.md
+```
 
-Examples of the output can be found in the `./examples/` directory.
+Specifying multiple input files will merge the output together:
+
+    $ java -jar emem-0.1.0-SNAPSHOT-standalone.jar -o foo.html file1.md file2.md ...
+
+Examples of the output can be found in the `examples/` directory.
+
 
 ## Options
 
-Specify the output file. Defaults to stdout.
-
-    -o, --output FILE
-
-Specify the verbosity.
-
-    -v
-
+    -o, --output HTML_FILE      output file
+    -t, --title TITLE           document title
+    -H, --header HEADER         document header
+    -T, --titlehead TEXT        like -t TEXT -H TEXT
+    -v                          increase verbosity
+    -h, --help
 
 ## Bugs
 
@@ -43,5 +48,4 @@ Specify the verbosity.
 
 Copyright © 2015 Rommel Martinez
 
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+Distributed under the Eclipse Public License
