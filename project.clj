@@ -8,7 +8,8 @@
                  [org.clojure/data.codec "0.1.0"]
                  [markdown-clj "0.9.67"]
                  [hiccup "1.0.5"]
-                 [me.raynes/fs "1.4.6"]]
+                 [me.raynes/fs "1.4.6"]
+                 [cpath-clj "0.1.2"]]
   :main ^:skip-aot emem.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})
