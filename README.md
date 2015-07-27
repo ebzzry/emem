@@ -17,11 +17,13 @@ Download from [https://ebzzry.github.io/emem](https://ebzzry.github.io/emem).
 
 emem can be run via lein, or from the standalone jar:
 
-    $ lein run -- -o foo.html file.md
+```bash
+$ lein run -- -o foo.html file.md
 
-    OR
+OR
 
-    $ java -jar emem-0.1.0-SNAPSHOT-standalone.jar -o foo.html file.md
+$ java -jar emem-0.1.0-SNAPSHOT-standalone.jar -o foo.html file.md
+```
 
 Specifying multiple input files will merge the output together:
 

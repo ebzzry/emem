@@ -1,16 +1,16 @@
 (ns emem.core
   (:require [clojure.tools.cli :refer [parse-opts]]
             [clojure.string :as s]
-            [clojure.data.codec.base64 :as b64]
             [clojure.java.io :as io]
-            [me.raynes.fs :as fs])
-  (:use [clojure.java.io]
-        [markdown.core]
-        [hiccup.core]
-        [emem.resources])
+            [emem.utils :as u]
+            [me.raynes.fs :as fs]
+            [cpath-clj.core :as cp])
+  (:use [markdown.core]
+        [hiccup.core])
   (:import [java.util.zip
             GZIPInputStream]
            [java.io
+            File
             ByteArrayInputStream])
   (:gen-class))
 
@@ -54,7 +54,7 @@
 (defn doc-title
   "Returns the title of the document."
   [file]
-  (with-open [file (reader file)]
+  (with-open [file (io/reader file)]
     (str (first (line-seq file)))))
 
 (defn msg
@@ -63,100 +63,61 @@
   (when (>= level req)
     (println text)))
 
-(defn string-input-stream
-  "Returns a ByteArrayInputStream for the given String."
-  ([^String s]
-     (ByteArrayInputStream. (.getBytes s)))
-  ([^String s encoding]
-     (ByteArrayInputStream. (.getBytes s encoding))))
+(defn foo [path]
+    (when path
+      (-> (Thread/currentThread)
+          .getContextClassLoader
+          (.getResource path))))
 
-(defn base64-encode
-  "Base64-encode the file in SRC; output to DEST."
-  [^String src ^String dest]
-  (with-open [in (io/input-stream src)
-              out (io/output-stream dest)]
-    (b64/encoding-transfer in out)))
-
-(defn base64-decode
-  "Base64-decode the file in SRC; output to DEST."
-  [src dest]
-  (with-open [in (io/input-stream src)
-              out (io/output-stream dest)]
-    (b64/decoding-transfer in out)))
-
-(defn make-temp
+(defn install-resources
   ""
-  []
-  (java.io.File/createTempFile "/tmp" ""))
+  [base]
+  ;; (fs/copy-dir (-> "static" io/resource io/file) fs/*cwd*)
+  ;; (fs/copy-dir (-> "static" io/resource .getFile) fs/*cwd*)
+  ;; (fs/copy-dir (-> "static" io/resource .getPath) fs/*cwd*)
+  ;; (fs/copy-dir (foo "static") fs/*cwd*)
+  ;; (io/copy (-> "static/css/custom.css" io/resource io/file) (io/file "."))
+  ;; (io/copy (io/file (foo "static")) (io/file "."))
+  ;; (println (cp/resources (io/resource "static")))
+  ;; (doseq [[k v] (cp/resources (io/resource "static"))]
+  ;;   ())
+  ;; (fs/copy (.getPath (io/resource "test.txt")) fs/*cwd*)
 
-(defn base64-decode-temp
-  ""
-  [src]
-  (let [temp (make-temp)]
-    (base64-decode (string-input-stream src) temp)
-    (.getAbsolutePath temp)))
+  ;; (doseq [[k v] (cp/resources (io/resource "static"))]
+  ;;   (fs/copy (str "static" k) fs/*cwd*))
 
-(defn gunzip
-  "Decompresses INPUT with GZIP, then writes to OUTPUT.
+  ;; (doseq [[path uris] (cp/resources (io/resource "static"))
+  ;;         :let [uri (first uris)
+  ;;               relative-path (subs path 1)
+  ;;               output-file (io/file fs/*cwd* relative-path)]]
+  ;;   (with-open [in (io/input-stream uri)]
+  ;;     (io/copy in output-file)))
 
-WARNING: This does not handle binary files."
-  [input output]
-  (with-open [in (-> input io/input-stream GZIPInputStream.)
-              out (io/output-stream output)]
-    (spit output (slurp in))
-    (delete-file input)))
+  ;; WORKS
+  ;; (with-open [in (io/input-stream (io/resource "static/css/custom.css"))]
+  ;;   (io/copy in (io/file "blah.foo")))
 
-(defn base64->gunzip
-  "Consumes a base64 string INPUT, decompresses using GZIP,
-then writes to OUTPUT."
-  [input output]
-  (gunzip (base64-decode-temp input) output))
+  ;; (doseq [[path uris] (cp/resources (io/resource "static"))
+  ;;         :let [uri (first uris)
+  ;;               relative-path (subs path 1)
+  ;;               ;; out (io/file (File. "static") relative-path)
+  ;;               out (io/resource (str "static" relative-path))]]
+  ;;   ;; (println out)
+  ;;   (println relative-path)
+  ;;   (println (str "static/" relative-path)))
 
-(defn base64-string->gunzip
-  "Consumes a base64 string INPUT read from input, decompresses using GZIP,
-then writes to OUTPUT."
-  [input output]
-  (base64->gunzip (eval (read-string input)) output))
+  ;; (let [path (str "static/" "ico/favicon.ico")]
+  ;;   (with-open [in (io/input-stream (io/resource path))]
+  ;;     (io/make-parents path)
+  ;;     (io/copy in (io/file path))))
 
-(defn resources-ids
-  ""
-  []
-  (let [maps (map (comp str first) (ns-publics 'emem.resources))]
-    maps))
-
-(defn resource->path
-  ""
-  [str]
-  ((comp #(s/replace % #"-" ".")
-         #(s/replace % #"\+" "/"))
-   str))
-
-(defn resources->paths
-  ""
-  [paths]
-  (map #(-> % java.io.File. .getAbsolutePath) paths))
-
-(defn resources-map
-  ""
-  []
-  (zipmap (resources-ids)
-          (map resource->path (resources-ids))))
-
-(defn build-dirs
-  ""
-  []
-  (let [paths (map resource->path (resources-ids))
-        dirs (distinct (map #(-> % fs/parent fs/base-name) paths))]
-    (doseq [dir dirs]
-      (fs/mkdir dir))))
-
-(defn build-resources
-  ""
-  []
-  (build-dirs)
-  (let [resmap (resources-map)]
-    (doseq [[k v] resmap]
-      (base64-string->gunzip k v))))
+  (doseq [[path uris] (cp/resources (io/resource base))
+          :let [uri (first uris)
+                relative-path (subs path 1)
+                path (str base "/" relative-path)]]
+    (with-open [in (io/input-stream (io/resource path))]
+      (io/make-parents path)
+      (io/copy in (io/file path)))))
 
 (defn html-wrapper
   ""
@@ -171,12 +132,12 @@ then writes to OUTPUT."
       [:head
        [:title title]
        [:meta {:http-equiv "Content-Type" :content "text/html;charset=utf-8"}]
-       [:link {:rel "shortcut icon" :href "ico/favicon.ico" :type "image/x-icon"}]
-       [:link {:rel "stylesheet" :href "css/custom.css" :media "all"}]
-       [:link {:rel "stylesheet" :href "css/zenburn.css"}]
-       [:script {:src "js/highlight.pack.js"}]
+       [:link {:rel "shortcut icon" :href "static/ico/favicon.ico" :type "image/x-icon"}]
+       [:link {:rel "stylesheet" :href "static/css/custom.css" :media "all"}]
+       [:link {:rel "stylesheet" :href "static/css/zenburn.css"}]
+       [:script {:src "static/js/highlight.pack.js"}]
        [:script "hljs.initHighlightingOnLoad();"]]
-      [:body {:id "page-wrap"}
+      [:body {:id "body"}
        (if header [:h1 header] "")
        text]])))
 
@@ -191,10 +152,21 @@ then writes to OUTPUT."
   ""
   [opts args]
   (msg "Writing output files ..." (:verb opts) 1)
-  (build-resources)
   (let [output (or (:output opts))]
-    (with-open [w (writer output)]
-      (.write w (wrap opts args)))))
+    (with-open [out (io/output-stream output)]
+      (spit out (wrap opts args)))))  ;Try output-stream & spit?
+
+(defn setup
+  ""
+  [opts args]
+  (msg "Installing resources ..." (:verb opts) 1)
+  (install-resources "static"))
+
+(defn launch
+  ""
+  [opts args]
+  (setup opts args)
+  (dump opts args))
 
 (defn -main
   [& args]
@@ -202,5 +174,5 @@ then writes to OUTPUT."
         (parse-opts args cli-opts)]
     (cond
       (:help options) (exit 0 (usage summary))
-      (>= (count arguments) 1) (dump options arguments)
+      (>= (count arguments) 1) (launch options arguments)
       :else (exit 1 (error-msg errors)))))
