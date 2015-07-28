@@ -1,10 +1,10 @@
-<html><head><title>emem</title><meta content="text/html;charset=utf-8" http-equiv="Content-Type" /><link href="static/ico/favicon.ico" rel="shortcut icon" type="image/x-icon" /><link href="static/css/custom.css" media="all" rel="stylesheet" /><link href="static/css/zenburn.css" rel="stylesheet" /><script src="static/js/highlight.pack.js"></script><script>hljs.initHighlightingOnLoad();</script></head><body id="body"><h1>emem</h1><p>A trivial Markdown to HTML converter that uses</p><ul><li><a href='https://github.com/yogthos/markdown-clj'>markdown-clj</a></li><li><a href='https://github.com/weavejester/hiccup'>hiccup</a></li><li><a href='https://github.com/clojure/tools.cli'>tools.cli</a></li><li><a href='https://github.com/isagalaev/highlight.js'>highlight.js</a></li><li><a href='https://github.com/raynes/fs/'>fs</a></li><li><a href='https://github.com/xsc/cpath-clj'>cpath-clj</a></li></ul><h2>Installation</h2><pre><code>$ git clone git@github.com:ebzzry/emem.git
-$ cd emem
-$ lein uberjar
-$ mkdir &#126;/jars
-$ cp target/uberjar+uberjar/emem-0.1.1-SNAPSHOT.jar &#126;/jars
-</code></pre><h2>Usage</h2><p><em>emem</em> is typically ran from the jar:</p><pre><code>$ java -jar &#126;/jars/emem-0.1.1-SNAPSHOT-standalone.jar -o README.html README.md
-</code></pre><p>but you can always run it via lein:</p><pre><code>$ lein run -- -o README.html README.md
+<html><head><title>emem</title><meta content="text/html;charset=utf-8" http-equiv="Content-Type" /><link href="static/ico/favicon.ico" rel="shortcut icon" type="image/x-icon" /><link href="static/css/custom.css" media="all" rel="stylesheet" /><link href="static/css/tomorrow-night.css" rel="stylesheet" /><script src="static/js/highlight.pack.js"></script><script>hljs.initHighlightingOnLoad();</script></head><body id="body"><h1>emem</h1><p>A trivial Markdown to HTML converter that uses</p><ul><li><a href='https://github.com/yogthos/markdown-clj'>markdown-clj</a></li><li><a href='https://github.com/weavejester/hiccup'>hiccup</a></li><li><a href='https://github.com/clojure/tools.cli'>tools.cli</a></li><li><a href='https://github.com/isagalaev/highlight.js'>highlight.js</a></li><li><a href='https://github.com/raynes/fs/'>fs</a></li><li><a href='https://github.com/xsc/cpath-clj'>cpath-clj</a></li></ul><h2>Installation</h2><pre><code>git clone git@github.com:ebzzry/emem.git
+cd emem
+lein uberjar
+mkdir &#126;/jars
+cp target/uberjar+uberjar/emem-0.1.1-SNAPSHOT.jar &#126;/jars
+</code></pre><h2>Usage</h2><p><em>emem</em> is typically ran from the jar:</p><pre><code>java -jar &#126;/jars/emem-0.1.1-SNAPSHOT-standalone.jar -o README.html README.md
+</code></pre><p>but you can always run it via lein:</p><pre><code>lein run -- -o README.html README.md
 </code></pre><p>To save typing, use shell functions:</p><pre><code># zsh/bash
 function emem &#40;&#41; {
     java -jar &#126;/jars/emem-0.1.1-SNAPSHOT-standalone.jar $@
@@ -19,8 +19,8 @@ function em &#40;&#41; {
 function em &#40;&#41; {
     emem -o ${1%%.&#42;}.html $1
 }
-</code></pre><p>Enabling us to just type:</p><pre><code>$ emem -o README.html README.md
-</code></pre><p>OR</p><pre><code>$ em README.md
+</code></pre><p>Enabling us to just type:</p><pre><code>emem -o README.html README.md
+</code></pre><p>OR</p><pre><code>em README.md
 </code></pre><p>Examples can be found in the <code>examples/</code> directory.</p><h2>Options</h2><pre><code>-o, --output HTML&#95;FILE      output file
 -t, --title TITLE           document title
 -H, --header HEADER         document header
