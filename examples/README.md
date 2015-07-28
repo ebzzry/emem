@@ -12,21 +12,21 @@ A trivial Markdown to HTML converter that uses
 
 ## Installation
 
-    $ git clone git@github.com:ebzzry/emem.git
-    $ cd emem
-    $ lein uberjar
-    $ mkdir ~/jars
-    $ cp target/uberjar+uberjar/emem-0.1.1-SNAPSHOT.jar ~/jars
+    git clone git@github.com:ebzzry/emem.git
+    cd emem
+    lein uberjar
+    mkdir ~/jars
+    cp target/uberjar+uberjar/emem-0.1.1-SNAPSHOT.jar ~/jars
 
 ## Usage
 
 *emem* is typically ran from the jar:
 
-    $ java -jar ~/jars/emem-0.1.1-SNAPSHOT-standalone.jar -o README.html README.md
+    java -jar ~/jars/emem-0.1.1-SNAPSHOT-standalone.jar -o README.html README.md
 
 but you can always run it via lein:
 
-    $ lein run -- -o README.html README.md
+    lein run -- -o README.html README.md
 
 To save typing, use shell functions:
 
@@ -47,11 +47,11 @@ To save typing, use shell functions:
 
 Enabling us to just type:
 
-    $ emem -o README.html README.md
+    emem -o README.html README.md
 
 OR
 
-    $ em README.md
+    em README.md
 
 Examples can be found in the `examples/` directory.
 
