@@ -85,7 +85,7 @@
        [:meta {:http-equiv "Content-Type" :content "text/html;charset=utf-8"}]
        [:link {:rel "shortcut icon" :href "static/ico/favicon.ico" :type "image/x-icon"}]
        [:link {:rel "stylesheet" :href "static/css/custom.css" :media "all"}]
-       [:link {:rel "stylesheet" :href "static/css/zenburn.css"}]
+       [:link {:rel "stylesheet" :href "static/css/tomorrow-night.css"}]
        [:script {:src "static/js/highlight.pack.js"}]
        [:script "hljs.initHighlightingOnLoad();"]]
       [:body {:id "body"}
