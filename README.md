@@ -25,8 +25,8 @@ A trivial Markdown to HTML converter that uses
 To save typing, you may use shell functions:
 
     cat >> ~/.bashrc << END
-    function emem () { java -jar ~/jars/emem.jar $@; }
-    function em () { emem -o ${1%%.*}.html $1; }
+    emem () { java -jar ~/jars/emem.jar $@; }
+    em () { emem -o ${1%%.*}.html $1; }
     END
 
 or a shell script:
