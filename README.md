@@ -16,13 +16,13 @@ A trivial Markdown to HTML converter that uses
     cd emem
     lein uberjar
     mkdir ~/jars
-    cp target/uberjar+uberjar/emem-0.1.1-SNAPSHOT.jar ~/jars
+    cp target/uberjar+uberjar/emem-0.1.1-SNAPSHOT.jar ~/jars/emem.jar
 
 ## Usage
 
 *emem* is typically ran from the jar:
 
-    java -jar ~/jars/emem-0.1.1-SNAPSHOT-standalone.jar -o README.html README.md
+    java -jar ~/jars/emem.jar -o README.html README.md
 
 but you can always run it via lein:
 
@@ -32,7 +32,7 @@ To save typing, use shell functions:
 
     # zsh/bash
     function emem () {
-        java -jar ~/jars/emem-0.1.1-SNAPSHOT-standalone.jar $@
+        java -jar ~/jars/emem.jar $@
     }
     
     # zsh
