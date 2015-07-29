@@ -6,9 +6,9 @@ A trivial Markdown to HTML converter that uses
 * [markdown-clj](https://github.com/yogthos/markdown-clj)
 * [hiccup](https://github.com/weavejester/hiccup)
 * [tools.cli](https://github.com/clojure/tools.cli)
-* [highlight.js](https://github.com/isagalaev/highlight.js)
 * [fs](https://github.com/raynes/fs/)
 * [cpath-clj](https://github.com/xsc/cpath-clj)
+* [highlight.js](https://github.com/isagalaev/highlight.js)
 
 ## Installation
 
