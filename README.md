@@ -31,7 +31,7 @@ To save typing, you may use shell functions:
 
 or a shell script:
 
-    cat > ~/bin/emem <<
+    cat > ~/bin/emem << END
     #!/bin/sh
     java -jar ~/jars/emem.jar $@
     END
