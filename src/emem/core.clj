@@ -111,14 +111,22 @@
     (with-open [out (io/output-stream output)]
       (spit out (md opts args)))))
 
+(defn verify-files
+  "Returns true if all FILES exist."
+  [files]
+  (every? #(fs/exists? %) files))
+
 (defn launch
   "Performs the top-level calls that does the actual stuff."
-  [opts args]
+  [opts args summary]
   (let [res "static"]
-    (if (:res opts)
+    (if (:resonly opts)
       (install-resources res opts args)
-      (do (or (:htmlonly opts) (install-resources res opts args))
-          (build-html opts args)))))
+      (if (verify-files args)
+        (do (or (:htmlonly opts)
+                (install-resources res opts args))
+            (build-html opts args))
+        (exit 1 (usage summary))))))
 
 (defn -main
   "Defines the entry point."
@@ -127,6 +135,5 @@
         (parse-opts args cli-opts)]
     (cond
       (:help options) (exit 0 (usage summary))
-      ;; (< (count arguments) 1) (exit 0 (usage summary))
       errors (exit 1 (error-msg errors)))
-    (launch options arguments)))
+    (launch options arguments summary)))
