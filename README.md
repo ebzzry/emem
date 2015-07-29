@@ -58,12 +58,14 @@ Examples can be found in the `examples/` directory.
 
 ## Options
 
-    -o, --output HTML_FILE      output file
-    -t, --title TITLE           document title
-    -H, --header HEADER         document header
-    -T, --titlehead TEXT        like -t TEXT -H TEXT
-    -v                          increase verbosity
-    -h, --help                  display this help
+    -o, --output HTML_FILE    output file
+    -t, --title TITLE         document title
+    -H, --header HEADER       document header
+    -T, --titlehead TEXT      like -t TEXT -H TEXT
+    -r                        install the resource files only; do not build the HTML file
+    -R                        do not install the resource files; do build the HTML file
+    -v                        increase verbosity
+    -h, --help                display this help
 
 ## Bugs
 

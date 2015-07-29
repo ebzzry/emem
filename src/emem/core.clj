@@ -17,15 +17,15 @@
    ["-t" "--title TITLE" "document title"]
    ["-H" "--header HEADER" "document header"]
    ["-T" "--titlehead TEXT" "like -t TEXT -H TEXT"]
+   ["-r" nil "install the resource files only; do not build the HTML file"
+    :id :resourcesonly]
+   ["-R" nil "do not install the resource files; do build the HTML file"
+    :id :noresources]
    ["-v" nil "increase verbosity"
     :id :verb
     :default 0
     ;; Use assoc-fn to create non-idempotent options
     :assoc-fn (fn [m k _] (update-in m [k] inc))]
-   ["-r" nil "install only the resource files; do not build the HTML files"
-    :id :resourcesonly]
-   ["-R" nil "do not install the resource files"
-    :id :noresources]
    ["-h" "--help" "display this help"]])
 
 (defn usage
