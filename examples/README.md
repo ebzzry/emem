@@ -13,10 +13,8 @@ A trivial Markdown to HTML converter that uses
 ## Installation
 
     git clone git@github.com:ebzzry/emem.git
-    cd emem
-    lein uberjar
-    mkdir ~/jars
-    cp target/uberjar+uberjar/emem-0.1.1-SNAPSHOT.jar ~/jars/emem.jar
+    cd emem && lein uberjar
+    mkdir ~/jars && cp target/uberjar+uberjar/emem-0.1.1-SNAPSHOT.jar ~/jars/emem.jar
 
 ## Usage
 
@@ -24,26 +22,20 @@ A trivial Markdown to HTML converter that uses
 
     java -jar ~/jars/emem.jar -o README.html README.md
 
-but you can always run it via lein:
+To save typing, you may use shell functions:
 
-    lein run -- -o README.html README.md
+    cat >> ~/.bashrc << END
+    function emem () { java -jar ~/jars/emem.jar $@; }
+    function em () { emem -o ${1%%.*}.html $1; }
+    END
 
-To save typing, use shell functions:
+or a shell script:
 
-    # zsh/bash
-    function emem () {
-        java -jar ~/jars/emem.jar $@
-    }
-    
-    # zsh
-    function em () {
-        emem -o ${1:r}.html $1
-    }
-    
-    # bash
-    function em () {
-        emem -o ${1%%.*}.html $1
-    }
+    cat > ~/bin/emem <<
+    #!/bin/sh
+    java -jar ~/jars/emem.jar $@
+    END
+    chmod +x ~/bin/emem
 
 Enabling us to just type:
 
