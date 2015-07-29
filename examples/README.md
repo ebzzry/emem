@@ -31,7 +31,7 @@ To save typing, you may use shell functions:
 
 or a shell script:
 
-    cat > ~/bin/emem <<
+    cat > ~/bin/emem << END
     #!/bin/sh
     java -jar ~/jars/emem.jar $@
     END
@@ -61,6 +61,7 @@ Examples can be found in the `examples/` directory.
       -R                                   build the HTML file only
       -v                                   increase verbosity
       -h, --help                           display this help
+
 
 ## Bugs
 

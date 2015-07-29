@@ -6,7 +6,7 @@ mkdir &#126;/jars &amp;&amp; cp target/uberjar+uberjar/emem-0.1.1-SNAPSHOT.jar &
 function emem &#40;&#41; { java -jar &#126;/jars/emem.jar $@; }
 function em &#40;&#41; { emem -o ${1%%.&#42;}.html $1; }
 END
-</code></pre><p>or a shell script:</p><pre><code>cat &gt; &#126;/bin/emem &lt;&lt;
+</code></pre><p>or a shell script:</p><pre><code>cat &gt; &#126;/bin/emem &lt;&lt; END
 #!/bin/sh
 java -jar &#126;/jars/emem.jar $@
 END
