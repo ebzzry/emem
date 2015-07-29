@@ -6,9 +6,9 @@ A trivial Markdown to HTML converter that uses
 * [markdown-clj](https://github.com/yogthos/markdown-clj)
 * [hiccup](https://github.com/weavejester/hiccup)
 * [tools.cli](https://github.com/clojure/tools.cli)
-* [highlight.js](https://github.com/isagalaev/highlight.js)
 * [fs](https://github.com/raynes/fs/)
 * [cpath-clj](https://github.com/xsc/cpath-clj)
+* [highlight.js](https://github.com/isagalaev/highlight.js)
 
 ## Installation
 
@@ -16,13 +16,13 @@ A trivial Markdown to HTML converter that uses
     cd emem
     lein uberjar
     mkdir ~/jars
-    cp target/uberjar+uberjar/emem-0.1.1-SNAPSHOT.jar ~/jars
+    cp target/uberjar+uberjar/emem-0.1.1-SNAPSHOT.jar ~/jars/emem.jar
 
 ## Usage
 
 *emem* is typically ran from the jar:
 
-    java -jar ~/jars/emem-0.1.1-SNAPSHOT-standalone.jar -o README.html README.md
+    java -jar ~/jars/emem.jar -o README.html README.md
 
 but you can always run it via lein:
 
@@ -32,7 +32,7 @@ To save typing, use shell functions:
 
     # zsh/bash
     function emem () {
-        java -jar ~/jars/emem-0.1.1-SNAPSHOT-standalone.jar $@
+        java -jar ~/jars/emem.jar $@
     }
     
     # zsh
@@ -49,7 +49,7 @@ Enabling us to just type:
 
     emem -o README.html README.md
 
-OR
+or
 
     em README.md
 
@@ -58,12 +58,17 @@ Examples can be found in the `examples/` directory.
 
 ## Options
 
-    -o, --output HTML_FILE      output file
-    -t, --title TITLE           document title
-    -H, --header HEADER         document header
-    -T, --titlehead TEXT        like -t TEXT -H TEXT
-    -v                          increase verbosity
-    -h, --help                  display this help
+    Usage: emem [OPTION]... [MARKDOWN_FILE]...
+    
+    Options:
+      -o, --output HTML_FILE  /dev/stdout  output file
+      -t, --title TITLE                    document title
+      -H, --header HEADER                  document header
+      -T, --titlehead TEXT                 like -t TEXT -H TEXT
+      -r                                   install the resource files only
+      -R                                   build the HTML file, sans resource files
+      -v                                   increase verbosity
+      -h, --help                           display this help
 
 ## Bugs
 

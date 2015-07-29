@@ -49,7 +49,7 @@ Enabling us to just type:
 
     emem -o README.html README.md
 
-OR
+or
 
     em README.md
 
@@ -58,14 +58,17 @@ Examples can be found in the `examples/` directory.
 
 ## Options
 
-    -o, --output HTML_FILE    output file
-    -t, --title TITLE         document title
-    -H, --header HEADER       document header
-    -T, --titlehead TEXT      like -t TEXT -H TEXT
-    -r                        install the resource files only; do not build the HTML file
-    -R                        do not install the resource files; do build the HTML file
-    -v                        increase verbosity
-    -h, --help                display this help
+    Usage: emem [OPTION]... [MARKDOWN_FILE]...
+    
+    Options:
+      -o, --output HTML_FILE  /dev/stdout  output file
+      -t, --title TITLE                    document title
+      -H, --header HEADER                  document header
+      -T, --titlehead TEXT                 like -t TEXT -H TEXT
+      -r                                   install the resource files only
+      -R                                   build the HTML file, sans resource files
+      -v                                   increase verbosity
+      -h, --help                           display this help
 
 ## Bugs
 
