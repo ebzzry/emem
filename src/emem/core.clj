@@ -19,7 +19,7 @@
    ["-T" "--titlehead TEXT" "like -t TEXT -H TEXT"]
    ["-r" nil "install the resource files only"
     :id :resonly]
-   ["-R" nil "build the HTML file, sans resource files"
+   ["-R" nil "build the HTML file only"
     :id :htmlonly]
    ["-v" nil "increase verbosity"
     :id :verb
