@@ -12,6 +12,11 @@ body {
 
 pre code {
     line-height: 1.1em;
+    font-size: 1em;
+}
+
+pre, code {
+    font-size: 1.2em;
 }
 
 pre, .code {
