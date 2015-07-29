@@ -17,9 +17,9 @@
    ["-t" "--title TITLE" "document title"]
    ["-H" "--header HEADER" "document header"]
    ["-T" "--titlehead TEXT" "like -t TEXT -H TEXT"]
-   ["-r" nil "install the resource files only; do not build the HTML file"
+   ["-r" nil "install the resource files only"
     :id :resourcesonly]
-   ["-R" nil "do not install the resource files; do build the HTML file"
+   ["-R" nil "build the HTML file, sans resource files"
     :id :noresources]
    ["-v" nil "increase verbosity"
     :id :verb
@@ -30,11 +30,11 @@
 
 (defn usage
   "Displays program usage."
-  [opts-summary]
-  (->> ["Usage: emem [OPTION]... MARKDOWN_FILE..."
+  [summary]
+  (->> ["Usage: emem [OPTION]... [MARKDOWN_FILE]..."
         ""
         "Options:"
-        opts-summary
+        summary
         ]
        (s/join \newline)))
 
