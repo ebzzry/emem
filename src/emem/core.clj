@@ -92,7 +92,7 @@
        [:link {:rel "stylesheet" :href "static/css/tomorrow-night.css"}]
        [:script {:src "static/js/highlight.pack.js"}]
        [:script "hljs.initHighlightingOnLoad();"]]
-      [:body {:id "body"}
+      [:body
        (if header [:h1 header] "")
        text]])))
 
