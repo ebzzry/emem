@@ -18,9 +18,9 @@
    ["-H" "--header HEADER" "document header"]
    ["-T" "--titlehead TEXT" "like -t TEXT -H TEXT"]
    ["-r" nil "install the resource files only"
-    :id :resourcesonly]
+    :id :resonly]
    ["-R" nil "build the HTML file, sans resource files"
-    :id :noresources]
+    :id :htmlonly]
    ["-v" nil "increase verbosity"
     :id :verb
     :default 0
@@ -115,9 +115,9 @@
   "Performs the top-level calls that does the actual stuff."
   [opts args]
   (let [res "static"]
-    (if (:resourcesonly opts)
+    (if (:res opts)
       (install-resources res opts args)
-      (do (or (:noresources opts) (install-resources res opts args))
+      (do (or (:htmlonly opts) (install-resources res opts args))
           (build-html opts args)))))
 
 (defn -main
