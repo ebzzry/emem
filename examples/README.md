@@ -66,7 +66,7 @@ Examples can be found in the `examples/` directory.
       -H, --header HEADER                  document header
       -T, --titlehead TEXT                 like -t TEXT -H TEXT
       -r                                   install the resource files only
-      -R                                   build the HTML file, sans resource files
+      -R                                   build the HTML file only
       -v                                   increase verbosity
       -h, --help                           display this help
 
