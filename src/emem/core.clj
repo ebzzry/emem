@@ -13,8 +13,7 @@
 (def cli-opts
   "Specification for the command-line options."
   [["-o" "--output=HTML_FILE" "output file"
-    :default "/dev/stdout"
-    ]
+    :default "/dev/stdout"]
    ["-t" "--title TITLE" "document title"]
    ["-H" "--header HEADER" "document header"]
    ["-T" "--titlehead TEXT" "like -t TEXT -H TEXT"]
@@ -23,6 +22,10 @@
     :default 0
     ;; Use assoc-fn to create non-idempotent options
     :assoc-fn (fn [m k _] (update-in m [k] inc))]
+   ["-r" nil "install only the resource files; do not build the HTML files"
+    :id :resourcesonly]
+   ["-R" nil "do not install the resource files"
+    :id :noresources]
    ["-h" "--help" "display this help"]])
 
 (defn usage
@@ -61,11 +64,12 @@
 
 (defn install-resources
   "Installs the files required by the HTML file(s)."
-  [base]
-  (doseq [[path uris] (cp/resources (io/resource base))
+  [res opts args]
+  (msg "Installing resources ..." (:verb opts) 1)
+  (doseq [[path uris] (cp/resources (io/resource res))
           :let [uri (first uris)
                 relative-path (subs path 1)
-                path (str base "/" relative-path)]]
+                path (str res "/" relative-path)]]
     (with-open [in (io/input-stream (io/resource path))]
       (io/make-parents path)
       (io/copy in (io/file path)))))
@@ -99,25 +103,22 @@
   (wrap opts args
         (apply str (map #(md-to-html-string (slurp %)) args))))
 
-(defn dump
-  "Saves to disk the final HTML files."
+(defn build-html
+  "Writes the HTML file to disk."
   [opts args]
   (msg "Writing output files ..." (:verb opts) 1)
   (let [output (or (:output opts))]
     (with-open [out (io/output-stream output)]
       (spit out (md opts args)))))
 
-(defn setup
-  "Performs the initial staging procedures for building the requirements."
-  [opts args]
-  (msg "Installing resources ..." (:verb opts) 1)
-  (install-resources "static"))
-
 (defn launch
   "Performs the top-level calls that does the actual stuff."
   [opts args]
-  (setup opts args)
-  (dump opts args))
+  (let [res "static"]
+    (if (:resourcesonly opts)
+      (install-resources res opts args)
+      (do (or (:noresources opts) (install-resources res opts args))
+          (build-html opts args)))))
 
 (defn -main
   "Defines the entry point."
@@ -126,6 +127,6 @@
         (parse-opts args cli-opts)]
     (cond
       (:help options) (exit 0 (usage summary))
-      (< (count arguments) 1) (exit 0 (usage summary))
+      ;; (< (count arguments) 1) (exit 0 (usage summary))
       errors (exit 1 (error-msg errors)))
     (launch options arguments)))
