@@ -59,12 +59,12 @@
 (defn msg
   "Displays messages controlled by the verbosity option."
   [text level req]
-  (when (>= level req)
+  (when (>= (or level 0) req)
     (println text)))
 
 (defn install-resources
-  "Installs the files required by the HTML file(s)."
-  [res opts args]
+  "Installs the files required by the HTML file."
+  [res opts]
   (msg "Installing resources ..." (:verb opts) 1)
   (doseq [[path uris] (cp/resources (io/resource res))
           :let [uri (first uris)
@@ -96,44 +96,58 @@
        (if header [:h1 header] "")
        text]])))
 
-(defn md
-  "Converts the markdown files to HTML strings."
+(defn mdify
+  "Converts Markdown inputs to HTML strings."
   [opts args]
   (msg "Loading input files ..." (:verb opts) 1)
   (wrap opts args
         (apply str (map #(md-to-html-string (slurp %)) args))))
 
-(defn build-html
+(defn files-exist?
+  "Returns true if all FILES exist."
+  [files]
+  (every? #(fs/exists? %) files))
+
+(defn write-html
   "Writes the HTML file to disk."
   [opts args]
   (msg "Writing output files ..." (:verb opts) 1)
   (let [output (or (:output opts))]
     (with-open [out (io/output-stream output)]
-      (spit out (md opts args)))))
+      (spit out (mdify opts args)))))
 
-(defn verify-files
-  "Returns true if all FILES exist."
-  [files]
-  (every? #(fs/exists? %) files))
-
-(defn launch
-  "Performs the top-level calls that does the actual stuff."
-  [opts args summary]
+(defn stage
+  "Sets up the environment for arguments F and G."
+  [opts args f g]
   (let [res "static"]
     (if (:resonly opts)
-      (install-resources res opts args)
-      (if (verify-files args)
+      (install-resources res opts)
+      (if (files-exist? args)
         (do (or (:htmlonly opts)
-                (install-resources res opts args))
-            (build-html opts args))
-        (exit 1 (usage summary))))))
+                (install-resources res opts))
+            (f))
+        (g)))))
+
+(defn encode
+  "Converts Markdown inputs to HTML."
+  [output input & {:as opts}]
+  (stage opts input
+         #(write-html (merge {:output output} (dissoc opts :output))
+                      input)
+         #(identity nil)))
+
+(defn launch
+  "Converts Markdown inputs to HTML."
+  [opts args errors summary]
+  (stage opts args
+         #(write-html opts args)
+         #(exit 1 (usage summary))))
 
 (defn -main
-  "Defines the entry point."
   [& args]
   (let [{:keys [options arguments errors summary]}
         (parse-opts args cli-opts)]
     (cond
       (:help options) (exit 0 (usage summary))
       errors (exit 1 (error-msg errors)))
-    (launch options arguments summary)))
+    (launch options arguments errors summary)))
