@@ -16,7 +16,7 @@ Add the following expression in the `:dependencies` clause of your
 
     [emem "0.1.2-SNAPSHOT"]
 
-Add the following expression the the `ns` declaration of your source
+Add the following expression to the `ns` declaration of your source
 clj:
 
     [emem.core :as emem]
