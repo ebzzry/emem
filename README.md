@@ -23,10 +23,10 @@ clj:
 
 Fetch the sources, build the JAR, then store it somewhere:
 
-    $ git clone git@github.com:ebzzry/emem.git
-    $ cd emem && lein uberjar
-    $ mkdir ~/jars
-    $ cp target/uberjar+uberjar/emem-0.1.2-SNAPSHOT.jar ~/jars/emem.jar
+    git clone git@github.com:ebzzry/emem.git
+    cd emem && lein uberjar
+    mkdir ~/jars
+    cp target/uberjar+uberjar/emem-0.1.2-SNAPSHOT.jar ~/jars/emem.jar
 
 
 ## Usage
@@ -46,18 +46,18 @@ To learn more about the available options and parameters:
 
 To convert README.md to README.html
 
-    $ java -jar ~/jars/emem.jar -o README.html README.md
+    java -jar ~/jars/emem.jar -o README.html README.md
 
 To save typing, you may use shell functions:
 
-    $ cat >> ~/.bashrc << END
+    cat >> ~/.bashrc << END
     emem () { java -jar ~/jars/emem.jar $@; }
     em () { emem -o ${1%%.*}.html $1; }
     END
 
 or a shell script:
 
-    $ cat > ~/bin/emem << END
+    cat > ~/bin/emem << END
     #!/bin/sh
     java -jar ~/jars/emem.jar $@
     END
@@ -65,25 +65,26 @@ or a shell script:
 
 Enabling us to just type:
 
-    $ emem -o README.html README.md
+    emem -o README.html README.md
 
 or
 
-    $ em README.md
+    em README.md
 
 *emem* accepts input from stdin:
 
     # Dump to screen
-    $ cat README.md | emem
+    cat README.md | emem
     
     # Like above, but output a bare and undecorated HTML
-    $ cat README.md | emem -b
+    cat README.md | emem -b
     
     # Produce a raw HTML output
-    $ echo "# Blah" | emem -r
+    echo "# Blah" | emem -r
     
     # Create an HTML listing of the current directory
-    $ ls -R | sed -e '1i```bash' -e '$a```' | emem -T `basename $PWD` -o files.html
+    ls -R | sed -e '1i```bash' -e '$a```' \
+    | emem -T `basename $PWD` -o files.html
 
 Other examples can be found in the `examples/` directory.
 

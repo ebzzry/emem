@@ -1,34 +1,35 @@
 <html><head><title>emem</title><meta content="text/html;charset=utf-8" http-equiv="Content-Type" /></head><body><h1>emem</h1><p><i>emem</i> is a trivial Markdown to HTML converter.</p><h2>Installation</h2><h3>Library</h3><p>Add the following expression in the <code>:dependencies</code> clause of your <code>project.clj</code>:</p><pre><code>&#91;emem &quot;0.1.2-SNAPSHOT&quot;&#93;
 </code></pre><p>Add the following expression the the <code>ns</code> declaration of your source clj:</p><pre><code>&#91;emem.core :as emem&#93;
-</code></pre><h3>Command-line</h3><p>Fetch the sources, build the JAR, then store it somewhere:</p><pre><code>$ git clone git@github.com:ebzzry/emem.git
-$ cd emem &amp;&amp; lein uberjar
-$ mkdir &#126;/jars
-$ cp target/uberjar+uberjar/emem-0.1.2-SNAPSHOT.jar &#126;/jars/emem.jar
+</code></pre><h3>Command-line</h3><p>Fetch the sources, build the JAR, then store it somewhere:</p><pre><code>git clone git@github.com:ebzzry/emem.git
+cd emem &amp;&amp; lein uberjar
+mkdir &#126;/jars
+cp target/uberjar+uberjar/emem-0.1.2-SNAPSHOT.jar &#126;/jars/emem.jar
 </code></pre><h2>Usage</h2><h3>Library</h3><p>To create <code>README.html</code> from <code>README.md</code> and <code>TODO.md</code>, merging them together:</p><pre><code>&#40;emem/produce &quot;README.html&quot; &#91;&quot;README.md&quot; &quot;TODO.md&quot;&#93;&#41;
 </code></pre><p>To learn more about the available options and parameters:</p><pre><code>&#40;doc emem/produce&#41;
-</code></pre><h3>CLI</h3><p>To convert README.md to README.html</p><pre><code>$ java -jar &#126;/jars/emem.jar -o README.html README.md
-</code></pre><p>To save typing, you may use shell functions:</p><pre><code>$ cat &gt;&gt; &#126;/.bashrc &lt;&lt; END
+</code></pre><h3>CLI</h3><p>To convert README.md to README.html</p><pre><code>java -jar &#126;/jars/emem.jar -o README.html README.md
+</code></pre><p>To save typing, you may use shell functions:</p><pre><code>cat &gt;&gt; &#126;/.bashrc &lt;&lt; END
 emem &#40;&#41; { java -jar &#126;/jars/emem.jar $@; }
 em &#40;&#41; { emem -o ${1%%.&#42;}.html $1; }
 END
-</code></pre><p>or a shell script:</p><pre><code>$ cat &gt; &#126;/bin/emem &lt;&lt; END
+</code></pre><p>or a shell script:</p><pre><code>cat &gt; &#126;/bin/emem &lt;&lt; END
 #!/bin/sh
 java -jar &#126;/jars/emem.jar $@
 END
 chmod +x &#126;/bin/emem
-</code></pre><p>Enabling us to just type:</p><pre><code>$ emem -o README.html README.md
-</code></pre><p>or</p><pre><code>$ em README.md
+</code></pre><p>Enabling us to just type:</p><pre><code>emem -o README.html README.md
+</code></pre><p>or</p><pre><code>em README.md
 </code></pre><p><em>emem</em> accepts input from stdin:</p><pre><code># Dump to screen
-$ cat README.md | emem
+cat README.md | emem
 
 # Like above, but output a bare and undecorated HTML
-$ cat README.md | emem -b
+cat README.md | emem -b
 
 # Produce a raw HTML output
-$ echo &quot;# Blah&quot; | emem -r
+echo &quot;# Blah&quot; | emem -r
 
 # Create an HTML listing of the current directory
-$ ls -R | sed -e '1i```bash' -e '$a```' | emem -T `basename $PWD` -o files.html
+ls -R | sed -e '1i```bash' -e '$a```' \
+| emem -T `basename $PWD` -o files.html
 </code></pre><p>Other examples can be found in the <code>examples/</code> directory.</p><h2>Options</h2><pre><code>Usage: emem &#91;OPTION&#93;... &#91;MARKDOWN&#95;FILE&#93;...
 
 Options:
