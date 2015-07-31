@@ -13,17 +13,14 @@ emem &#40;&#41; { java -jar &#126;/jars/emem.jar $@; }
 END
 . &#126;/.bashrc
 </code></pre><p>Enabling us to just type:</p><pre><code>emem -o README.html README.md
-</code></pre><p><em>emem</em> accepts input from stdin:</p><pre><code># Dump to screen
-cat README.md | emem
-
-# Like above, but output a bare and undecorated HTML
+</code></pre><p><em>emem</em> accepts input from stdin:</p><pre><code># Produce a bare and undecorated HTML
 cat README.md | emem -b
 
-# Produce a raw HTML output
+# Produce raw HTML
 echo &quot;# Blah&quot; | emem -r
 
 # Create an HTML listing of the current directory
 ls -R | sed -e '1i```bash' -e '$a```' \
-| emem -T `basename $PWD` -o files.html
+| emem -T `basename $PWD` -o ls.html
 </code></pre><p>Other examples can be found in the <code>examples/</code> directory.</p><p>To learn more about the available options:</p><pre><code>emem -h
 </code></pre><h2>Dependencies</h2><ul><li><a href='https://github.com/yogthos/markdown-clj'>markdown-clj</a></li><li><a href='https://github.com/weavejester/hiccup'>hiccup</a></li><li><a href='https://github.com/clojure/tools.cli'>tools.cli</a></li><li><a href='https://github.com/raynes/fs/'>fs</a></li><li><a href='https://github.com/xsc/cpath-clj'>cpath-clj</a></li><li><a href='https://github.com/isagalaev/highlight.js'>highlight.js</a></li></ul><h2>License</h2><p>Copyright © 2015 Rommel Martinez</p><p>Distributed under the Eclipse Public License</p></body></html>
