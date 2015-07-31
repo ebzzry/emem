@@ -21,7 +21,7 @@ clj:
 
     [emem.core :as emem]
 
-### Command-line
+### CLI
 
 Fetch the sources, build the JAR, then store it somewhere:
 
