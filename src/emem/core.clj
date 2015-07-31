@@ -71,34 +71,42 @@
    (when (>= override level)
      (println text))))
 
+(defn resource-stream
+  ""
+  [res]
+  (io/input-stream (io/resource res)))
+
 (defn with-resource
   "Locates the resource files in the classpath."
-  [res f]
+  [res f dir]
   (doseq [[path _] (cp/resources (io/resource res))
           :let [relative-path (subs path 1)
                 file (str res "/" relative-path)]]
-    (f file)))
+    (f file (or dir fs/*cwd*))))
 
 (defn version
   "Displays program version."
   []
-  (let [f (fn [file]
-            (with-open [in (io/input-stream (io/resource file))]
+  (let [f (fn [file dir]
+            (with-open [in (resource-stream file)]
               (let [ver (slurp in)]
                 (spit *out* ver))))]
-    (with-resource "etc"
-      f)))
+    (with-resource "etc" f fs/*cwd*)))
 
 (defn install-resources
   "Installs the files required by the HTML file."
   [opts]
   (msg "[*] Installing resources ..." 1 (verb opts))
-  (let [f (fn [file]
-            (with-open [in (io/input-stream (io/resource file))]
-              (io/make-parents file)
-              (io/copy in (io/file file))))]
-    (with-resource "static"
-      f)))
+  (let [dir (-> (:output opts)
+                io/file .getAbsolutePath
+                io/file .getParent
+                io/file)]
+    (let [f (fn [file dir]
+              (with-open [in (resource-stream file)]
+                (let [path (io/file dir file)]
+                  (io/make-parents (io/file dir file))
+                  (io/copy in (io/file dir file)))))]
+      (with-resource "static" f dir))))
 
 (defn doc-title
   "Returns the title of the document."
@@ -162,11 +170,11 @@
 (defn convert
   "Converts Markdown inputs to HTML."
   [output input & {:as opts}]
-  (stage opts
-         input
-         #(write-html (merge {:output output} (dissoc opts :output))
-                      input)
-         #(identity nil)))
+  (let [out {:output output}]
+    (stage (merge opts out)
+           input
+           #(write-html (merge out (dissoc opts :output)) input)
+           #(identity nil))))
 
 (defn launch
   "Converts Markdown inputs to HTML."

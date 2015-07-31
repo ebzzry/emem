@@ -10,15 +10,32 @@ A trivial Markdown to HTML converter that uses
 * [cpath-clj](https://github.com/xsc/cpath-clj)
 * [highlight.js](https://github.com/isagalaev/highlight.js)
 
-## Installation
+## Usage
+
+### Library
+
+Add the following expression in the `:dependencies` clause of
+your `project.clj`:
+
+    [emem "0.1.2-SNAPSHOT"]
+
+Add the following expression the the `ns` declaration of your source clj:
+
+    [emem.core :as emem]
+
+To convert and merge `README.md` and `TODO.md` to `README.html`:
+
+    (emem/convert "README.html" ["README.md" "TODO.md"])
+
+### Command-line
+
+Fetch the sources, build a JAR, then store somewhere:
 
     git clone git@github.com:ebzzry/emem.git
     cd emem && lein uberjar
     mkdir ~/jars && cp target/uberjar+uberjar/emem-0.1.1-SNAPSHOT.jar ~/jars/emem.jar
 
-## Usage
-
-*emem* is typically ran from the jar:
+To convert README.md to README.html
 
     java -jar ~/jars/emem.jar -o README.html README.md
 
