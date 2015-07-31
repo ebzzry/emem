@@ -1,54 +1,63 @@
 emem
 ======================================================================
 
-A trivial Markdown to HTML converter that uses
+_emem_ is a trivial Markdown to HTML converter.
 
-* [markdown-clj](https://github.com/yogthos/markdown-clj)
-* [hiccup](https://github.com/weavejester/hiccup)
-* [tools.cli](https://github.com/clojure/tools.cli)
-* [fs](https://github.com/raynes/fs/)
-* [cpath-clj](https://github.com/xsc/cpath-clj)
-* [highlight.js](https://github.com/isagalaev/highlight.js)
+
+## Installation
+
+
+### Library
+
+Add the following expression in the `:dependencies` clause of your
+`project.clj`:
+
+    [emem "0.1.2-SNAPSHOT"]
+
+Add the following expression the the `ns` declaration of your source
+clj:
+
+    [emem.core :as emem]
+
+### Command-line
+
+Fetch the sources, build the JAR, then store it somewhere:
+
+    $ git clone git@github.com:ebzzry/emem.git
+    $ cd emem && lein uberjar
+    $ mkdir ~/jars
+    $ cp target/uberjar+uberjar/emem-0.1.2-SNAPSHOT.jar ~/jars/emem.jar
+
 
 ## Usage
 
 ### Library
 
-Add the following expression in the `:dependencies` clause of
-your `project.clj`:
+To create `README.html` from `README.md` and `TODO.md`, merging them
+together:
 
-    [emem "0.1.2-SNAPSHOT"]
+    (emem/produce "README.html" ["README.md" "TODO.md"])
 
-Add the following expression the the `ns` declaration of your source clj:
+To learn more about the available options and parameters:
 
-    [emem.core :as emem]
+    (doc emem/produce)
 
-To convert and merge `README.md` and `TODO.md` to `README.html`:
-
-    (emem/convert "README.html" ["README.md" "TODO.md"])
-
-### Command-line
-
-Fetch the sources, build a JAR, then store somewhere:
-
-    git clone git@github.com:ebzzry/emem.git
-    cd emem && lein uberjar
-    mkdir ~/jars && cp target/uberjar+uberjar/emem-0.1.1-SNAPSHOT.jar ~/jars/emem.jar
+### CLI
 
 To convert README.md to README.html
 
-    java -jar ~/jars/emem.jar -o README.html README.md
+    $ java -jar ~/jars/emem.jar -o README.html README.md
 
 To save typing, you may use shell functions:
 
-    cat >> ~/.bashrc << END
+    $ cat >> ~/.bashrc << END
     emem () { java -jar ~/jars/emem.jar $@; }
     em () { emem -o ${1%%.*}.html $1; }
     END
 
 or a shell script:
 
-    cat > ~/bin/emem << END
+    $ cat > ~/bin/emem << END
     #!/bin/sh
     java -jar ~/jars/emem.jar $@
     END
@@ -56,13 +65,27 @@ or a shell script:
 
 Enabling us to just type:
 
-    emem -o README.html README.md
+    $ emem -o README.html README.md
 
 or
 
-    em README.md
+    $ em README.md
 
-Examples can be found in the `examples/` directory.
+*emem* accepts input from stdin:
+
+    # Dump to screen
+    $ cat README.md | emem
+    
+    # Like above, but output a bare and undecorated HTML
+    $ cat README.md | emem -b
+    
+    # Produce a raw HTML output
+    $ echo "# Blah" | emem -r
+    
+    # Create an HTML listing of the current directory
+    $ ls -R | sed -e '1i```bash' -e '$a```' | emem -T `basename $PWD` -o files.html
+
+Other examples can be found in the `examples/` directory.
 
 
 ## Options
@@ -71,16 +94,26 @@ Examples can be found in the `examples/` directory.
     
     Options:
       -o, --output HTML_FILE  /dev/stdout  output file
-      -t, --title TITLE                    document title
-      -H, --header HEADER                  document header
-      -T, --titlehead TEXT                 like -t TEXT -H TEXT
-      -r                                   install the resource files only
-      -R                                   build the HTML file only
+      -r, --raw                            emit raw HTML
+      -b, --bare                           emit bare HTML
+      -H, --htmlonly                       emit full HTML, sans resources
+      -R, --resonly                        install the resource files only
+          --title TEXT                     document title
+          --header TEXT                    document header
+      -T, --titlehead TEXT                 like --title TEXT --header TEXT
       -v                                   increase verbosity
+      -V, --version                        display program version
       -h, --help                           display this help
 
 
-## Bugs
+## Dependencies
+
+* [markdown-clj](https://github.com/yogthos/markdown-clj)
+* [hiccup](https://github.com/weavejester/hiccup)
+* [tools.cli](https://github.com/clojure/tools.cli)
+* [fs](https://github.com/raynes/fs/)
+* [cpath-clj](https://github.com/xsc/cpath-clj)
+* [highlight.js](https://github.com/isagalaev/highlight.js)
 
 
 ## License
