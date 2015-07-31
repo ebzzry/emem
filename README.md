@@ -16,24 +16,30 @@ Add the following expression in the `:dependencies` clause of your
 
     [emem "0.1.2-SNAPSHOT"]
 
-Add the following expression to the `ns` declaration of your source
-clj:
-
-    [emem.core :as emem]
-
 ### CLI
 
-Fetch the sources, build the JAR, then store it somewhere:
+Fetch the sources, build the JAR, store it somewhere, then create a
+command:
 
     git clone git@github.com:ebzzry/emem.git
-    cd emem && lein uberjar
+    cd emem
+    lein uberjar
     mkdir ~/jars
     cp target/uberjar+uberjar/emem-0.1.2-SNAPSHOT.jar ~/jars/emem.jar
+    cat >> ~/.bashrc << END
+    emem () { java -jar ~/jars/emem.jar $@; }
+    END
+    . ~/.bashrc
 
 
 ## Usage
 
 ### Library
+
+Add the following expression to the `ns` declaration of your source
+clj:
+
+    [emem.core :as emem]
 
 To produce `README.html` from `README.md`:
 
@@ -48,41 +54,29 @@ To learn more about the available options:
 
     (doc emem/produce)
 
+
 ### CLI
 
-To convert README.md to README.html
-
-    java -jar ~/jars/emem.jar -o README.html README.md
-
-To save typing, you may use shell functions:
-
-    cat >> ~/.bashrc << END
-    emem () { java -jar ~/jars/emem.jar $@; }
-    END
-    . ~/.bashrc
-
-Enabling us to just type:
+To produce `README.html` from `README.md`:
 
     emem -o README.html README.md
 
-*emem* accepts input from stdin:
+To produce a bare and undecorated HTML:
 
-    # Produce a bare and undecorated HTML
     cat README.md | emem -b
-    
-    # Produce raw HTML
+
+To produce raw HTML:
+
     echo "# Blah" | emem -r
-    
-    # Create an HTML listing of the current directory
+
+To create an HTML listing of the current directory:
+
     ls -R | sed -e '1i```bash' -e '$a```' \
     | emem -T `basename $PWD` -o ls.html
-
-Other examples can be found in the `examples/` directory.
 
 To learn more about the available options:
 
     emem -h
-
 
 ## Dependencies
 
