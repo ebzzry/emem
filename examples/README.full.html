@@ -10,15 +10,9 @@ cp target/uberjar+uberjar/emem-0.1.2-SNAPSHOT.jar &#126;/jars/emem.jar
 </code></pre><h3>CLI</h3><p>To convert README.md to README.html</p><pre><code>java -jar &#126;/jars/emem.jar -o README.html README.md
 </code></pre><p>To save typing, you may use shell functions:</p><pre><code>cat &gt;&gt; &#126;/.bashrc &lt;&lt; END
 emem &#40;&#41; { java -jar &#126;/jars/emem.jar $@; }
-em &#40;&#41; { for i in $@; do emem -o ${1%%.&#42;}.html $i; done; }
 END
-</code></pre><p>or a shell script:</p><pre><code>cat &gt; &#126;/bin/emem &lt;&lt; END
-#!/bin/sh
-java -jar &#126;/jars/emem.jar $@
-END
-chmod +x &#126;/bin/emem
+. &#126;/.bashrc
 </code></pre><p>Enabling us to just type:</p><pre><code>emem -o README.html README.md
-</code></pre><p>or</p><pre><code>em README.md
 </code></pre><p><em>emem</em> accepts input from stdin:</p><pre><code># Dump to screen
 cat README.md | emem
 

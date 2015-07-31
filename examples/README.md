@@ -58,24 +58,12 @@ To save typing, you may use shell functions:
 
     cat >> ~/.bashrc << END
     emem () { java -jar ~/jars/emem.jar $@; }
-    em () { for i in $@; do emem -o ${1%%.*}.html $i; done; }
     END
-
-or a shell script:
-
-    cat > ~/bin/emem << END
-    #!/bin/sh
-    java -jar ~/jars/emem.jar $@
-    END
-    chmod +x ~/bin/emem
+    . ~/.bashrc
 
 Enabling us to just type:
 
     emem -o README.html README.md
-
-or
-
-    em README.md
 
 *emem* accepts input from stdin:
 
