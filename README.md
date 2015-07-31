@@ -67,18 +67,15 @@ Enabling us to just type:
 
 *emem* accepts input from stdin:
 
-    # Dump to screen
-    cat README.md | emem
-    
-    # Like above, but output a bare and undecorated HTML
+    # Produce a bare and undecorated HTML
     cat README.md | emem -b
     
-    # Produce a raw HTML output
+    # Produce raw HTML
     echo "# Blah" | emem -r
     
     # Create an HTML listing of the current directory
     ls -R | sed -e '1i```bash' -e '$a```' \
-    | emem -T `basename $PWD` -o files.html
+    | emem -T `basename $PWD` -o ls.html
 
 Other examples can be found in the `examples/` directory.
 
