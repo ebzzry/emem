@@ -22,22 +22,17 @@
    ["-R" nil "build the HTML file only"
     :id :htmlonly]
    ["-v" nil "increase verbosity"
-    :id :verb
+    :id :verbosity
     :default 0
     ;; Use assoc-fn to create non-idempotent options
     :assoc-fn (fn [m k _] (update-in m [k] inc))]
    ["-V" "--version" "display program version"]
    ["-h" "--help" "display this help"]])
 
-;; (defn usage
-;;   "Displays program usage."
-;;   [summary]
-;;   (->> ["Usage: emem [OPTION]... [MARKDOWN_FILE]..."
-;;         ""
-;;         "Options:"
-;;         summary
-;;         ]
-;;        (s/join \newline)))
+(defn verb
+  "Provides default value for :verbosity option."
+  [opts]
+  (or (:verbosity opts) 0))
 
 (defn display-usage
   "Displays program usage."
@@ -56,52 +51,60 @@
        (s/join \newline errors)))
 
 (defn doexit
-  ""
+  "Evaluates F, then exits to OS with CODE."
   [f & [code]]
   (f)
   (System/exit (or code 0)))
 
-(defn msgexit
+(defn msg-exit
   "Exits the program with status code and message."
   [msg code]
   (doexit #(println msg) code))
 
 (defn msg
   "Displays messages controlled by the verbosity option."
-  [text req & [level]]
-  (when (>= (or level 0) req)
-    (println text)))
+  ([text]
+   (msg text 1 0))
+  ([text level]
+   (msg text level 0))
+  ([text level override]
+   (when (>= override level)
+     (println text))))
+
+(defn with-resource
+  "Locates the resource files in the classpath."
+  [res f]
+  (doseq [[path _] (cp/resources (io/resource res))
+          :let [relative-path (subs path 1)
+                file (str res "/" relative-path)]]
+    (f file)))
 
 (defn version
-  "Prints program version."
+  "Displays program version."
   []
-  (msg "Printing program version ..." 1)
-  (with-open [in (io/input-stream (io/resource "VERSION"))]
-    (let [ver (slurp in)]
-      (if *command-line-args*
-        (spit "/dev/stdout" ver)
-        (s/trim ver)))))
-
-(defn doc-title
-  "Returns the title of the document."
-  [file opts]
-  (msg "Retrieving document title ..." 1)
-  (with-open [file (io/reader file)]
-    (str (first (line-seq file)))))
+  (let [f (fn [file]
+            (with-open [in (io/input-stream (io/resource file))]
+              (let [ver (slurp in)]
+                (spit *out* ver))))]
+    (with-resource "etc"
+      f)))
 
 (defn install-resources
   "Installs the files required by the HTML file."
   [opts]
-  (msg "Installing resources ..." 1 (:verb opts))
-  (let [res (io/resource "static")]
-    (when (fs/exists? res)
-      (doseq [[path uris] (cp/resources res)
-              :let [uri (first uris)
-                    relative-path (subs path 1)
-                    path (str res "/" relative-path)]]
-        (with-open [in (io/input-stream (io/resource path))]
-          (io/make-parents path)
-          (io/copy in (io/file path)))))))
+  (msg "[*] Installing resources ..." 1 (verb opts))
+  (let [f (fn [file]
+            (with-open [in (io/input-stream (io/resource file))]
+              (io/make-parents file)
+              (io/copy in (io/file file))))]
+    (with-resource "static"
+      f)))
+
+(defn doc-title
+  "Returns the title of the document."
+  [file opts]
+  (with-open [file (io/reader file)]
+    (str (first (line-seq file)))))
 
 (defn wrap
   "Wraps TEXT with HTML necessary for correct page display."
@@ -127,36 +130,40 @@
 (defn mdify
   "Converts Markdown inputs to HTML strings."
   [opts args]
-  ;; (msg "Loading input files ..." 1 (:verb opts))
   (wrap opts args
         (apply str (map #(md-to-html-string (slurp %)) args))))
 
 (defn files-exist?
   "Returns true if all FILES exist."
-  [files]
+  [files opts]
+  (msg "[*] Verifying inputs ..." 1 (verb opts))
   (every? #(fs/exists? %) files))
 
 (defn write-html
   "Writes the HTML file to disk."
   [opts args]
-  (msg "Writing output files ..." 1 (:verb opts))
+  (msg "[*] Writing output file ..." 1 (verb opts))
   (let [output (or (:output opts))]
     (with-open [out (io/output-stream output)]
       (spit out (mdify opts args)))))
 
 (defn stage
-  "Sets up the environment for arguments F and G."
+  "Sets up the environment for F and G."
   [opts args f g]
-  (if (files-exist? args)
-    (do (or (:htmlonly opts)
-            (install-resources opts))
-        (f))
-    (g)))
+  (msg "[*] Setting up stage ..." 1 (verb opts))
+  (if (:resonly opts)
+    (install-resources opts)
+    (if (files-exist? args opts)
+      (do (or (:htmlonly opts)
+              (install-resources opts))
+          (f))
+      (g))))
 
-(defn encode
+(defn convert
   "Converts Markdown inputs to HTML."
   [output input & {:as opts}]
-  (stage opts input
+  (stage opts
+         input
          #(write-html (merge {:output output} (dissoc opts :output))
                       input)
          #(identity nil)))
@@ -166,7 +173,7 @@
   [opts args errors summary]
   (stage opts args
          #(write-html opts args)
-         #(doexit (display-usage summary)) 1))
+         #(doexit (display-usage summary))))
 
 (defn min-args?
   "Returns true if the minimum amount of command line input is met."
@@ -179,8 +186,8 @@
         (parse-opts args cli-opts)]
     (cond
       (:help options) (doexit #(display-usage summary))
-      (:version options) (doexit #(version))
+      (:version options) (doexit version)
       (:resonly options) (doexit #(install-resources options))
-      errors (msgexit (error-msg errors) 1))
+      errors (msg-exit (error-msg errors) 1))
     (and (min-args? options arguments)
          (launch options arguments errors summary))))
