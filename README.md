@@ -1,6 +1,8 @@
 emem
 ======================================================================
 
+[![Build Status](https://travis-ci.org/ebzzry/emem.svg)](https://travis-ci.org/ebzzry/emem)
+
 _emem_ is a trivial Markdown to HTML converter.
 
 
