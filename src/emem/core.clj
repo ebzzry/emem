@@ -7,21 +7,25 @@
             [cpath-clj.core :as cp])
   (:use [markdown.core]
         [hiccup.core])
-  (:import [java.io File])
+  (:import [java.io File BufferedReader])
   (:gen-class))
+
+(def default-output "/dev/stdout")
 
 (def cli-opts
   "Specification for the command-line options."
   [["-o" "--output=HTML_FILE" "output file"
-    :default "/dev/stdout"]
-   ["-t" "--title TITLE" "document title"]
-   ["-H" "--header HEADER" "document header"]
-   ["-T" "--titlehead TEXT" "like -t TEXT -H TEXT"]
-   ["-r" nil "install the resource files only"
-    :id :resonly]
-   ["-R" nil "build the HTML file only"
-    :id :htmlonly]
-   ["-v" nil "increase verbosity"
+    :default default-output]
+   ["-r" "--raw"            "emit raw HTML"]
+   ["-b" "--bare"           "emit bare HTML"]
+   ["-H" "--htmlonly"       "emit full HTML, sans resources"]
+   ["-R" "--resonly"        "install the resource files only"]
+
+   [nil "--title TEXT"     "document title"]
+   [nil "--header TEXT"   "document header"]
+   ["-T" "--titlehead TEXT" "like --title TEXT --header TEXT"]
+
+   ["-v" nil                "increase verbosity"
     :id :verbosity
     :default 0
     ;; Use assoc-fn to create non-idempotent options
@@ -114,6 +118,12 @@
   (with-open [file (io/reader file)]
     (str (first (line-seq file)))))
 
+(defn claws
+  "Returns the empty string if TEST evaluates to false; otherwise
+returns THEN."
+  [test then]
+  (if test then ""))
+
 (defn wrap
   "Wraps TEXT with HTML necessary for correct page display."
   [opts args text]
@@ -125,21 +135,32 @@
      [:html
       [:head
        [:title title]
-       [:meta {:http-equiv "Content-Type" :content "text/html;charset=utf-8"}]
-       [:link {:rel "shortcut icon" :href "static/ico/favicon.ico" :type "image/x-icon"}]
-       [:link {:rel "stylesheet" :href "static/css/custom.css" :media "all"}]
-       [:link {:rel "stylesheet" :href "static/css/tomorrow-night.css"}]
-       [:script {:src "static/js/highlight.pack.js"}]
-       [:script "hljs.initHighlightingOnLoad();"]]
+       [:meta {:http-equiv "Content-Type"
+               :content "text/html;charset=utf-8"}]
+       (claws
+        (not (:bare opts))
+        (html
+         [:link {:rel "shortcut icon"
+                 :href "static/ico/favicon.ico"
+                 :type "image/x-icon"}]
+         [:link {:rel "stylesheet"
+                 :href "static/css/custom.css"
+                 :media "all"}]
+         [:link {:rel "stylesheet"
+                 :href "static/css/tomorrow-night.css"}]
+         [:script {:src "static/js/highlight.pack.js"}]
+         [:script "hljs.initHighlightingOnLoad();"]))]
       [:body
-       (if header [:h1 header] "")
+       (claws header [:h1 header])
        text]])))
 
 (defn mdify
   "Converts Markdown inputs to HTML strings."
   [opts args]
-  (wrap opts args
-        (apply str (map #(md-to-html-string (slurp %)) args))))
+  (let [s (apply str (map #(md-to-html-string (slurp %)) args))]
+    (if (not (:raw opts))
+      (wrap opts args s)
+      s)))
 
 (defn files-exist?
   "Returns true if all FILES exist."
@@ -157,27 +178,43 @@
 
 (defn stage
   "Sets up the environment for F and G."
-  [opts args f g]
+  [opts args f bail]
   (msg "[*] Setting up stage ..." 1 (verb opts))
   (if (:resonly opts)
     (install-resources opts)
     (if (files-exist? args opts)
-      (do (or (:htmlonly opts)
+      (do (or (or (:raw opts)
+                  (:bare opts)
+                  (:htmlonly opts)
+                  (= (:output opts) default-output))
               (install-resources opts))
           (f))
-      (g))))
+      (bail))))
 
-(defn convert
-  "Converts Markdown inputs to HTML."
-  [output input & {:as opts}]
+(defn produce
+  "Produces HTML from Markdown inputs.
+
+OUTPUT: regular file
+
+INPUT: vector of markdown inputs
+
+OPTIONS:
+  :raw Boolean          emit raw HTML
+  :bare Boolean         emit bare HTML
+  :htmlonly Boolean     emit full HTML, sans resources
+  :resonly Boolean      install the resource files only
+  :title String         document title
+  :header String        document header
+  :titlehead String     like :title String :header String"
+  [output input & {:as options}]
   (let [out {:output output}]
-    (stage (merge opts out)
+    (stage (merge options out)
            input
-           #(write-html (merge out (dissoc opts :output)) input)
+           #(write-html (merge out (dissoc options :output)) input)
            #(identity nil))))
 
 (defn launch
-  "Converts Markdown inputs to HTML."
+  "Produces HTML from Markdown inputs."
   [opts args errors summary]
   (stage opts args
          #(write-html opts args)
@@ -197,5 +234,10 @@
       (:version options) (doexit version)
       (:resonly options) (doexit #(install-resources options))
       errors (msg-exit (error-msg errors) 1))
-    (and (min-args? options arguments)
-         (launch options arguments errors summary))))
+    (if (not-empty arguments)
+      (launch options arguments errors summary)
+      (let [temp (.getAbsolutePath (u/make-temp))
+            in (slurp *in*)]
+        (spit temp in)
+        (launch options [temp] errors summary)
+        (fs/delete temp)))))
