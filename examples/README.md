@@ -33,12 +33,16 @@ Fetch the sources, build the JAR, then store it somewhere:
 
 ### Library
 
-To create `README.html` from `README.md` and `TODO.md`, merging them
-together:
+To produce `README.html` from `README.md`:
 
-    (emem/produce "README.html" ["README.md" "TODO.md"])
+    (emem/produce "README.html" ["README.md"])
 
-To learn more about the available options and parameters:
+To produce `reminders.html` from multiple sources, specifying a custom
+title:
+
+    (emem/produce "reminders.html" ["buy.md" "projects.md" "fitness.md"] :title "AAAAH!!!")
+
+To learn more about the available options:
 
     (doc emem/produce)
 
@@ -52,7 +56,7 @@ To save typing, you may use shell functions:
 
     cat >> ~/.bashrc << END
     emem () { java -jar ~/jars/emem.jar $@; }
-    em () { emem -o ${1%%.*}.html $1; }
+    em () { for i in $@; do emem -o ${1%%.*}.html $i; done; }
     END
 
 or a shell script:
@@ -88,23 +92,9 @@ or
 
 Other examples can be found in the `examples/` directory.
 
+To learn more about the available options:
 
-## Options
-
-    Usage: emem [OPTION]... [MARKDOWN_FILE]...
-    
-    Options:
-      -o, --output HTML_FILE  /dev/stdout  output file
-      -r, --raw                            emit raw HTML
-      -b, --bare                           emit bare HTML
-      -H, --htmlonly                       emit full HTML, sans resources
-      -R, --resonly                        install the resource files only
-          --title TEXT                     document title
-          --header TEXT                    document header
-      -T, --titlehead TEXT                 like --title TEXT --header TEXT
-      -v                                   increase verbosity
-      -V, --version                        display program version
-      -h, --help                           display this help
+    emem -h
 
 
 ## Dependencies
