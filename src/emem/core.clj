@@ -2,11 +2,11 @@
   (:require [clojure.tools.cli :refer [parse-opts]]
             [clojure.string :as s]
             [clojure.java.io :as io]
-            [emem.utils :as u]
+            [markdown.core :as md]
+            [hiccup.core :as hi]
             [me.raynes.fs :as fs]
-            [cpath-clj.core :as cp])
-  (:use [markdown.core]
-        [hiccup.core])
+            [cpath-clj.core :as cp]
+            [emem.utils :as u])
   (:import [java.io File BufferedReader])
   (:gen-class))
 
@@ -21,8 +21,8 @@
    ["-H" "--htmlonly"       "emit full HTML, sans resources"]
    ["-R" "--resonly"        "install the resource files only"]
 
-   [nil "--title TEXT"     "document title"]
-   [nil "--header TEXT"   "document header"]
+   [nil "--title TEXT"      "document title"]
+   [nil "--header TEXT"     "document header"]
    ["-T" "--titlehead TEXT" "like --title TEXT --header TEXT"]
 
    ["-v" nil                "increase verbosity"
@@ -131,7 +131,7 @@ returns THEN."
         title (or (or (:title opts) (:titlehead opts))
                   (doc-title lead opts))
         header (or (:header opts) (:titlehead opts))]
-    (html
+    (hi/html
      [:html
       [:head
        [:title title]
@@ -139,7 +139,7 @@ returns THEN."
                :content "text/html;charset=utf-8"}]
        (claws
         (not (:bare opts))
-        (html
+        (hi/html
          [:link {:rel "shortcut icon"
                  :href "static/ico/favicon.ico"
                  :type "image/x-icon"}]
@@ -157,7 +157,7 @@ returns THEN."
 (defn mdify
   "Converts Markdown inputs to HTML strings."
   [opts args]
-  (let [s (apply str (map #(md-to-html-string (slurp %)) args))]
+  (let [s (apply str (map #(md/md-to-html-string (slurp %)) args))]
     (if (not (:raw opts))
       (wrap opts args s)
       s)))
