@@ -6,7 +6,7 @@
             [hiccup.core :as hi]
             [me.raynes.fs :as fs]
             [cpath-clj.core :as cp]
-            [emem.utils :as u])
+            [emem.util :as u])
   (:import [java.io File BufferedReader])
   (:gen-class))
 
@@ -33,12 +33,12 @@
    ["-V" "--version" "display program version"]
    ["-h" "--help" "display this help"]])
 
-(defn verb
+(defn- verb
   "Provides default value for :verbosity option."
   [opts]
   (or (:verbosity opts) 0))
 
-(defn display-usage
+(defn- display-usage
   "Displays program usage."
   [summary]
   (-> (->> ["Usage: emem [OPTION]... [MARKDOWN_FILE]..."
@@ -48,37 +48,11 @@
            (s/join \newline))
       println))
 
-(defn error-msg
+(defn- error-msg
   "Displays the errors encountered during command parsing."
   [errors]
-  (str "The following errors occurred while parsing your command:\n"
+  (str "The following errors occurred:"
        (s/join \newline errors)))
-
-(defn doexit
-  "Evaluates F, then exits to OS with CODE."
-  [f & [code]]
-  (f)
-  (System/exit (or code 0)))
-
-(defn msg-exit
-  "Exits the program with status code and message."
-  [msg code]
-  (doexit #(println msg) code))
-
-(defn msg
-  "Displays messages controlled by the verbosity option."
-  ([text]
-   (msg text 1 0))
-  ([text level]
-   (msg text level 0))
-  ([text level override]
-   (when (>= override level)
-     (println text))))
-
-(defn resource-stream
-  ""
-  [res]
-  (io/input-stream (io/resource res)))
 
 (defn with-resource
   "Locates the resource files in the classpath."
@@ -88,11 +62,15 @@
                 file (str res "/" relative-path)]]
     (f file (or dir fs/*cwd*))))
 
+;; (let [temp (fs/temp-file "tmp")]
+;;   ...
+;;   (fs/delete temp))
+
 (defn version
   "Displays program version."
   []
   (let [f (fn [file dir]
-            (with-open [in (resource-stream file)]
+            (with-open [in (u/restream file)]
               (let [ver (slurp in)]
                 (spit *out* ver))))]
     (with-resource "etc" f fs/*cwd*)))
@@ -100,36 +78,24 @@
 (defn install-resources
   "Installs the files required by the HTML file."
   [opts]
-  (msg "[*] Installing resources ..." 1 (verb opts))
+  (u/msg "[*] Installing resources ..." 1 (verb opts))
   (let [dir (-> (:output opts)
                 io/file .getAbsolutePath
                 io/file .getParent
                 io/file)]
     (let [f (fn [file dir]
-              (with-open [in (resource-stream file)]
+              (with-open [in (u/restream file)]
                 (let [path (io/file dir file)]
                   (io/make-parents (io/file dir file))
                   (io/copy in (io/file dir file)))))]
       (with-resource "static" f dir))))
-
-(defn doc-title
-  "Returns the title of the document."
-  [file opts]
-  (with-open [file (io/reader file)]
-    (str (first (line-seq file)))))
-
-(defn claws
-  "Returns the empty string if TEST evaluates to false; otherwise
-returns THEN."
-  [test then]
-  (if test then ""))
 
 (defn wrap
   "Wraps TEXT with HTML necessary for correct page display."
   [opts args text]
   (let [[lead & _] args
         title (or (or (:title opts) (:titlehead opts))
-                  (doc-title lead opts))
+                  (u/first-line lead))
         header (or (:header opts) (:titlehead opts))]
     (hi/html
      [:html
@@ -137,7 +103,7 @@ returns THEN."
        [:title title]
        [:meta {:http-equiv "Content-Type"
                :content "text/html;charset=utf-8"}]
-       (claws
+       (u/claws
         (not (:bare opts))
         (hi/html
          [:link {:rel "shortcut icon"
@@ -151,7 +117,7 @@ returns THEN."
          [:script {:src "static/js/highlight.pack.js"}]
          [:script "hljs.initHighlightingOnLoad();"]))]
       [:body
-       (claws header [:h1 header])
+       (u/claws header [:h1 header])
        text]])))
 
 (defn mdify
@@ -165,13 +131,13 @@ returns THEN."
 (defn files-exist?
   "Returns true if all FILES exist."
   [files opts]
-  (msg "[*] Verifying inputs ..." 1 (verb opts))
+  (u/msg "[*] Verifying inputs ..." 1 (verb opts))
   (every? #(fs/exists? %) files))
 
 (defn write-html
   "Writes the HTML file to disk."
   [opts args]
-  (msg "[*] Writing output file ..." 1 (verb opts))
+  (u/msg "[*] Writing output file ..." 1 (verb opts))
   (let [output (or (:output opts))]
     (with-open [out (io/output-stream output)]
       (spit out (mdify opts args)))))
@@ -179,7 +145,7 @@ returns THEN."
 (defn stage
   "Sets up the environment for F and G."
   [opts args f bail]
-  (msg "[*] Setting up stage ..." 1 (verb opts))
+  (u/msg "[*] Setting up stage ..." 1 (verb opts))
   (if (:resonly opts)
     (install-resources opts)
     (if (files-exist? args opts)
@@ -211,32 +177,27 @@ OPTIONS:
     (stage (merge options out)
            input
            #(write-html (merge out (dissoc options :output)) input)
-           #(identity nil))))
+           #(u/id nil))))
 
 (defn launch
   "Produces HTML from Markdown inputs."
   [opts args errors summary]
   (stage opts args
          #(write-html opts args)
-         #(doexit (display-usage summary))))
-
-(defn min-args?
-  "Returns true if the minimum amount of command line input is met."
-  [opts args]
-  (> (count args) 0))
+         #(u/ex (display-usage summary))))
 
 (defn -main
   [& args]
   (let [{:keys [options arguments errors summary]}
         (parse-opts args cli-opts)]
     (cond
-      (:help options) (doexit #(display-usage summary))
-      (:version options) (doexit version)
-      (:resonly options) (doexit #(install-resources options))
-      errors (msg-exit (error-msg errors) 1))
+      (:help options) (u/ex #(display-usage summary))
+      (:version options) (u/ex version)
+      (:resonly options) (u/ex #(install-resources options))
+      errors (u/bye (error-msg errors) 1))
     (if (not-empty arguments)
       (launch options arguments errors summary)
-      (let [temp (.getAbsolutePath (u/make-temp))
+      (let [temp (.getAbsolutePath (fs/temp-file "tmp"))
             in (slurp *in*)]
         (spit temp in)
         (launch options [temp] errors summary)
