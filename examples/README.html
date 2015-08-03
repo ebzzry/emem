@@ -1,4 +1,9 @@
-<html><head><title>emem</title><meta content="text/html;charset=utf-8" http-equiv="Content-Type" /><link href="static/ico/favicon.ico" rel="shortcut icon" type="image/x-icon" /><link href="static/css/custom.css" media="all" rel="stylesheet" /><link href="static/css/tomorrow-night.css" rel="stylesheet" /><script src="static/js/highlight.pack.js"></script><script>hljs.initHighlightingOnLoad();</script></head><body><h1>emem</h1><p><a href='https://travis-ci.org/ebzzry/emem'><img src="https://travis-ci.org/ebzzry/emem.svg" alt="Build Status" /></a></p><p><i>emem</i> is a trivial Markdown to HTML converter.</p><h2>Installation</h2><h3>Library</h3><p>Add the following expression in the <code>:dependencies</code> clause of your <code>project.clj</code>:</p><pre><code>&#91;emem &quot;0.1.2-SNAPSHOT&quot;&#93;
+<html><head><title>emem</title><meta content="text/html;charset=utf-8" http-equiv="Content-Type" /><link href="static/ico/favicon.ico" rel="shortcut icon" type="image/x-icon" /><link href="static/css/custom.css" media="all" rel="stylesheet" /><link href="static/css/tomorrow-night.css" rel="stylesheet" /><script src="static/js/highlight.pack.js"></script><script>hljs.initHighlightingOnLoad();</script></head><body><h1>emem</h1><p><a href='https://travis-ci.org/ebzzry/emem'><img src="https://travis-ci.org/ebzzry/emem.svg" alt="Build Status" /></a></p><p><i>emem</i> is a trivial Markdown to HTML converter.</p><h2>Installation</h2><h3>Leiningen</h3><pre><code>&#91;emem &quot;0.1.2-SNAPSHOT&quot;&#93;
+</code></pre><h3>Maven</h3><pre><code>&lt;dependency&gt;
+  &lt;groupId&gt;emem&lt;/groupId&gt;
+  &lt;artifactId&gt;emem&lt;/artifactId&gt;
+  &lt;version&gt;0.1.2-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;
 </code></pre><h3>CLI</h3><p>Fetch the sources, build the JAR, store it somewhere, then create a command:</p><pre><code>git clone git@github.com:ebzzry/emem.git
 cd emem
 lein uberjar
@@ -8,7 +13,7 @@ cat &gt;&gt; &#126;/.bashrc &lt;&lt; END
 emem &#40;&#41; { java -jar &#126;/jars/emem.jar $@; }
 END
 . &#126;/.bashrc
-</code></pre><h2>Usage</h2><h3>Library</h3><p>Add the following expression to the <code>ns</code> declaration of your source clj:</p><pre><code>&#91;emem.core :as emem&#93;
+</code></pre><h2>Usage</h2><h3>Source</h3><p>Add the following expression to <code>&#40;ns ...&#41;</code>:</p><pre><code>&#40;:require &#91;emem.core :as emem&#93;&#41;
 </code></pre><p>To produce <code>README.html</code> from <code>README.md</code>:</p><pre><code>&#40;emem/produce &quot;README.html&quot; &#91;&quot;README.md&quot;&#93;&#41;
 </code></pre><p>To produce <code>reminders.html</code> from multiple sources, specifying a custom title:</p><pre><code>&#40;emem/produce &quot;reminders.html&quot; &#91;&quot;buy.md&quot; &quot;projects.md&quot; &quot;fitness.md&quot;&#93; :title &quot;AAAAH!!!&quot;&#41;
 </code></pre><p>To learn more about the available options:</p><pre><code>&#40;doc emem/produce&#41;
