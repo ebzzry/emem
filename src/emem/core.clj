@@ -4,8 +4,6 @@
             [clojure.java.io :as io]
             [markdown.core :as md]
             [hiccup.core :as hi]
-            [me.raynes.fs :as fs]
-            [cpath-clj.core :as cp]
             [emem.util :as u])
   (:import [java.io File BufferedReader])
   (:gen-class))
@@ -54,22 +52,20 @@
   (str "The following errors occurred:"
        (s/join \newline errors)))
 
-(defn- with-resource
-  "Locates the resource files in the classpath."
-  [res f dir]
-  (doseq [[path _] (cp/resources (io/resource res))
-          :let [relative-path (subs path 1)
-                file (str res "/" relative-path)]]
-    (f file (or dir (u/pwd)))))
-
 (defn version
   "Displays program version."
   []
-  (let [f (fn [file dir]
-            (with-open [in (u/restream file)]
-              (let [ver (slurp in)]
-                (spit *out* ver))))]
-    (with-resource "etc" f (u/pwd))))
+  (with-open [in (u/find-resource "etc/VERSION")]
+    (let [ver (slurp in)]
+      (spit *out* ver))))
+
+(defn- with-resources
+  "Locates the resource files in the classpath."
+  [res f dir]
+  (doseq [[path _] (u/resources res)]
+    (let [relative-path (subs path 1)
+          file (str res "/" relative-path)]
+      (f file (or dir (u/pwd))))))
 
 (defn- install-resources
   "Installs the files required by the HTML file."
@@ -84,7 +80,7 @@
                 (let [path (io/file dir file)]
                   (io/make-parents (io/file dir file))
                   (io/copy in (io/file dir file)))))]
-      (with-resource "static" f dir))))
+      (with-resources "static" f dir))))
 
 (defn- html-page
   "Wraps TEXT with HTML necessary for correct page display."
