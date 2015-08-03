@@ -10,9 +10,9 @@
   (:import [java.io File BufferedReader])
   (:gen-class))
 
-(def default-output "/dev/stdout")
+(def ^:private default-output "/dev/stdout")
 
-(def cli-opts
+(def ^:private cli-opts
   "Specification for the command-line options."
   [["-o" "--output=HTML_FILE" "output file"
     :default default-output]
@@ -54,17 +54,13 @@
   (str "The following errors occurred:"
        (s/join \newline errors)))
 
-(defn with-resource
+(defn- with-resource
   "Locates the resource files in the classpath."
   [res f dir]
   (doseq [[path _] (cp/resources (io/resource res))
           :let [relative-path (subs path 1)
                 file (str res "/" relative-path)]]
-    (f file (or dir fs/*cwd*))))
-
-;; (let [temp (fs/temp-file "tmp")]
-;;   ...
-;;   (fs/delete temp))
+    (f file (or dir (u/pwd)))))
 
 (defn version
   "Displays program version."
@@ -73,15 +69,15 @@
             (with-open [in (u/restream file)]
               (let [ver (slurp in)]
                 (spit *out* ver))))]
-    (with-resource "etc" f fs/*cwd*)))
+    (with-resource "etc" f (u/pwd))))
 
-(defn install-resources
+(defn- install-resources
   "Installs the files required by the HTML file."
   [opts]
   (u/msg "[*] Installing resources ..." 1 (verb opts))
   (let [dir (-> (:output opts)
-                io/file .getAbsolutePath
-                io/file .getParent
+                io/file u/abspath
+                io/file u/parent
                 io/file)]
     (let [f (fn [file dir]
               (with-open [in (u/restream file)]
@@ -90,7 +86,7 @@
                   (io/copy in (io/file dir file)))))]
       (with-resource "static" f dir))))
 
-(defn wrap
+(defn- html-page
   "Wraps TEXT with HTML necessary for correct page display."
   [opts args text]
   (let [[lead & _] args
@@ -103,7 +99,7 @@
        [:title title]
        [:meta {:http-equiv "Content-Type"
                :content "text/html;charset=utf-8"}]
-       (u/claws
+       (u/quo
         (not (:bare opts))
         (hi/html
          [:link {:rel "shortcut icon"
@@ -117,34 +113,34 @@
          [:script {:src "static/js/highlight.pack.js"}]
          [:script "hljs.initHighlightingOnLoad();"]))]
       [:body
-       (u/claws header [:h1 header])
+       (u/quo header [:h1 header])
        text]])))
 
-(defn mdify
+(defn- html
   "Converts Markdown inputs to HTML strings."
   [opts args]
   (let [s (apply str (map #(md/md-to-html-string (slurp %)) args))]
     (if (not (:raw opts))
-      (wrap opts args s)
+      (html-page opts args s)
       s)))
 
-(defn files-exist?
-  "Returns true if all FILES exist."
-  [files opts]
+(defn- files-exist?
+  "Verifies that all FILES exist."
+  [files & [opts]]
   (u/msg "[*] Verifying inputs ..." 1 (verb opts))
-  (every? #(fs/exists? %) files))
+  (u/files-ok? files))
 
-(defn write-html
-  "Writes the HTML file to disk."
+(defn- write-html
+  "Writes the HTML to file."
   [opts args]
   (u/msg "[*] Writing output file ..." 1 (verb opts))
   (let [output (or (:output opts))]
     (with-open [out (io/output-stream output)]
-      (spit out (mdify opts args)))))
+      (spit out (html opts args)))))
 
-(defn stage
-  "Sets up the environment for F and G."
-  [opts args f bail]
+(defn- stage
+  "Sets up the environment for F and BAIL."
+  [opts args f exit]
   (u/msg "[*] Setting up stage ..." 1 (verb opts))
   (if (:resonly opts)
     (install-resources opts)
@@ -155,7 +151,7 @@
                   (= (:output opts) default-output))
               (install-resources opts))
           (f))
-      (bail))))
+      (exit))))
 
 (defn produce
   "Produces HTML from Markdown inputs.
@@ -179,12 +175,21 @@ OPTIONS:
            #(write-html (merge out (dissoc options :output)) input)
            #(u/id nil))))
 
-(defn launch
-  "Produces HTML from Markdown inputs."
-  [opts args errors summary]
-  (stage opts args
-         #(write-html opts args)
-         #(u/ex (display-usage summary))))
+(defn- launch
+  "Produces HTML from Markdown argss."
+  [options arguments errors summary]
+  (let [args (u/tempv arguments)
+        f (fn []
+            (stage options args
+                   #(write-html options args)
+                   #(u/ex (display-usage summary))))]
+    (if (not-empty arguments)
+      (f)
+      (let [in (slurp *in*)
+            temp (first args)]
+        (spit temp in)
+        (f)
+        (u/delete temp)))))
 
 (defn -main
   [& args]
@@ -195,10 +200,4 @@ OPTIONS:
       (:version options) (u/ex version)
       (:resonly options) (u/ex #(install-resources options))
       errors (u/bye (error-msg errors) 1))
-    (if (not-empty arguments)
-      (launch options arguments errors summary)
-      (let [temp (.getAbsolutePath (fs/temp-file "tmp"))
-            in (slurp *in*)]
-        (spit temp in)
-        (launch options [temp] errors summary)
-        (fs/delete temp)))))
+    (launch options arguments errors summary)))
