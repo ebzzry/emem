@@ -2,8 +2,7 @@
   (:require [clojure.java.io :as io]
             [clojure.data.codec.base64 :as b64])
   (:import [java.util.zip GZIPInputStream]
-           [java.io ByteArrayInputStream File])
-  (:gen-class))
+           [java.io ByteArrayInputStream File]))
 
 (defn quo
   "Returns the empty string if TEST evaluates to false; otherwise
