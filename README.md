@@ -74,6 +74,14 @@ To create an HTML listing of the current directory:
     ls -R | sed -e '1i```bash' -e '$a```' \
     | emem -T `basename $PWD` -o ls.html
 
+If no inputs are provided, it accepts input from stdin, until EOT
+(^D, keyboard Ctrl-D):
+
+    % emem -r
+    # foo
+    **bar**
+    ^D
+
 To learn more about the available options:
 
     emem -h
