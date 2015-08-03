@@ -8,13 +8,17 @@ _emem_ is a trivial Markdown to HTML converter.
 
 ## Installation
 
-
-### Library
-
-Add the following expression in the `:dependencies` clause of your
-`project.clj`:
+### Leiningen
 
     [emem "0.1.2-SNAPSHOT"]
+
+### Maven
+
+    <dependency>
+      <groupId>emem</groupId>
+      <artifactId>emem</artifactId>
+      <version>0.1.2-SNAPSHOT</version>
+    </dependency>
 
 ### CLI
 
@@ -34,12 +38,11 @@ command:
 
 ## Usage
 
-### Library
+### Source
 
-Add the following expression to the `ns` declaration of your source
-clj:
+Add the following expression to `(ns ...)`:
 
-    [emem.core :as emem]
+    (:require [emem.core :as emem])
 
 To produce `README.html` from `README.md`:
 
