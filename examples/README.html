@@ -22,7 +22,7 @@ END
 </code></pre><p>To produce raw HTML:</p><pre><code>echo &quot;# Blah&quot; | emem -r
 </code></pre><p>To create an HTML listing of the current directory:</p><pre><code>ls -R | sed -e '1i```bash' -e '$a```' \
 | emem -T `basename $PWD` -o ls.html
-</code></pre><p>If no inputs are provided, it accepts input from stdin, until EOT (<sup>D,</sup> keyboard Ctrl-D):</p><pre><code>% emem -r
+</code></pre><p>If no inputs are provided, it accepts input from stdin, until EOT (Ctrl-D):</p><pre><code>% emem -r
 # foo
 &#42;&#42;bar&#42;&#42;
 &#94;D
