@@ -28,7 +28,7 @@ chmod +x &#126;/bin/emem
 # foo
 &#42;&#42;bar&#42;&#42;
 </code></pre><p>Run in continuous build mode -- build the HTML file, and if any of the input files are updated, rebuild the HTML file automatically. It will remain to monitor for changes, until <kbd>Ctrl-C</kbd> is pressed:</p><pre><code>emem -co TODO.html TODO.md
-</code></pre><p>The continuous mode works great with the <a href='https://addons.mozilla.org/en-US/firefox/addon/auto-reload/?src=api'>Auto Reload</a> add-on for Firefox, and the <a href='https://chrome.google.com/webstore/detail/livepage/pilnojpmdoofaelbinaeodfpjheijkbh/related?hl=en'>LivePage</a> extension for Chrome.</p><p>List the available style sheets that can be used with <a href='https://github.com/isagalaev/highlight.js'>highlight.js</a>:</p><pre><code>emem -L
+</code></pre><p>The continuous mode works great when used with browser enhancements that reload a page when the HTML file becomes modified/updated. The most popular ones are:</p><ul><li><a href='https://addons.mozilla.org/en-US/firefox/addon/auto-reload/?src=api'>Auto Reload</a> (Firefox)</li><li><a href='https://chrome.google.com/webstore/detail/livepage/pilnojpmdoofaelbinaeodfpjheijkbh/related?hl=en'>LivePage</a> (Google Chrome)</li></ul><p>List the available style sheets that can be used with <a href='https://github.com/isagalaev/highlight.js'>highlight.js</a>:</p><pre><code>emem -L
 </code></pre><p>To use a style sheet:</p><pre><code>emem -C zenburn -o reminders.html shop.md repairs.md
 </code></pre><p>Change the main style sheet for the page; the path specified will be relative to the HTML file:</p><pre><code>emem -M css/custom.css -o list.html list.md
 </code></pre><p>To learn more about the available options:</p><pre><code>emem -h
