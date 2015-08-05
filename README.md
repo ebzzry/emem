@@ -144,7 +144,7 @@ that reload a page when the HTML file becomes modified/updated. The
 most popular ones are:
 
 * [Auto Reload](https://addons.mozilla.org/en-US/firefox/addon/auto-reload/?src=api) (Firefox)
-* [LivePage](https://chrome.google.com/webstore/detail/livepage/pilnojpmdoofaelbinaeodfpjheijkbh/related?hl=en) (Google Chrome)
+* [LivePage](https://chrome.google.com/webstore/detail/livepage/pilnojpmdoofaelbinaeodfpjheijkbh/related?hl=en) (Chrome)
 
 List the available style sheets that can be used with [highlight.js](https://github.com/isagalaev/highlight.js):
 
