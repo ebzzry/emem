@@ -30,9 +30,7 @@ _emem_ is a Markdown to HTML converter.
 
 >[emem.jar](https://github.com/ebzzry/emem/releases/download/v0.2-beta/emem.jar)
 >
->size: 4.3M
->
->tthsum: E6MTI73KBZPFJKE3N44JQPTSVXYN57VL5N3AITY
+>size: 4.3M; tthsum: E6MTI73KBZPFJKE3N44JQPTSVXYN57VL5N3AITY
 
 This JAR file contains emem itself, plus all the dependencies. Save
 this file to `~/jar`, creating that directory as necessary. Next
@@ -51,9 +49,7 @@ chmod +x ~/bin/emem
 
 >[emem.zip](https://github.com/ebzzry/emem/releases/download/v0.2-beta/emem.zip)
 >
->size: 3.9M
->
->tthsum: S5B7HG7A5QUCCR27TQOFBQEIQWPO3NIY6KQZR2A
+>size: 3.9M; tthsum: S5B7HG7A5QUCCR27TQOFBQEIQWPO3NIY6KQZR2A
 
 This archive contains the executable. Extract this file and save it
 somewhere in your `PATH`. Run `sysdm.cpl` to view/modify your
