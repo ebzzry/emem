@@ -90,10 +90,12 @@ to 0 and 1, respectively."
   [path]
   (meth getParent (file path)))
 
-(defn files-ok?
+(defn files-exist?
   "Returns true if all FILES exist."
-  [paths]
-  (every? #(exists? %) paths))
+  [files]
+  (every? #(exists? %) files))
+
+;; (map io/file files)
 
 (defn mktemp
   "Returns path to a new temp file."
