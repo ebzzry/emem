@@ -115,12 +115,15 @@
   (u/msg "[*] Verifying inputs ..." 1 (verb opts))
   (or (when-let [[in & _] inputs]
         (= in *in*))
-      (u/files-ok? inputs)))
+      (u/files-exist? inputs)))
 
 (defn- html-page
   "Wraps TEXT with HTML necessary for correct page display."
-  [opts text]
-  (let [title (or (:title opts) (:titlehead opts))
+  [opts args text]
+  (let [title (or (:title opts)
+                  (:titlehead opts)
+                  (when-let [line (u/first-line (first args))]
+                    line))
         header (or (:header opts) (:titlehead opts))
         css-main (or (:css-main opts) "static/css/main.css")
         css-code (str "static/css/"
@@ -158,7 +161,7 @@
                              args))]
     (if (:raw opts)
       text
-      (html-page opts text))))
+      (html-page opts args text))))
 
 (defn write-html
   "Writes the HTML to file."
