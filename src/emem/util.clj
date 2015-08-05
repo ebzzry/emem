@@ -24,12 +24,7 @@ returns THEN."
   (with-open [file (io/reader path)]
     (str (last (line-seq file)))))
 
-(defn id
-  "Returns identity of ARG."
-  [arg]
-  (identity arg))
-
-(defn ex
+(defn exit
   "Evaluates F, then exits to OS with CODE."
   [f & [code]]
   (f)
@@ -49,7 +44,7 @@ to 0 and 1, respectively."
 (defn bye
   "Displays TEXT to *out*, and exits the program with status CODE."
   [text code]
-  (ex #(println msg) text))
+  (exit #(println msg) text))
 
 (defn file
   "Returns a File if PATH exists, false otherwise."
@@ -75,6 +70,15 @@ to 0 and 1, respectively."
   "Deletes file."
   [path]
   (meth delete (file path)))
+
+(defn root
+  "Returns root name of PATH."
+  [path]
+  (let [name (.getName (io/file path))]
+    (let [dot (.lastIndexOf name ".")]
+      (if (pos? dot)
+        (subs name 0 dot)
+        name))))
 
 (defn abspath
   "Returns absolute path"
@@ -116,6 +120,14 @@ absolute path, if ARGS is empty; otherwise, returns ARGS"
   ([^String s encoding]
      (ByteArrayInputStream. (.getBytes s encoding))))
 
+(defn string->temp
+  "Returns path to temp file that contains STR."
+  [str]
+  (let [temp (abspath (mktemp))
+        input (string-input-stream str)]
+    (spit (io/file temp) (slurp input))
+    temp))
+
 (defn b64-encode
   "Base64-encode the file in SRC; output to DEST."
   [^String src ^String dest]
@@ -151,7 +163,7 @@ then writes to OUTPUT."
   [input output]
   (gunzip (b64-decode-temp input) output))
 
-(defn restream
+(defn re-stream
   "Returns RES as BufferedInputStream"
   [res]
   (-> res io/resource io/input-stream))
@@ -173,10 +185,33 @@ then writes to OUTPUT."
         file (str "/" (s/join "/" res))
         resk (keys (resources base))]
     (when-let [match (find-first #(= file %) resk)]
-      (restream (str base match)))))
+      (re-stream (str base match)))))
+
+(defn get-resources
+  "Returns a list of resources under PATH."
+  [path]
+  (map #(subs % 1) (keys (resources path))))
 
 (defn list-resources
   "Displays all the resources under PATH."
   [path]
-  (doseq [res (map #(subs % 1) (keys (resources path)))]
+  (doseq [res (get-resources path)]
     (println res)))
+
+(defn out
+  "If the keyword :out is present in OPTS, return OPTS; otherwise,
+merge opts with an :out and *out* key value map."
+  [opts]
+  (if (:out opts)
+    opts
+    (merge opts {:out *out*})))
+
+(defn modtime
+  "Returns the last modified time of PATH."
+  [path]
+  (-> path io/file .lastModified))
+
+(defn modtimes
+  "Returns the last modified times of PATHS."
+  [paths]
+  (map modtime paths))

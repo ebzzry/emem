@@ -1,20 +1,47 @@
 (ns emem.core-test
   (:require [clojure.test :refer :all]
+            [emem.util :as u]
             [emem.core :refer :all]))
 
-;; example-based testing
-(deftest foo-test
-  (testing "foo"
-    (is (= 0 0))))
+(def md-text-1
+  "# foo **bar** baz")
 
-(deftest bar-test
-  (testing "bar"
-    (are [x y] (= 5 (+ x y))
-         2 3
-         1 4
-         3 2)))
+(def md-text-2
+  "Some Title\n==========\n\n## Section 1\n\nLorem ipsum dolor sit *amet*, consectetuer adipiscing elit. Donec\nodio. Quisque volutpat mattis eros. **Nullam** malesuada erat ut\nturpis. _Suspendisse_ urna nibh, viverra non, semper suscipit, posuere\na, pede.\n\n    $ foo bar baz\n    # qux quux\n\n## Section 2\n\n> Donec nec justo eget felis facilisis fermentum. Aliquam porttitor\n> mauris sit amet orci. Aenean dignissim pellentesque felis.\n\n```\nblah blah blah\n```\n\n")
 
-;; property-based testing
-;; (defspec edn-roundtrips 50
-;;   (prop/for-all [a gen/any]
-;;     (= a (-> a prn-str edn/read-string))))
+(deftest string-test-1
+  (is (= (convert md-text-1)
+         "<h1>foo <strong>bar</strong> baz</h1>")))
+
+(deftest string-test-2
+  (is (= (convert md-text-2)
+         "<h1>Some Title</h1><h2>Section 1</h2><p>Lorem ipsum dolor sit <em>amet</em>, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. <strong>Nullam</strong> malesuada erat ut turpis. <i>Suspendisse</i> urna nibh, viverra non, semper suscipit, posuere a, pede.</p><pre><code>$ foo bar baz\n# qux quux\n</code></pre><h2>Section 2</h2><blockquote><p> Donec nec justo eget felis facilisis fermentum. Aliquam porttitor  mauris sit amet orci. Aenean dignissim pellentesque felis. </p></blockquote><pre><code>blah blah blah\n</code></pre>")))
+
+;; TODO: use exceptions
+(defn ftest
+  [in out]
+  (let [temp1 (u/string->temp in)
+        temp2 (u/mktemp)]
+    (convert [temp1] :out (u/abspath temp2) :plain true)
+    (let [output (slurp temp2)]
+      (u/delete temp1)
+      (u/delete temp2)
+      (is (= output out)))))
+
+(deftest file-test-1
+  (ftest md-text-1
+         "<html><head><meta content=\"text/html;charset=utf-8\" http-equiv=\"Content-Type\" /></head><body><h1>foo <strong>bar</strong> baz</h1></body></html>"))
+
+(deftest file-test-2
+  (ftest md-text-2
+         "<html><head><meta content=\"text/html;charset=utf-8\" http-equiv=\"Content-Type\" /></head><body><h1>Some Title</h1><h2>Section 1</h2><p>Lorem ipsum dolor sit <em>amet</em>, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. <strong>Nullam</strong> malesuada erat ut turpis. <i>Suspendisse</i> urna nibh, viverra non, semper suscipit, posuere a, pede.</p><pre><code>$ foo bar baz\n# qux quux\n</code></pre><h2>Section 2</h2><blockquote><p> Donec nec justo eget felis facilisis fermentum. Aliquam porttitor  mauris sit amet orci. Aenean dignissim pellentesque felis. </p></blockquote><pre><code>blah blah blah\n</code></pre></body></html>"))
+
+(deftest strings-test
+  (testing "Strings"
+    (string-test-1)
+    (string-test-2)))
+
+(deftest files-test
+  (testing "Files"
+    (file-test-1)
+    (file-test-2)))
