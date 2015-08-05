@@ -95,8 +95,6 @@ to 0 and 1, respectively."
   [files]
   (every? #(exists? %) files))
 
-;; (map io/file files)
-
 (defn mktemp
   "Returns path to a new temp file."
   []

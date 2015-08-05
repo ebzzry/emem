@@ -104,7 +104,9 @@ Run in continuous build mode -- build the HTML file, and if any of the
 input files are updated, rebuild the HTML file automatically. It will
 remain to monitor for changes, until <kbd>Ctrl-C</kbd> is pressed:
 
-    emem -c -o TODO.html TODO.md
+    emem -co TODO.html TODO.md
+
+The continuous mode works great with the [Auto Reload](https://addons.mozilla.org/en-US/firefox/addon/auto-reload/?src=api) add-on for Firefox, and the [LivePage](https://chrome.google.com/webstore/detail/livepage/pilnojpmdoofaelbinaeodfpjheijkbh/related?hl=en) extension for Chrome.
 
 List the available style sheets that can be used with [highlight.js](https://github.com/isagalaev/highlight.js):
 
