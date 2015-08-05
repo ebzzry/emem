@@ -39,7 +39,7 @@ reduce typing. This presumes that you have `~/bin/` in your `PATH`:
 ```console
 cat > ~/bin/emem << END
 #!/bin/sh
-java -jar ~/jars/emem.jar $@
+java -jar ~/jar/emem.jar $@
 END
 chmod +x ~/bin/emem
 ```
