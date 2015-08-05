@@ -14,15 +14,15 @@
 
 (def ^:private cli-opts
   "Specification for the command-line options."
-  [["-o" "--output HTML"       "specify output file" :id :out]
+  [["-o" "--output HTML"  "specify output file" :id :out]
 
-   ["-w" "--raw"               "emit raw HTML; 1:1 Markdown-HTML equivalent"]
-   ["-p" "--plain"             "build plain HTML; don't use CSS and JS"]
-   ["-n" "--nores"             "build full HTML; don't install the resources"]
-   ["-R" "--resonly"           "install the resource files only"]
+   ["-w" "--raw"          "emit raw HTML; 1:1 Markdown-HTML equivalent"]
+   ["-p" "--plain"        "build plain HTML; don't use CSS and JS"]
+   ["-n" "--nores"        "build full HTML; don't install the resources"]
+   ["-R" "--resonly"      "install the resource files only"]
 
-   ["-c" "--continuous"        "run in continuous build mode"]
-   ["-r" "--refresh SECONDS"   "specify time between rebuilds"]
+   ["-c" "--continuous"            "run in continuous build mode"]
+   ["-r" "--refresh MILLISECONDS"  "specify time between rebuilds"]
 
    ["-M" "--css-main CSS"      "specify CSS resource for body"]
    ["-C" "--css-code NAME"     "specify CSS for the syntax highlighter"]
@@ -32,12 +32,12 @@
    [nil "--header TEXT"        "specify document header"]
    ["-T" "--titlehead TEXT"    "like --title TEXT --header TEXT"]
 
-   ["-v" nil                   "increase verbosity"
+   ["-v" nil             "increase verbosity"
     :id :verbosity
     :default 0
     :assoc-fn (fn [m k _] (update-in m [k] inc))]
-   ["-V" "--version"           "display program version"]
-   ["-h" "--help"              "display this help"]])
+   ["-V" "--version"     "display program version"]
+   ["-h" "--help"        "display this help"]])
 
 (def ^:private default-style
   "Default style for the syntax highlighter."
@@ -227,8 +227,7 @@ OPTS:
   [opts args text]
   (u/msg "[*] Rebuilding ..." 1 (verb opts))
   (let [times (u/modtimes args)
-        refresh (let [t (:refresh opts) s 1000]
-                  (if t (* (read-string t) s) s))
+        refresh (if-let [t (:refresh opts)] (read-string t) 200)
         options (merge opts {:nores true})]
     (with-out-str (print times))
     (Thread/sleep refresh)
