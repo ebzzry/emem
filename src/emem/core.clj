@@ -7,7 +7,9 @@
             [emem.util :as u])
   (:import [java.io File BufferedReader]
            [java.util Date]
-           [clojure.lang PersistentArrayMap])
+           [clojure.lang
+            PersistentArrayMap
+            PersistentVector])
   (:gen-class))
 
 (def ^:private cli-opts
@@ -194,9 +196,7 @@
 (defn convert
   "Converts Markdown inputs to HTML.
 
-STR: Markdown string
-
-ARGS: vector of Markdown files
+ARGS: Markdown string, or vector of Markdown files
 
 OPTS:
   :out String           specify output file
@@ -209,8 +209,12 @@ OPTS:
   :title String         specify document title
   :header String        specify document header
   :titlehead String     like :title String :header String"
-  ([^String str] (markdown str))
-  ([^PersistentArrayMap args & {:as opts}]
+  ([args]
+   (cond
+     (string? args) (markdown args)
+     (vector? args) (convert args :out *out*)
+     :else nil))
+  ([^PersistentVector args & {:as opts}]
    (let [options (u/out opts)]
      (stage options args
             #(write-html options args)
