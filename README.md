@@ -10,66 +10,99 @@ _emem_ is a Markdown to HTML converter.
 
 ### Leiningen
 
-    [emem "0.2.0-SNAPSHOT"]
+```clojure
+[emem "0.2.0-SNAPSHOT"]
+```
 
 ### Maven
 
-    <dependency>
-      <groupId>emem</groupId>
-      <artifactId>emem</artifactId>
-      <version>0.2.0-SNAPSHOT</version>
-    </dependency>
+```xml
+<dependency>
+  <groupId>emem</groupId>
+  <artifactId>emem</artifactId>
+  <version>0.2.0-SNAPSHOT</version>
+</dependency>
+```
 
-### CLI
+### Binaries
 
-Fetch the sources, build the JAR, store it somewhere, then create a
-command:
+#### Uberjar
 
-    git clone git@github.com:ebzzry/emem.git
-    cd emem
-    lein uberjar
-    mkdir ~/jars
-    cp target/uberjar+uberjar/emem-0.2.0-SNAPSHOT.jar ~/jars/emem.jar
-    cat >> ~/.bashrc << END
-    emem () { java -jar ~/jars/emem.jar $@; }
-    END
-    . ~/.bashrc
+> [emem.jar](https://github.com/ebzzry/emem/releases/download/v0.2-beta/emem.jar)
+>
+> tthsum: E6MTI73KBZPFJKE3N44JQPTSVXYN57VL5N3AITY
+
+For purposes of demonstration, let's save this file to `~/jar`,
+creating that directory as necessary. Next create a shell script to
+reduce typing. This presumes that you have `~/bin/` in your `PATH`:
+
+```console
+cat > ~/bin/emem << END
+#!/bin/sh
+java -jar ~/jars/emem.jar $@
+END
+chmod +x ~/bin/emem
+```
+
+#### Windows 32-bit
+
+> [emem.exe](https://github.com/ebzzry/emem/releases/download/v0.2-beta/emem.exe)
+>
+> tthsum: Z4GYUFOEOZPYL3RQEOVBBPVBW6NRBDIBPYLGUEI
+
+Save this file somewhere in your `PATH`. Run `sysdm.cpl` to
+view/modify your settings. This binary was created using
+[Launch4j](https://fbergmann.github.io/launch4j/).
 
 
 ## Usage
 
-### Source
+### API
 
 Add the following expression to `(ns ...)`:
 
-    (:require [emem.core :as emem])
+```clojure
+(:require [emem.core :as emem])
+```
 
 Convert `README.md` to `README.html`:
 
-    (emem/convert ["README.md"] :out "README.html")
+```clojure
+(emem/convert ["README.md"] :out "README.html")
+```
 
 Convert multiple sources to `reminders.html`, using a custom title:
 
-    (emem/convert ["buy.md" "projects.md" "fitness.md"] :out "reminders.html" :title "AAAAH!!!")
+```clojure
+(emem/convert ["buy.md" "projects.md" "fitness.md"] :out "reminders.html" :title "AAAAH!!!")
+```
 
 Convert a Markdown string to HTML:
 
-    (emem/convert "# Blah")
+```clojure
+(emem/convert "# Blah")
+```
 
 By default, `convert` prints to `*out*`:
 
-    (emem/convert ["notes.md"])
+```clojure
+(emem/convert ["notes.md"])
+```
 
 Output to `../todo.html`, by binding `*out*`:
 
-    (let [file "../todo.html"]
-      (binding [*out* (io/writer file)]
-        (emem/convert ["notes.md"])
-        (emem/re-install file)))
+```clojure
+(let [file "../todo.html"]
+  (binding [*out* (io/writer file)]
+    (emem/convert ["notes.md"])
+    (emem/re-install file)))
+```
 
 To learn more about the available options:
 
-    (doc emem/convert)
+```clojure
+(doc emem/convert)
+```
 
 
 ### CLI
