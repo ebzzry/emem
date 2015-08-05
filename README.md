@@ -26,15 +26,16 @@ _emem_ is a Markdown to HTML converter.
 
 ### Binaries
 
-#### Uberjar
+#### Standalone JAR
 
 > [emem.jar](https://github.com/ebzzry/emem/releases/download/v0.2-beta/emem.jar)
 >
 > tthsum: E6MTI73KBZPFJKE3N44JQPTSVXYN57VL5N3AITY
 
-For purposes of demonstration, let's save this file to `~/jar`,
-creating that directory as necessary. Next create a shell script to
-reduce typing. This presumes that you have `~/bin/` in your `PATH`:
+This JAR file contains emem itself, plus all the dependencies. Save
+this file to `~/jar`, creating that directory as necessary. Next
+create a shell script to reduce typing. This presumes that you have
+`~/bin/` in your `PATH`:
 
 ```console
 cat > ~/bin/emem << END
@@ -44,14 +45,15 @@ END
 chmod +x ~/bin/emem
 ```
 
-#### Windows 32-bit
+#### Windows 32-bit PE
 
-> [emem.exe](https://github.com/ebzzry/emem/releases/download/v0.2-beta/emem.exe)
+> [emem.zip](https://github.com/ebzzry/emem/releases/download/v0.2-beta/emem.zip)
 >
-> tthsum: Z4GYUFOEOZPYL3RQEOVBBPVBW6NRBDIBPYLGUEI
+> tthsum: S5B7HG7A5QUCCR27TQOFBQEIQWPO3NIY6KQZR2A
 
-Save this file somewhere in your `PATH`. Run `sysdm.cpl` to
-view/modify your settings. This binary was created using
+This archive contains the executable. Extract this file and save it
+somewhere in your `PATH`. Run `sysdm.cpl` to view/modify your
+settings. This binary was created using
 [Launch4j](https://fbergmann.github.io/launch4j/).
 
 
