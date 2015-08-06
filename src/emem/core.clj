@@ -5,11 +5,8 @@
             [markdown.core :as md]
             [hiccup.core :as hi]
             [emem.util :as u])
-  (:import [java.io File BufferedReader]
-           [java.util Date]
-           [clojure.lang
-            PersistentArrayMap
-            PersistentVector])
+  (:import [java.io File BufferedReader ByteArrayOutputStream]
+           [clojure.lang PersistentArrayMap PersistentVector])
   (:gen-class))
 
 (def ^:private cli-opts

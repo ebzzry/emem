@@ -3,12 +3,12 @@
             [clojure.string :as s]
             [clojure.data.codec.base64 :as b64]
             [cpath-clj.core :as cp])
-  (:import [java.util.zip GZIPInputStream]
-           [java.io ByteArrayInputStream File]))
+  (:import [java.util.zip GZIPInputStream GZIPOutputStream]
+           [java.io File ByteArrayInputStream ByteArrayOutputStream]))
 
 (defn quo
   "Returns the empty string if TEST evaluates to false; otherwise
-returns THEN."
+  returns THEN."
   [test then]
   (if test then ""))
 
@@ -81,12 +81,12 @@ to 0 and 1, respectively."
         name))))
 
 (defn abspath
-  "Returns absolute path"
+  "Returns absolute path of PATH."
   [path]
   (meth getAbsolutePath (file path)))
 
 (defn parent
-  "Returns parent path"
+  "Returns parent path of PATH."
   [path]
   (meth getParent (file path)))
 
@@ -100,18 +100,13 @@ to 0 and 1, respectively."
   []
   (File/createTempFile "tmp" ""))
 
-(defn- temp
-  "Creates a temp file, then returns its absolute path."
-  []
-  (abspath (mktemp)))
-
 (defn tempv
   "Creates a temp file and returns a vector with its
 absolute path, if ARGS is empty; otherwise, returns ARGS"
   ([]
-   [(temp)])
+   [(abspath (mktemp))])
   ([args]
-   (if (empty? args) [(temp)] args)))
+   (if (empty? args) [(abspath (mktemp))] args)))
 
 (defn string-input-stream
   "Returns a ByteArrayInputStream for the given String."
@@ -120,8 +115,13 @@ absolute path, if ARGS is empty; otherwise, returns ARGS"
   ([^String s encoding]
      (ByteArrayInputStream. (.getBytes s encoding))))
 
+(defn string-output-stream
+  "Returns a ByteArrayOutputStream for the given String."
+  []
+  (ByteArrayOutputStream.))
+
 (defn string->temp
-  "Returns path to temp file that contains STR."
+  "Returns path to temp file to contain STR."
   [str]
   (let [temp (abspath (mktemp))
         input (string-input-stream str)]
@@ -154,8 +154,7 @@ absolute path, if ARGS is empty; otherwise, returns ARGS"
   [input output]
   (with-open [in (-> input io/input-stream GZIPInputStream.)
               out (io/output-stream output)]
-    (spit output (slurp in))
-    (io/delete-file input)))
+    (spit output (slurp in))))
 
 (defn gunzip-b64
   "Consumes a base64 string INPUT, decompresses using GZIP,

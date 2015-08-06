@@ -3,21 +3,30 @@
             [emem.util :as u]
             [emem.core :refer :all]))
 
-(def md-text-1
+(def text-input-1
   "# foo **bar** baz")
 
-(def md-text-2
+(def text-input-2
   "Some Title\n==========\n\n## Section 1\n\nLorem ipsum dolor sit *amet*, consectetuer adipiscing elit. Donec\nodio. Quisque volutpat mattis eros. **Nullam** malesuada erat ut\nturpis. _Suspendisse_ urna nibh, viverra non, semper suscipit, posuere\na, pede.\n\n    $ foo bar baz\n    # qux quux\n\n## Section 2\n\n> Donec nec justo eget felis facilisis fermentum. Aliquam porttitor\n> mauris sit amet orci. Aenean dignissim pellentesque felis.\n\n```\nblah blah blah\n```\n\n")
 
+(def text-expect-1
+  "<h1>foo <strong>bar</strong> baz</h1>")
+
+(def text-expect-2
+  "<h1>Some Title</h1><h2>Section 1</h2><p>Lorem ipsum dolor sit <em>amet</em>, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. <strong>Nullam</strong> malesuada erat ut turpis. <i>Suspendisse</i> urna nibh, viverra non, semper suscipit, posuere a, pede.</p><pre><code>$ foo bar baz\n# qux quux\n</code></pre><h2>Section 2</h2><blockquote><p> Donec nec justo eget felis facilisis fermentum. Aliquam porttitor  mauris sit amet orci. Aenean dignissim pellentesque felis. </p></blockquote><pre><code>blah blah blah\n</code></pre>")
+
+(def text-expect-3
+  "<html><head><title># foo **bar** baz</title><meta content=\"text/html;charset=utf-8\" http-equiv=\"Content-Type\" /></head><body><h1>foo <strong>bar</strong> baz</h1></body></html>")
+
+(def text-expect-4
+  "<html><head><title>Some Title</title><meta content=\"text/html;charset=utf-8\" http-equiv=\"Content-Type\" /></head><body><h1>Some Title</h1><h2>Section 1</h2><p>Lorem ipsum dolor sit <em>amet</em>, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. <strong>Nullam</strong> malesuada erat ut turpis. <i>Suspendisse</i> urna nibh, viverra non, semper suscipit, posuere a, pede.</p><pre><code>$ foo bar baz\n# qux quux\n</code></pre><h2>Section 2</h2><blockquote><p> Donec nec justo eget felis facilisis fermentum. Aliquam porttitor  mauris sit amet orci. Aenean dignissim pellentesque felis. </p></blockquote><pre><code>blah blah blah\n</code></pre></body></html>")
+
 (deftest string-test-1
-  (is (= (convert md-text-1)
-         "<h1>foo <strong>bar</strong> baz</h1>")))
+  (is (= (convert text-input-1) text-expect-1)))
 
 (deftest string-test-2
-  (is (= (convert md-text-2)
-         "<h1>Some Title</h1><h2>Section 1</h2><p>Lorem ipsum dolor sit <em>amet</em>, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. <strong>Nullam</strong> malesuada erat ut turpis. <i>Suspendisse</i> urna nibh, viverra non, semper suscipit, posuere a, pede.</p><pre><code>$ foo bar baz\n# qux quux\n</code></pre><h2>Section 2</h2><blockquote><p> Donec nec justo eget felis facilisis fermentum. Aliquam porttitor  mauris sit amet orci. Aenean dignissim pellentesque felis. </p></blockquote><pre><code>blah blah blah\n</code></pre>")))
+  (is (= (convert text-input-2) text-expect-2)))
 
-;; TODO: use exceptions
 (defn ftest
   [in out]
   (let [temp1 (u/string->temp in)
@@ -29,12 +38,12 @@
       (is (= output out)))))
 
 (deftest file-test-1
-  (ftest md-text-1
-         "<html><head><title># foo **bar** baz</title><meta content=\"text/html;charset=utf-8\" http-equiv=\"Content-Type\" /></head><body><h1>foo <strong>bar</strong> baz</h1></body></html>"))
+  (ftest text-input-1
+         text-expect-3))
 
 (deftest file-test-2
-  (ftest md-text-2
-         "<html><head><title>Some Title</title><meta content=\"text/html;charset=utf-8\" http-equiv=\"Content-Type\" /></head><body><h1>Some Title</h1><h2>Section 1</h2><p>Lorem ipsum dolor sit <em>amet</em>, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. <strong>Nullam</strong> malesuada erat ut turpis. <i>Suspendisse</i> urna nibh, viverra non, semper suscipit, posuere a, pede.</p><pre><code>$ foo bar baz\n# qux quux\n</code></pre><h2>Section 2</h2><blockquote><p> Donec nec justo eget felis facilisis fermentum. Aliquam porttitor  mauris sit amet orci. Aenean dignissim pellentesque felis. </p></blockquote><pre><code>blah blah blah\n</code></pre></body></html>"))
+  (ftest text-input-2
+         text-expect-4))
 
 (deftest strings-test
   (testing "Strings"
