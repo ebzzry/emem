@@ -93,7 +93,7 @@ to 0 and 1, respectively."
 (defn files-exist?
   "Returns true if all FILES exist."
   [files]
-  (every? #(exists? %) files))
+  (every? exists? files))
 
 (defn mktemp
   "Returns path to a new temp file."

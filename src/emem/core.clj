@@ -48,12 +48,12 @@
 (defn- usage
   "Displays program usage."
   [text]
-  (-> (->> ["Usage: emem [OPTION]... [MARKDOWN_FILE]..."
+  (println
+   (s/join \newline
+           ["Usage: emem [OPTION]... [MARKDOWN_FILE]..."
             ""
             "Options:"
-            text]
-           (s/join \newline))
-      println))
+            text])))
 
 (defn- error-msg
   "Displays the errors encountered during command parsing."
@@ -156,8 +156,7 @@
 (defn- html
   "Converts Markdown inputs to HTML strings."
   [opts args]
-  (let [text (apply str (map #(markdown (slurp %))
-                             args))]
+  (let [text (s/join (map #(markdown (slurp %)) args))]
     (if (:raw opts)
       text
       (html-page opts args text))))
