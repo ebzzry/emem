@@ -11,7 +11,7 @@ _emem_ is a Markdown to HTML converter.
 ### Leiningen
 
 ```clojure
-[emem "0.2.0-SNAPSHOT"]
+[emem "0.2.1-SNAPSHOT"]
 ```
 
 ### Maven
@@ -20,7 +20,7 @@ _emem_ is a Markdown to HTML converter.
 <dependency>
   <groupId>emem</groupId>
   <artifactId>emem</artifactId>
-  <version>0.2.0-SNAPSHOT</version>
+  <version>0.2.1-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -35,7 +35,7 @@ To build the JAR, run the following inside the checkout directory:
 ```
 
 The JAR of interest here is the standalone one, located at
-`./target/uberjar/emem-0.2.0-SNAPSHOT-standalone.jar`. This JAR
+`./target/uberjar/emem-0.2.1-SNAPSHOT-standalone.jar`. This JAR
 contains _emem_ itself, plus all the dependencies. Copy this file to
 `~/jar`, creating that directory as necessary. Next create a shell
 script to reduce typing. This presumes that you have `~/bin/` in your
