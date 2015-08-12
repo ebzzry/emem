@@ -11,23 +11,23 @@
 
 (def ^:private cli-opts
   "Specification for the command-line options."
-  [["-o" "--output HTML"  "specify output file" :id :out]
-
-   ["-w" "--raw"          "emit raw HTML; 1:1 Markdown-HTML equivalent"]
+  [
+   ["-o" "--output HTML"  "output file" :id :out]
+   ["-w" "--raw"          "emit raw 1:1 Markdown-HTML equivalence"]
    ["-p" "--plain"        "build plain HTML; don't use CSS and JS"]
-   ["-n" "--nores"        "build full HTML; don't install the resources"]
-   ["-R" "--resonly"      "install the resource files only"]
+   ["-r" "--resonly"      "install the resource files only"]
+   ["-R" "--nores"        "build full HTML; don't install the resources"]
+
+   ["-t" "--title TEXT"      "document title"]
+   ["-d" "--header TEXT"     "document header"]
+   ["-T" "--titlehead TEXT"  "like --title TEXT --header TEXT"]
 
    ["-c" "--continuous"            "run in continuous build mode"]
-   ["-r" "--refresh MILLISECONDS"  "specify time between rebuilds"]
+   ["-f" "--refresh MILLISECONDS"  "time between rebuilds"]
 
-   ["-M" "--css-main CSS"    "specify CSS resource for body"]
-   ["-C" "--css-code NAME"   "specify CSS for the syntax highlighter"]
-   ["-L" "--styles"          "list available styles for the syntax highlighter"]
-
-   ["-t" "--title TEXT"      "specify document title"]
-   ["-d" "--header TEXT"     "specify document header"]
-   ["-T" "--titlehead TEXT"  "like --title TEXT --header TEXT"]
+   ["-m" "--css-main CSS"    "CSS resource for body"]
+   ["-s" "--css-code NAME"   "CSS for the syntax highlighter"]
+   ["-l" "--styles"          "list available styles for the syntax highlighter"]
 
    ["-v" nil             "increase verbosity"
     :id :verbosity
