@@ -60,7 +60,7 @@ use it to create the executable. The bare-minimum fields are:
 * Header > Header type
 * JRE > Min JRE version
 
-The fields are self-explanatory. Select _Console_ for the header type,
+The fields are self-explanatory. Select `Console` for the _Header type_,
 while a value of `1.1.0` should be OK for the _Min JRE version_.
 
 ## Usage
