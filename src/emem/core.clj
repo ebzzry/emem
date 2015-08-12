@@ -25,8 +25,8 @@
    ["-C" "--css-code NAME"     "specify CSS for the syntax highlighter"]
    ["-L" "--styles"            "list available styles for the syntax highlighter"]
 
-   [nil "--title TEXT"         "specify document title"]
-   [nil "--header TEXT"        "specify document header"]
+   ["-t" "--title TEXT"         "specify document title"]
+   ["-d" "--header TEXT"        "specify document header"]
    ["-T" "--titlehead TEXT"    "like --title TEXT --header TEXT"]
 
    ["-v" nil             "increase verbosity"
@@ -45,7 +45,7 @@
   [opts]
   (or (:verbosity opts) 0))
 
-(defn- usage
+(defn- display-usage
   "Displays program usage."
   [text]
   (println
@@ -55,11 +55,12 @@
             "Options:"
             text])))
 
-(defn- error-msg
+(defn- display-errors
   "Displays the errors encountered during command parsing."
   [errors]
-  (str "The following errors occurred:"
-       (s/join \newline errors)))
+  (println
+   (str "The following errors occurred:\n\n"
+        (s/join \newline errors))))
 
 (defn version
   "Displays program version."
@@ -121,6 +122,7 @@
   [opts args text]
   (let [title (or (:title opts)
                   (:titlehead opts)
+                  (when (some #{*in*} args) "")
                   (when-let [line (u/first-line (first args))]
                     line))
         header (or (:header opts) (:titlehead opts))
@@ -175,7 +177,7 @@
         (f out)))))
 
 (defn- stage
-  "Sets up the environment for F and BAIL."
+  "Sets up the environment for F and EXIT."
   [opts args f exit]
   (u/msg "[*] Setting up stage ..." 1 (verb opts))
   (if (:resonly opts)
@@ -184,6 +186,7 @@
       (do (or (or (:raw opts)
                   (:plain opts)
                   (:nores opts)
+                  (some #{*in*} args)
                   (= (:out opts) *out*))
               (copy-resources opts))
           (f))
@@ -238,7 +241,7 @@ OPTS:
         f (fn [inputs]
             (stage options inputs
                    #(write-html options inputs)
-                   #(u/exit (usage text))))]
+                   #(u/exit (display-usage text))))]
     (if (empty? args)
       (f [*in*])
       (do (f args)
@@ -250,9 +253,9 @@ OPTS:
   (let [{:keys [options arguments errors summary]}
         (parse-opts args cli-opts)]
     (cond
-      (:help options) (u/exit #(usage summary))
+      (:help options)    (u/exit #(display-usage summary))
       (:version options) (u/exit version)
-      (:styles options) (u/exit list-styles)
-      (:resonly options) (u/exit #(copy-resources options))
-      errors (u/bye (error-msg errors) 1))
+      (:styles options)  (u/exit list-styles)
+      (:resonly options) (u/exit #(re-install "."))
+      errors             (u/exit #(display-errors errors) 1))
     (launch options arguments summary)))
