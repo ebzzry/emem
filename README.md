@@ -28,34 +28,38 @@ _emem_ is a Markdown to HTML converter.
 
 #### Standalone JAR
 
->[emem.jar](https://github.com/ebzzry/emem/releases/download/v0.2-beta/emem.jar)
->
->size: 4.3M; tthsum: E6MTI73KBZPFJKE3N44JQPTSVXYN57VL5N3AITY
-
-This JAR file contains emem itself, plus all the dependencies. Save
-this file to `~/jar`, creating that directory as necessary. Next
-create a shell script to reduce typing. This presumes that you have
-`~/bin/` in your `PATH`:
+To build the JAR, run the following inside the checkout directory:
 
 ```console
-cat > ~/bin/emem << END
+% lein uberjar
+```
+
+The JAR of interest here is the standalone one, located at
+`./target/uberjar/emem-0.2.0-SNAPSHOT-standalone.jar`. This JAR
+contains _emem_ itself, plus all the dependencies. Copy this file to
+`~/jar`, creating that directory as necessary. Next create a shell
+script to reduce typing. This presumes that you have `~/bin/` in your
+`PATH`:
+
+```console
+% cat > ~/bin/emem << END
 #!/bin/sh
 java -jar ~/jar/emem.jar $@
 END
-chmod +x ~/bin/emem
+% chmod +x ~/bin/emem
 ```
 
 #### Windows 32-bit PE
 
->[emem.zip](https://github.com/ebzzry/emem/releases/download/v0.2-beta/emem.zip)
->
->size: 3.9M; tthsum: S5B7HG7A5QUCCR27TQOFBQEIQWPO3NIY6KQZR2A
+Once you have the standalone JAR, creating a Windows exe is relatively
+easy. Download [Launch4j](https://fbergmann.github.io/launch4j/) and
+use it to create the executable. The bare-minimum fields are:
 
-This archive contains the executable. Extract this file and save it
-somewhere in your `PATH`. Run `sysdm.cpl` to view/modify your
-settings. This binary was created using
-[Launch4j](https://fbergmann.github.io/launch4j/).
+* Basic > Output file
+* Basic > Jar
+* JRE > Min JRE version
 
+The fields are self-explanatory. A value of `1.1.0` should be OK for the _Min JRE version_.
 
 ## Usage
 
@@ -111,27 +115,27 @@ To learn more about the available options:
 
 Convert `README.md` to `README.html`:
 
-    emem -o README.html README.md
+    % emem -o README.html README.md
 
 Get file contents from stdin, then output to stdout without CSS and JS:
 
-    cat README.md | emem -p
+    % cat README.md | emem -p
 
 Get Markdown input from stdin, then output to stdout the 1:1 equivalent
 of the input:
 
-    echo "# Blah" | emem -w
+    % echo "# Blah" | emem -w
 
 Create an HTML listing of the current directory:
 
-    ls -R | sed -e '1i```bash' -e '$a```' \
+    % ls -R | sed -e '1i```bash' -e '$a```' \
     | emem -T `basename $PWD` -o ls.html
 
 If no inputs are provided, it will accept inputs from stdin. After
 <kbd>Ctrl-D</kbd> is pressed, the converted text will be display to
 the screen:
 
-    emem -w
+    % emem -w
     # foo
     **bar**
 
@@ -139,7 +143,7 @@ Run in continuous build mode -- build the HTML file, and if any of the
 input files are updated, rebuild the HTML file automatically. It will
 remain to monitor for changes, until <kbd>Ctrl-C</kbd> is pressed:
 
-    emem -co TODO.html TODO.md
+    % emem -co TODO.html TODO.md
 
 The continuous mode works great when used with browser enhancements
 that reload a page when the HTML file becomes modified/updated. The
@@ -150,19 +154,19 @@ most popular ones are:
 
 List the available style sheets that can be used with [highlight.js](https://github.com/isagalaev/highlight.js):
 
-    emem -L
+    % emem -L
 
 To use a style sheet:
 
-    emem -C zenburn -o reminders.html shop.md repairs.md
+    % emem -C zenburn -o reminders.html shop.md repairs.md
 
 Change the main style sheet for the page; the path specified will be relative to the HTML file:
 
-    emem -M css/custom.css -o list.html list.md
+    % emem -M css/custom.css -o list.html list.md
 
 To learn more about the available options:
 
-    emem -h
+    % emem -h
 
 ## Dependencies
 
