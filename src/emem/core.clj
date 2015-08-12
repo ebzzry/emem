@@ -20,7 +20,7 @@
 
    ["-t" "--title TEXT"      "document title"]
    ["-d" "--header TEXT"     "document header"]
-   ["-T" "--titlehead TEXT"  "like --title TEXT --header TEXT"]
+   ["-T" "--titlehead TEXT"  "the same as --title TEXT --header TEXT"]
 
    ["-c" "--continuous"            "run in continuous build mode"]
    ["-f" "--refresh MILLISECONDS"  "time between rebuilds"]
