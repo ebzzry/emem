@@ -21,13 +21,13 @@
    ["-c" "--continuous"            "run in continuous build mode"]
    ["-r" "--refresh MILLISECONDS"  "specify time between rebuilds"]
 
-   ["-M" "--css-main CSS"      "specify CSS resource for body"]
-   ["-C" "--css-code NAME"     "specify CSS for the syntax highlighter"]
-   ["-L" "--styles"            "list available styles for the syntax highlighter"]
+   ["-M" "--css-main CSS"    "specify CSS resource for body"]
+   ["-C" "--css-code NAME"   "specify CSS for the syntax highlighter"]
+   ["-L" "--styles"          "list available styles for the syntax highlighter"]
 
-   ["-t" "--title TEXT"         "specify document title"]
-   ["-d" "--header TEXT"        "specify document header"]
-   ["-T" "--titlehead TEXT"    "like --title TEXT --header TEXT"]
+   ["-t" "--title TEXT"      "specify document title"]
+   ["-d" "--header TEXT"     "specify document header"]
+   ["-T" "--titlehead TEXT"  "like --title TEXT --header TEXT"]
 
    ["-v" nil             "increase verbosity"
     :id :verbosity
