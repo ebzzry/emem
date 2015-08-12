@@ -57,9 +57,11 @@ use it to create the executable. The bare-minimum fields are:
 
 * Basic > Output file
 * Basic > Jar
+* Header > Header type
 * JRE > Min JRE version
 
-The fields are self-explanatory. A value of `1.1.0` should be OK for the _Min JRE version_.
+The fields are self-explanatory. Select _Console_ for the header type,
+while a value of `1.1.0` should be OK for the _Min JRE version_.
 
 ## Usage
 
