@@ -13,7 +13,7 @@
   "Specification for the command-line options."
   [
    ["-o" "--output HTML"  "output file" :id :out]
-   ["-w" "--raw"          "emit raw 1:1 Markdown-HTML equivalence"]
+   ["-w" "--raw"          "emit 1:1 Markdown-HTML equivalence"]
    ["-p" "--plain"        "build plain HTML; don't use CSS and JS"]
    ["-r" "--resonly"      "install the resource files only"]
    ["-R" "--nores"        "build full HTML; don't install the resources"]
@@ -198,16 +198,17 @@
 ARGS: Markdown string, or vector of Markdown files
 
 OPTS:
-  :out String           specify output file
-  :raw Boolean          emit raw HTML; 1:1 Markdown-HTML equivalent
+  :out String           output file
+  :raw Boolean          emit 1:1 Markdown-HTML equivalence
   :plain Boolean        build plain HTML; don't use CSS and JS
-  :nores Boolean        build full HTML; don't install the resources
   :resonly Boolean      install the resource files only
-  :css-main String      specify CSS resource for body
-  :css-code String      specify CSS for the syntax highlighter
-  :title String         specify document title
-  :header String        specify document header
-  :titlehead String     like :title String :header String"
+  :nores Boolean        build full HTML; don't install the resources
+  :title String         document title
+  :header String        document header
+  :titlehead String     the same as :title String :header String
+  :css-main String      CSS resource for body
+  :css-code String      CSS for the syntax highlighter
+"
   ([args]
    (cond
      (string? args) (markdown args)
