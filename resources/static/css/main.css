@@ -17,22 +17,26 @@ body {
     margin: 0;
 }
 
+code {
+    font-size: 1.1em;
+    font-family: monospace;
+    background: #ffe6ea;
+    padding: 0.15em;
+    border: 1px solid grey;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+}
+
 pre code {
-    font-size: 0.8em;
-    line-height: 1.2em;
-}
-
-pre, code, kbd {
-    font-size: 1.2em;
-}
-
-pre {
-    border-left: 5px solid lightgray;
+    font-size: 1em;
+    line-height: 1.3em;
     overflow: auto;
-    width: 93%;
-    font-size: 1.25em;
-    background: black;
-    color: lightgrey;
+    border-left: 8px solid gray;
+    border-right: 8px solid gray;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
 }
 
 kbd {
