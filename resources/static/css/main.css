@@ -97,9 +97,8 @@ p, para, i, b, emph {
     font-size: 1em;
 }
 
-*:first-child+html pre {
-    padding-bottom: 2em;
-    overflow-y: hidden;
-    overflow: visible;
-    overflow-x: auto;
+blockquote {
+    font-size: 1.2em;
+    font-style: italic;
+    margin-left: 0;
 }
