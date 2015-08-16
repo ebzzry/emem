@@ -30,22 +30,28 @@ _emem_ is a trivial Markdown to HTML converter.
 
 To build the JAR, run the following inside the checkout directory:
 
-```console
-% lein uberjar
+```bash
+$ lein uberjar
 ```
 
 The JAR of interest here is the standalone one, located at
 `./target/uberjar/emem-0.2.1-SNAPSHOT-standalone.jar`. This JAR
 contains _emem_ itself, plus all the dependencies. Copy this file to
-`~/bin`, as `emem.jar`. Next create a shell script to reduce
-typing. This presumes that you have `~/bin/` in your `PATH`:
+`~/bin`, as `emem.jar`.
 
-```console
-% cat > ~/bin/emem << END
+```bash
+$ cp target/uberjar/emem-0.2.1-*-standalone.jar  ~/bin/emem.jar
+```
+
+Next, create a shell script to reduce typing. This presumes that you
+have `~/bin/` in `$PATH`:
+
+```bash
+$ cat > ~/bin/emem << END
 #!/bin/sh
 java -jar $HOME/bin/emem.jar $@
 END
-% chmod +x ~/bin/emem
+$ chmod +x ~/bin/emem
 ```
 
 #### Windows 32-bit PE
@@ -59,8 +65,9 @@ use it to create the executable. The bare-minimum fields are:
 * Header > Header type
 * JRE > Min JRE version
 
-The fields are self-explanatory. Select `Console` for the _Header type_,
-while a value of `1.1.0` should be OK for the _Min JRE version_.
+The _Output file_ and _Jar_ fields are self-explanatory. For
+_Header type_, select `Console`, while for _Min JRE version_,
+specify `1.1.0`.
 
 ## Usage
 
