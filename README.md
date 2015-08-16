@@ -37,14 +37,13 @@ To build the JAR, run the following inside the checkout directory:
 The JAR of interest here is the standalone one, located at
 `./target/uberjar/emem-0.2.1-SNAPSHOT-standalone.jar`. This JAR
 contains _emem_ itself, plus all the dependencies. Copy this file to
-`~/jar`, creating that directory as necessary. Next create a shell
-script to reduce typing. This presumes that you have `~/bin/` in your
-`PATH`:
+`~/bin`, as `emem.jar`. Next create a shell script to reduce
+typing. This presumes that you have `~/bin/` in your `PATH`:
 
 ```console
 % cat > ~/bin/emem << END
 #!/bin/sh
-java -jar ~/jar/emem.jar $@
+java -jar $HOME/bin/emem.jar $@
 END
 % chmod +x ~/bin/emem
 ```
