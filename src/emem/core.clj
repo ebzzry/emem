@@ -75,7 +75,7 @@
 (defn get-styles
   "Returns the available styles for the syntax highlighter."
   []
-  (sort compare (remove #{"main"}
+  (sort compare (remove #{"main" "ewan"}
                  (map u/root (u/get-resources "static/css")))))
 
 (defn list-styles
