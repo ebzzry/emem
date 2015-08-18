@@ -11,7 +11,7 @@ _emem_ is a trivial Markdown to HTML converter.
 ### Leiningen
 
 ```clojure
-[emem "0.2.1-SNAPSHOT"]
+[emem "0.2.2-SNAPSHOT"]
 ```
 
 ### Maven
@@ -20,7 +20,7 @@ _emem_ is a trivial Markdown to HTML converter.
 <dependency>
   <groupId>emem</groupId>
   <artifactId>emem</artifactId>
-  <version>0.2.1-SNAPSHOT</version>
+  <version>0.2.2-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -35,24 +35,33 @@ $ lein uberjar
 ```
 
 The JAR of interest here is the standalone one, located at
-`./target/uberjar/emem-0.2.1-SNAPSHOT-standalone.jar`. This JAR
+`./target/uberjar/emem-0.2.2-SNAPSHOT-standalone.jar`. This JAR
 contains _emem_ itself, plus all the dependencies. Copy this file to
 `~/bin`, as `emem.jar`.
 
 ```bash
-$ cp target/uberjar/emem-0.2.1-*-standalone.jar  ~/bin/emem.jar
+$ cp target/uberjar/emem-0.2.2-*-standalone.jar  ~/bin/emem.jar
 ```
 
-Next, create a shell script to reduce typing. This presumes that you
-have `~/bin/` in `$PATH`:
+Next, create a shell script to reduce typing.
 
 ```bash
-$ cat > ~/bin/emem << END
+$ emacs ~/bin/emem
+```
+
+Put the following:
+
+```bash
 #!/bin/sh
 java -jar $HOME/bin/emem.jar $@
-END
+```
+
+Make it executable:
+
+```bash
 $ chmod +x ~/bin/emem
 ```
+
 
 #### Windows 32-bit PE
 
@@ -70,6 +79,57 @@ _Header type_, select `Console`, while for _Min JRE version_,
 specify `1.1.0`.
 
 ## Usage
+
+### CLI
+
+To convert `README.md` to `README.html`:
+
+    $ emem README.md
+
+To convert all `.md` files in the directory `~/Desktop/notes/`, to
+HTML:
+
+    $ emem -d ~/Desktop/notes
+
+In continuous mode, _emem_ will wait for changes to your files. When a
+change has been detected, it automatically rebuilds the HTML files. It
+will remain to monitor for changes, until <kbd>Ctrl-C</kbd> is
+pressed:
+
+    $ emem -cd ~/Desktop/notes
+
+The continuous mode works great when used with browser extensions that
+reload a page when a page gets updated. The ones I can suggest are:
+
+* [LivePage](https://chrome.google.com/webstore/detail/livepage/pilnojpmdoofaelbinaeodfpjheijkbh/related?hl=en) (Chrome)
+* [Auto Reload](https://addons.mozilla.org/en-US/firefox/addon/auto-reload/?src=api) (Firefox)
+
+_emem_ accepts input from stdin, too. The following command outputs a
+1:1 Markdown:HTML equivalence
+
+    $ echo "# Blah" | emem -w
+
+To create an HTML listing of the current directory:
+
+    $ ls -R | sed -e '1i```bash' -e '$a```' \
+    | emem -t `basename $PWD` -o ls.html
+
+To change the top-level CSS:
+
+    $ emem -C custom.css list.md
+
+To change the syntax highlighter CSS:
+
+    $ emem -S zenburn repairs.md
+
+To list the available syntax highlighter styles:
+
+    $ emem -L
+
+To learn more about the available options:
+
+    $ emem -h
+
 
 ### API
 
@@ -118,63 +178,6 @@ To learn more about the available options:
 (doc emem/convert)
 ```
 
-
-### CLI
-
-Convert `README.md` to `README.html`:
-
-    % emem -o README.html README.md
-
-Get file contents from stdin, then output to stdout without CSS and JS:
-
-    % cat README.md | emem -p
-
-Get Markdown input from stdin, then output to stdout the 1:1 equivalent
-of the input:
-
-    % echo "# Blah" | emem -w
-
-Create an HTML listing of the current directory:
-
-    % ls -R | sed -e '1i```bash' -e '$a```' \
-    | emem -T `basename $PWD` -o ls.html
-
-If no inputs are provided, it will accept inputs from stdin. After
-<kbd>Ctrl-D</kbd> is pressed, the converted text will be display to
-the screen:
-
-    % emem -w
-    # foo
-    **bar**
-
-Run in continuous build mode -- build the HTML file, and if any of the
-input files are updated, rebuild the HTML file automatically. It will
-remain to monitor for changes, until <kbd>Ctrl-C</kbd> is pressed:
-
-    % emem -co TODO.html TODO.md
-
-The continuous mode works great when used with browser enhancements
-that reload a page when the HTML file becomes modified/updated. The
-most popular ones are:
-
-* [Auto Reload](https://addons.mozilla.org/en-US/firefox/addon/auto-reload/?src=api) (Firefox)
-* [LivePage](https://chrome.google.com/webstore/detail/livepage/pilnojpmdoofaelbinaeodfpjheijkbh/related?hl=en) (Chrome)
-
-List the available style sheets that can be used with [highlight.js](https://github.com/isagalaev/highlight.js):
-
-    % emem -L
-
-To use a style sheet:
-
-    % emem -C zenburn -o reminders.html shop.md repairs.md
-
-Change the main style sheet for the page; the path specified will be relative to the HTML file:
-
-    % emem -M css/custom.css -o list.html list.md
-
-To learn more about the available options:
-
-    % emem -h
 
 ## Dependencies
 
