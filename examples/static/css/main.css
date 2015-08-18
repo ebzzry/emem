@@ -4,7 +4,7 @@ html {
     line-height: 1.5;
     text-align: left:
     width: 100%;
-    max-width: 45em;
+    max-width: 40em;
     margin: 0 auto 0 auto;
     padding: 0;
 }
@@ -17,23 +17,20 @@ body {
     margin: 0;
 }
 
-pre code {
-    line-height: 1.2em;
-    font-size: 0.9em;
-}
-
-pre, code, kbd {
+code {
     font-size: 1em;
+    font-family: "Courier New", Courier, monospace;
+    padding: 1px 0.15em 1px 0.15em;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
 }
 
-pre {
-    border-left: 5px solid lightgray;
-    margin-left: 1.5em;
+pre code {
+    font-size: 1em;
+    font-family: monospace;
+    line-height: 1.3em;
     overflow: auto;
-    width: 93%;
-    font-size: 1.25em;
-    background: black;
-    color: lightgrey;
 }
 
 kbd {
@@ -56,7 +53,7 @@ kbd {
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+    font-family: Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 h1 {
@@ -68,7 +65,6 @@ h1 {
 h2 {
     font-size: 2.0em;
     text-align: left;
-    text-transform: uppercase;
     border-bottom: 2px solid black;
 }
 
@@ -96,9 +92,8 @@ p, para, i, b, emph {
     font-size: 1em;
 }
 
-*:first-child+html pre {
-    padding-bottom: 2em;
-    overflow-y: hidden;
-    overflow: visible;
-    overflow-x: auto;
+blockquote {
+    font-size: 1.2em;
+    font-style: italic;
+    margin-left: 0;
 }

@@ -54,7 +54,7 @@ to 0 and 1, respectively."
 (defn pwd
   "Returns the current directory."
   []
-  (-> "." io/file .getCanonicalFile))
+  (-> "." file .getCanonicalFile))
 
 (defmacro ^:private meth
   "Returns Java METHOD on ARG if ARG is true, false otherwise."
@@ -74,7 +74,7 @@ to 0 and 1, respectively."
 (defn root
   "Returns root name of PATH."
   [path]
-  (let [name (.getName (io/file path))]
+  (let [name (.getName (file path))]
     (let [dot (.lastIndexOf name ".")]
       (if (pos? dot)
         (subs name 0 dot)
@@ -89,6 +89,24 @@ to 0 and 1, respectively."
   "Returns parent path of PATH."
   [path]
   (meth getParent (file path)))
+
+(defn dir?
+  "Returns true if PATH is a directory."
+  [path]
+  (meth isDirectory (file path)))
+
+(defn file?
+  "Returns true if PATH is a regular file."
+  [path]
+  (meth isFile (file path)))
+
+(defn parent*
+  "Returns parent path of PATH, if PATH is a regular file;
+otherwise, return self."
+  [path]
+  (if (dir? path)
+    path
+    (-> path file abspath file parent file)))
 
 (defn files-exist?
   "Returns true if all FILES exist."
@@ -125,7 +143,7 @@ absolute path, if ARGS is empty; otherwise, returns ARGS"
   [str]
   (let [temp (abspath (mktemp))
         input (string-input-stream str)]
-    (spit (io/file temp) (slurp input))
+    (spit (file temp) (slurp input))
     temp))
 
 (defn b64-encode
@@ -197,20 +215,101 @@ then writes to OUTPUT."
   (doseq [res (get-resources path)]
     (println res)))
 
-(defn out
-  "If the keyword :out is present in OPTS, return OPTS; otherwise,
-merge opts with an :out and *out* key value map."
-  [opts]
-  (if (:out opts)
-    opts
-    (merge opts {:out *out*})))
+(defn merge-out
+  [key map default]
+  (if (key map)
+    map
+    (merge map {key (or default *out*)})))
 
-(defn modtime
+(defn merge-options
+  ([opts]
+   (merge-options opts nil))
+  ([opts out]
+   (merge-out :out opts out)))
+
+(defn out
+  [opts]
+  (let [out (:out opts)]
+    (cond
+      (= out "-") *out*
+      :else out)))
+
+(defn mod-time
   "Returns the last modified time of PATH."
   [path]
-  (-> path io/file .lastModified))
+  (-> path file .lastModified))
 
-(defn modtimes
+(defn mod-times
   "Returns the last modified times of PATHS."
   [paths]
-  (map modtime paths))
+  (map mod-time paths))
+
+(defn base-name
+  "Returns name of PATH, sans directory."
+  [path]
+  (-> path file .getName))
+
+(defn split-name
+  "Returns [name extension] of PATH"
+  [path]
+  (let [name (base-name path)
+        index (.lastIndexOf name ".")]
+    (if (pos? index)
+      [(subs name 0 index) (subs name index)]
+      [name nil])))
+
+(defn file-name
+  "Returns name of PATH, sans extension."
+  [path]
+  (first (split-name path)))
+
+(defn file-extension
+  "Returns the extension name of PATH."
+  [path]
+  (last (split-name path)))
+
+(defn abs-base-name
+  "Returns absolute name of PATH, sans directory."
+  [path]
+  (-> path file .getAbsolutePath))
+
+(defn abs-split-name
+  "Returns abs [name path] of PATH"
+  [path]
+  (let [name (abs-base-name path)
+        index (.lastIndexOf name ".")]
+    (if (pos? index)
+      [(subs name 0 index) (subs name index)]
+      [name nil])))
+
+(defn abs-file-name
+  "Returns absolute name of PATH, sans extension."
+  [path]
+  (first (abs-split-name path)))
+
+(defn abs-file-extension
+  "Returns the extension name of PATH."
+  [path]
+  (last (abs-split-name path)))
+
+(defn list-objects
+  "List directory entries in PATH."
+  [path]
+  (seq (-> path file .listFiles)))
+
+(defn list-names
+  "List directory entries in PATH, in human form."
+  ([]
+   (list-names "."))
+  ([path]
+   (map abspath (list-objects path))))
+
+(defn list-names-ext
+  "Returns the names of files with file extension EXTENSION."
+  [path extension]
+  (filter #(= extension (file-extension %)) (list-names path)))
+
+(defn in?
+  "Returns true if *in* is present in ARGS."
+  [args]
+  (some #{*in*} args))
