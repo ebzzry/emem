@@ -136,46 +136,34 @@ To learn more about the available options:
 Add the following expression to `(ns ...)`:
 
 ```clojure
-(:require [emem.core :as emem])
+(:require [emem.core :as mm])
 ```
 
-Convert `README.md` to `README.html`:
+To convert the file `README.md` to `README.html`:
 
 ```clojure
-(emem/convert ["README.md"] :out "README.html")
+(mm/convert "README.md")
 ```
 
-Convert multiple sources to `reminders.html`, using a custom title:
+To convert multiple sources to `reminders.html`, using a custom title:
 
 ```clojure
-(emem/convert ["buy.md" "projects.md" "fitness.md"] :out "reminders.html" :title "AAAAH!!!")
+(mm/convert ["buy.md" "projects.md" "fitness.md"]
+            :merge true
+            :title "AAAAH!!!"
+            :out "reminders.html")
 ```
 
 Convert a Markdown string to HTML:
 
 ```clojure
-(emem/convert "# Blah")
-```
-
-By default, `convert` prints to `*out*`:
-
-```clojure
-(emem/convert ["notes.md"])
-```
-
-Output to `../todo.html`, by binding `*out*`:
-
-```clojure
-(let [file "../todo.html"]
-  (binding [*out* (io/writer file)]
-    (emem/convert ["notes.md"])
-    (emem/re-install file)))
+(mm/markdown "# Blah")
 ```
 
 To learn more about the available options:
 
 ```clojure
-(doc emem/convert)
+(doc mm/convert)
 ```
 
 

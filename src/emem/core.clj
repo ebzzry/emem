@@ -6,6 +6,7 @@
             [hiccup.core :as hi]
             [emem.util :as u])
   (:import [java.io File BufferedReader ByteArrayOutputStream]
+           [java.lang String]
            [clojure.lang PersistentArrayMap PersistentVector])
   (:gen-class))
 
@@ -16,7 +17,7 @@
    ["-n" "--no-resources" "build full HTML; don't install resources"]
 
    ["-m" "--multi"               "enable multiple input processing"]
-   ["-d" "--directory DIRECTORY" "process .md files in directory; implies -m" :id :dir]
+   ["-d" "--directory DIRECTORY" "process .md files in directory; implies -m"]
    ["-c" "--continuous"           "run in continuous build mode"]
    ["-f" "--refresh MILLISECONDS" "time between rebuilds (default: 200)"]
 
@@ -97,13 +98,11 @@
   [opts & [args]]
   (u/msg "[*] Installing resources..." 1 (verb opts))
   (let [dir (-> (:out opts) u/parent* io/file)
-        ;; dir (-> (:out opts) io/file u/abspath io/file u/parent io/file)
         f (fn [file dir]
             (with-open [in (u/re-stream file)]
               (let [path (io/file dir file)]
                 (io/make-parents (io/file dir file))
                 (io/copy in (io/file dir file)))))]
-    ;; (println "dir:" dir)
     (with-resources "static" f dir)))
 
 (defn install-resources
@@ -155,7 +154,7 @@
        (u/quo header [:h1 header])
        text]])))
 
-(defn- markdown
+(defn markdown
   "Returns a Markdown string converted to HTML."
   [str]
   (md/md-to-html-string str))
@@ -217,7 +216,7 @@ OPTS:
   :out String           output file
   :resources Boolean    install the resource files only
   :no-resources Boolean build full HTML; don't install resources
-  :dir String           process .md files in directory
+  :directory String     process .md files in directory
   :raw Boolean          emit 1:1 Markdown-HTML equivalence
   :plain Boolean        build plain HTML; don't use CSS and JS
   :merge Boolean        merge and process the files into one file
@@ -228,10 +227,10 @@ OPTS:
   :css String           CSS resource
   :style String         style id for the syntax highlighter
 "
-  ([args]
+  ([arg]
    (cond
-     (string? args) (markdown args)
-     (vector? args) (convert args :out *out*)
+     (string? arg) (convert [arg] :out (html-name arg))
+     (vector? arg) (convert arg :out *out*)
      :else nil))
   ([^PersistentVector args & {:as opts}]
    (let [options (u/merge-options opts)]
@@ -282,8 +281,10 @@ OPTS:
   "Invoke LAUNCH for all .md files in path."
   [opts args text]
   (let [options (merge opts {:multi true})
-        files (vec (u/list-names-ext (:dir opts) ".md"))]
-    (install-resources (:dir opts))
+        files (vec (u/list-names-ext (:directory opts) ".md"))]
+    (install-resources (:directory opts))
+
+    ;; merge files and args?
     (multi-launch options files text true)
     (and (not-empty args)
          (multi-launch options args text))))
@@ -296,15 +297,13 @@ OPTS:
         args? (> args-count 1)]
     (cond
       (or (:help options)
-          (and args?
-               (not (:merge options))
-               (not (:multi options))))
+          (and args? (not (:merge options)) (not (:multi options))))
       (u/exit #(display-usage summary))
       
       (:version options) (u/exit version)
       (:styles options) (u/exit list-styles)
 
-      (:dir options) (directory-launch options arguments summary)
+      (:directory options) (directory-launch options arguments summary)
       (:resources options) (u/exit install-resources (:dir options))
 
       (and args? (:multi options) (not (:merge options)))
