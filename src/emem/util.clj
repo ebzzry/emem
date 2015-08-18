@@ -96,7 +96,7 @@ to 0 and 1, respectively."
   (meth isDirectory (file path)))
 
 (defn file?
-  "Returns true if PATH is a regular file."
+  "Returns true if PATH is a File object."
   [path]
   (meth isFile (file path)))
 
