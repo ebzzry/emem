@@ -82,6 +82,13 @@ The _Output file_ and _Jar_ fields are self-explanatory. For
 _Header type_, select `Console`, while for _Min JRE version_,
 specify `1.1.0`.
 
+
+#### Builds
+
+If you are unable to build the JAR or EXE, you may be able to get the
+latest version from <https://goo.gl/oDqZAo>.
+
+
 ## Usage
 
 ### CLI
