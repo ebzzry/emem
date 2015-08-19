@@ -317,7 +317,7 @@
 
         ;; merge
         (and args? (:merge options))
-        (launch options (expand in))
+        (multi-launch options (expand in))
 
         ;; multi parallel
         (and args? (u/common-directory? in))
@@ -329,14 +329,15 @@
         args?
         (multi-launch options (expand in))
 
-        :else (launch options (expand in))))))
+        :else (multi-launch options (expand in))))))
 
 (defn -main
   [& args]
   (let [{:keys [options arguments errors summary]}
         (parse-opts args cli-opts)
         argsn (count arguments)
-        args? (> argsn 1)]
+        args? (> argsn 1)
+        xargs (expand arguments)]
     (cond
       (:help options) (u/exit #(display-usage summary))
       (:version options) (u/exit version)
@@ -348,18 +349,18 @@
 
       ;; merge
       (and args? (:merge options))
-      (launch options (expand arguments))
+      (multi-launch options xargs)
 
       ;; multi parallel
       (and args? (u/common-directory? arguments))
       (do  (install-resources (u/abs-parent (first arguments)))
            (multi-launch (u/merge-true options :no-resources)
-                         (expand arguments)))
+                         xargs))
 
       ;; multi serial
       args?
-      (multi-launch options (expand arguments))
+      (multi-launch options xargs)
 
       errors (u/exit #(display-errors errors) 1)
       
-      :else (launch options (expand arguments)))))
+      :else (multi-launch options xargs))))
