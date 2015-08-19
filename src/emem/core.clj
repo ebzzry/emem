@@ -16,14 +16,13 @@
    ["-r" "--resources"    "install the resource files only"]
    ["-n" "--no-resources" "build full HTML; don't install resources"]
 
-   ["-m" "--multi"               "enable multiple input processing"]
    ["-d" "--directory DIRECTORY" "process .md files in directory; implies -m"]
    ["-c" "--continuous"           "run in continuous build mode"]
    ["-f" "--refresh MILLISECONDS" "time between rebuilds (default: 200)"]
 
    ["-w" "--raw"   "emit 1:1 Markdown-HTML equivalence"]
    ["-p" "--plain" "build plain HTML; don't use CSS and JS"]
-   ["-M" "--merge" "merge and process the files into a single output"]
+   ["-m" "--merge" "merge and process the files into a single output"]
 
    [nil "--title TEXT"      "document title"]
    [nil "--header TEXT"     "document header"]
@@ -96,7 +95,7 @@
 (defn- copy-resources
   "Installs the files required by the HTML file."
   [opts & [args]]
-  (u/msg "[*] Installing resources..." 1 (verb opts))
+  (u/msg "[*] Copying resources..." 1 (verb opts))
   (let [dir (-> (:out opts) u/parent* io/file)
         f (fn [file dir]
             (with-open [in (u/re-stream file)]
@@ -105,7 +104,7 @@
                 (io/copy in (io/file dir file)))))]
     (with-resources "static" f dir)))
 
-(defn install-resources
+(defn- install-resources
   "Installs the HTML resources relative to PATH."
   ([]
    (install-resources (u/pwd)))
@@ -169,17 +168,18 @@
       text
       (html-page opts args text))))
 
-(defn html-name
+(defn- html-name
   "Returns the HTML name of PATH"
   [path]
-  (str (u/abs-file-name path) ".html"))
+  (if (empty? path)
+    nil
+    (str (u/abs-file-name path) ".html")))
 
 (defn write-html
   "Writes the HTML to file."
   [opts args]
   (u/msg "[*] Writing output..." 1 (verb opts))
   (let [output (u/out opts)
-        ;; output (:out opts)
         f (fn [out]
             (.write out (html opts args))
             (flush))]
@@ -207,16 +207,84 @@
     
     :else (exit)))
 
+(declare launch)
+
+(defn- rebuild
+  "Rebuilds the target if any of the input files are modified."
+  [opts args]
+  (u/msg "[*] Rebuilding..." 1 (verb opts))
+  (let [times (u/mod-times args)
+        refresh (if-let [t (:refresh opts)] (read-string t) 200)
+        options (u/merge-true opts :no-resources)]
+    (with-out-str (print times))
+    (Thread/sleep refresh)
+    (if (not= times (u/mod-times args))
+      (launch options args)
+      (recur opts args))))
+
+(defn- launch
+  "Converts a Markdown file to HTML."
+  [opts args]
+  (let [options (u/merge-options
+                 opts
+                 (or (html-name (first args))
+                     *out*))
+        f (fn [inputs]
+            (stage options inputs
+                   #(write-html options inputs)
+                   #(u/exit)))]
+    (if (empty? args)
+      (f [*in*])
+      (do (f args)
+          (and (:continuous opts)
+               (rebuild opts args))))))
+
+(defn- multi-launch
+  "Invoke LAUNCH on ARGS. If either :continuous and :no-resources, or
+  if force is true, parallelize LAUNCH on arguments."
+  [opts args]
+  (doseq [arg args]
+    (if (and (:continuous opts)
+             (:no-resources opts))
+      (future (launch opts [arg]))
+      (launch opts [arg]))))
+
+(defn- list-md
+  "Returns a sequence of all .md files under DIRECTORY"
+  [directory]
+  (u/list-names-ext directory ".md"))
+
+(defn- expand-args
+  "Returns a list of sequences containing Markdown files, and ones
+  under directories."
+  [args]
+  (loop [input args
+         acc []]
+    (cond
+      (empty? input) (seq acc)
+
+      (u/file? (first input))
+      (recur (rest input)
+             (conj acc (list (u/abs-base-name (first input)))))
+
+      (u/dir? (first input))
+      (recur (rest input) (conj acc (list-md (first input)))))))
+
+(defn- expand
+  "Returns a vector of absolute paths of Markdown files, found in
+  traversing PATHS, including directories."
+  [paths]
+  (if (empty? paths)
+    []
+    (vec (apply concat (expand-args paths)))))
+
 (defn convert
   "Converts Markdown inputs to HTML.
 
-ARGS: Markdown string, or vector of Markdown files
-
-OPTS:
+  Options:
   :out String           output file
   :resources Boolean    install the resource files only
   :no-resources Boolean build full HTML; don't install resources
-  :directory String     process .md files in directory
   :raw Boolean          emit 1:1 Markdown-HTML equivalence
   :plain Boolean        build plain HTML; don't use CSS and JS
   :merge Boolean        merge and process the files into one file
@@ -225,90 +293,73 @@ OPTS:
   :titlehead String     the same as :title String :header String
   :favicon String       favicon resource
   :css String           CSS resource
-  :style String         style id for the syntax highlighter
-"
-  ([arg]
-   (cond
-     (string? arg) (convert [arg] :out (html-name arg))
-     (vector? arg) (convert arg :out *out*)
-     :else nil))
-  ([^PersistentVector args & {:as opts}]
-   (let [options (u/merge-options opts)]
-     (stage options args
-            #(write-html options args)
-            #(identity nil)))))
+  :style String         style id for the syntax highlighter"
+  [in & args]
+  (cond
+    ;; (convert "README.md")
+    (and (zero? (count args)) (string? in))
+    (convert [in] :out (html-name in))
+    
+    ;; (convert "README.md" "foo.html")
+    (and (= (count args) 1) (every? string? [in (first args)]))
+    (convert [in] :out (first args))
 
-(declare launch)
+    ;; (convert ["README.md" "TODO.md"])
+    ;; (convert [] ...)
+    (vector? in)
+    (let [options (apply sorted-map args)
+          argsn (count in)
+          args? (> argsn 1)]
+      (cond
+        ;; resources, only
+        (:resources options)
+        (u/exit install-resources (:dir options))
 
-(defn- rebuild
-  "Rebuilds the target if any of the input files are modified."
-  [opts args text]
-  (u/msg "[*] Rebuilding..." 1 (verb opts))
-  (let [times (u/mod-times args)
-        refresh (if-let [t (:refresh opts)] (read-string t) 200)
-        options (merge opts {:no-resources true})]
-    (with-out-str (print times))
-    (Thread/sleep refresh)
-    (if (not= times (u/mod-times args))
-      (launch options args text)
-      (recur opts args text))))
+        ;; merge
+        (and args? (:merge options))
+        (launch options (expand in))
 
-(defn- launch
-  "Converts a Markdown file to HTML."
-  [opts args text]
-  (let [options (u/merge-options opts (html-name (first args)))
-        f (fn [inputs]
-            (stage options inputs
-                   #(write-html options inputs)
-                   #(u/exit (display-usage text))))]
-    (if (empty? args)
-      (f [*in*])
-      (do (f args)
-          (and (:continuous opts)
-               (rebuild opts args text))))))
+        ;; multi parallel
+        (and args? (u/common-directory? in))
+        (do  (install-resources (u/abs-parent (first in)))
+             (multi-launch (u/merge-true options :no-resources)
+                           (expand in)))
 
-(defn multi-launch
-  "Invoke LAUNCH on ARGS."
-  [opts args text & [force]]
-  (doseq [arg args]
-    (if (or (and (:continuous opts)
-                 (:no-resources opts))
-            force)
-      (future (launch opts [arg] text))
-      (launch opts [arg] text))))
+        ;; multi serial
+        args?
+        (multi-launch options (expand in))
 
-(defn directory-launch
-  "Invoke LAUNCH for all .md files in path."
-  [opts args text]
-  (let [options (merge opts {:multi true})
-        files (vec (u/list-names-ext (:directory opts) ".md"))]
-    (install-resources (:directory opts))
-
-    ;; merge files and args?
-    (multi-launch options files text true)
-    (and (not-empty args)
-         (multi-launch options args text))))
+        :else (launch options (expand in))))))
 
 (defn -main
   [& args]
   (let [{:keys [options arguments errors summary]}
         (parse-opts args cli-opts)
-        args-count (count arguments)
-        args? (> args-count 1)]
+        argsn (count arguments)
+        args? (> argsn 1)]
     (cond
-      (or (:help options)
-          (and args? (not (:merge options)) (not (:multi options))))
-      (u/exit #(display-usage summary))
-      
+      (:help options) (u/exit #(display-usage summary))
       (:version options) (u/exit version)
       (:styles options) (u/exit list-styles)
 
-      (:directory options) (directory-launch options arguments summary)
-      (:resources options) (u/exit install-resources (:dir options))
+      ;; resources, only
+      (:resources options)
+      (u/exit #(install-resources (:dir options)))
 
-      (and args? (:multi options) (not (:merge options)))
-      (multi-launch options arguments summary)
+      ;; merge
+      (and args? (:merge options))
+      (launch options (expand arguments))
+
+      ;; multi parallel
+      (and args? (u/common-directory? arguments))
+      (do  (install-resources (u/abs-parent (first arguments)))
+           (multi-launch (u/merge-true options :no-resources)
+                         (expand arguments)))
+
+      ;; multi serial
+      args?
+      (multi-launch options (expand arguments))
 
       errors (u/exit #(display-errors errors) 1)
-      :else (launch options arguments summary))))
-
+      
+      :else (launch options (expand arguments)))))

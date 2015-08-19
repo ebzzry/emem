@@ -26,13 +26,17 @@
 
 (defn exit
   "Evaluates F, then exits to OS with CODE."
-  [f & [code]]
-  (f)
-  (System/exit (or code 0)))
+  ([]
+   (exit #() 0))
+  ([f]
+   (exit f 0))
+  ([f code]
+   (f)
+   (System/exit code)))
 
 (defn msg
-  "Displays TEXT if OVERRIDE >= LEVEL. OVERRIDE and LEVEL defaults
-to 0 and 1, respectively."
+  "Displays TEXT if OVERRIDE >= LEVEL. OVERRIDE and LEVEL defaults to
+  0 and 1, respectively."
   ([text]
    (msg text 1 0))
   ([text level]
@@ -102,7 +106,7 @@ to 0 and 1, respectively."
 
 (defn parent*
   "Returns parent path of PATH, if PATH is a regular file;
-otherwise, return self."
+  otherwise, return PATH."
   [path]
   (if (dir? path)
     path
@@ -119,12 +123,13 @@ otherwise, return self."
   (File/createTempFile "tmp" ""))
 
 (defn tempv
-  "Creates a temp file and returns a vector with its
-absolute path, if ARGS is empty; otherwise, returns ARGS"
+  "Creates a temp file and returns a vector with its absolute path, if
+  ARGS is empty; otherwise, returns ARGS"
   ([]
    [(abspath (mktemp))])
   ([args]
    (if (empty? args) [(abspath (mktemp))] args)))
+
 
 (defn string-input-stream
   "Returns a ByteArrayInputStream for the given String."
@@ -176,7 +181,7 @@ absolute path, if ARGS is empty; otherwise, returns ARGS"
 
 (defn gunzip-b64
   "Consumes a base64 string INPUT, decompresses using GZIP,
-then writes to OUTPUT."
+  then writes to OUTPUT."
   [input output]
   (gunzip (b64-decode-temp input) output))
 
@@ -184,6 +189,7 @@ then writes to OUTPUT."
   "Returns RES as BufferedInputStream"
   [res]
   (-> res io/resource io/input-stream))
+
 
 (defn find-first
   "Returns first item from sequence that satisfiers F"
@@ -216,18 +222,27 @@ then writes to OUTPUT."
     (println res)))
 
 (defn merge-out
+  "Returns MAP if KEY is found in MAP. Otherwise, merge MAP with a
+  map, wherein the value of KEY is DEFAULT. If DEFAULT is nil, the
+  value of KEY is *out*."
   [key map default]
   (if (key map)
     map
     (merge map {key (or default *out*)})))
 
 (defn merge-options
+  "Returns a map, applying the key :out to OPTS, setting the value to
+  OUT. The two-arity version specifies the value of :out. The
+  sigle-arity version lets the user set the value of :out. If no value
+  was set, it defaults to *out."
   ([opts]
    (merge-options opts nil))
   ([opts out]
    (merge-out :out opts out)))
 
 (defn out
+  "Returns *out* if \"-\" is present in OPTS, on key :out. Otherwise,
+  return value of :out of OPTS."
   [opts]
   (let [out (:out opts)]
     (cond
@@ -273,6 +288,19 @@ then writes to OUTPUT."
   [path]
   (-> path file .getAbsolutePath))
 
+(defn abs-parent
+  "Returns absolute parent of PATH. If PATH is a directory, return
+  PATH."
+  [path]
+  (if (dir? path)
+    path
+    (parent (abs-base-name path))))
+
+(defn common-directory?
+  "Returns true if ARGS have the same parent directory."
+  [args]
+  (reduce = (map abs-parent args)))
+
 (defn abs-split-name
   "Returns abs [name path] of PATH"
   [path]
@@ -313,3 +341,19 @@ then writes to OUTPUT."
   "Returns true if *in* is present in ARGS."
   [args]
   (some #{*in*} args))
+
+(defn out?
+  "Returns true if *out* is present in ARGS."
+  [args]
+  (some #{*out*} args))
+
+(defn merge-true
+  "Returns a map where the value of KEY is true, merged with with
+  MAP."
+  [map key]
+  (merge map {key true}))
+
+(defn convec
+  ""
+  [& args]
+  (vec (apply concat args)))

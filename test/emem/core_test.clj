@@ -38,7 +38,7 @@
   (ftest text-input-2 text-expect-2b))
 
 (deftest string-test-1
-  (is (= (convert text-input-1) text-expect-1a)))
+  (is (= (markdown text-input-1) text-expect-1a)))
 
 (deftest string-test-2
-  (is (= (convert text-input-2) text-expect-2a)))
+  (is (= (markdown text-input-2) text-expect-2a)))
