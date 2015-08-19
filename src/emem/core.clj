@@ -12,11 +12,9 @@
 
 (def ^:private cli-opts
   "Specification for the command-line options."
-  [["-o" "--output HTML"  "output file" :id :out]
-   ["-r" "--resources"    "install the resource files only"]
-   ["-n" "--no-resources" "build full HTML; don't install resources"]
-
-   ["-d" "--directory DIRECTORY" "process .md files in directory; implies -m"]
+  [["-o" "--output HTML"          "output file" :id :out] ;
+   ["-i" "--install-resources"    "install the resources"]
+   ["-n" "--no-resources"         "build full HTML; don't install resources"]
    ["-c" "--continuous"           "run in continuous build mode"]
    ["-f" "--refresh MILLISECONDS" "time between rebuilds (default: 200)"]
 
@@ -193,7 +191,7 @@
   [opts args f exit]
   (u/msg "[*] Setting up stage..." 1 (verb opts))
   (cond
-    (:resources opts) (copy-resources opts)
+    (:install-resources opts) (copy-resources opts)
 
     (inputs-ok? args opts)
     (do (or (:raw opts)
@@ -234,7 +232,12 @@
                    #(write-html options inputs)
                    #(u/exit)))]
     (if (empty? args)
-      (f [*in*])
+      (let [out (:out opts)]
+        (if (and out (not (u/out? opts)) (not (= "-" out)))
+          (do (or (:no-resources opts)
+                  (install-resources out))
+              (f [*in*]))
+          (f [*in*])))
       (do (f args)
           (and (:continuous opts)
                (rebuild opts args))))))
@@ -261,18 +264,18 @@
   "Converts Markdown inputs to HTML.
 
   Options:
-  :out String           output file
-  :resources Boolean    install the resource files only
-  :no-resources Boolean build full HTML; don't install resources
-  :raw Boolean          emit 1:1 Markdown-HTML equivalence
-  :plain Boolean        build plain HTML; don't use CSS and JS
-  :merge Boolean        merge and process the files into one file
-  :title String         document title
-  :header String        document header
-  :titlehead String     the same as :title String :header String
-  :favicon String       favicon resource
-  :css String           CSS resource
-  :style String         style id for the syntax highlighter"
+  :out String                   output file
+  :install-resources Boolean    install the resource files only
+  :no-resources Boolean         build full HTML; don't install resources
+  :raw Boolean                  emit 1:1 Markdown-HTML equivalence
+  :plain Boolean                build plain HTML; don't use CSS and JS
+  :merge Boolean                merge and process the files into one file
+  :title String                 document title
+  :header String                document header
+  :titlehead String             the same as :title String :header String
+  :favicon String               favicon resource
+  :css String                   CSS resource
+  :style String                 style id for the syntax highlighter"
   [in & args]
   (cond
     ;; (convert "README.md")
@@ -291,8 +294,8 @@
           args? (> argsn 1)
           xargs (expand-md in)]
       (cond
-        ;; resources, only
-        (:resources options)
+        ;; install resources
+        (:install-resources options)
         (u/exit install-resources (:dir options))
 
         ;; merge
@@ -323,8 +326,8 @@
       (:version options) (u/exit version)
       (:styles options) (u/exit list-styles)
 
-      ;; resources, only
-      (:resources options)
+      ;; install resources
+      (:install-resources options)
       (u/exit #(install-resources (:dir options)))
 
       ;; merge
