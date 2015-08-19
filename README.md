@@ -56,7 +56,7 @@ Put the following:
 java -jar $HOME/bin/emem.jar $@
 ```
 
-Make it executable:
+Save your changes, then make it executable:
 
 ```bash
 $ chmod +x ~/bin/emem
@@ -90,8 +90,7 @@ To convert all `.md` files in the current directory:
 
     $ emem .
 
-To convert all `.md` files in the directory `~/Desktop/notes/`, to
-HTML:
+To convert all `.md` files in the directory `~/Desktop/notes/`:
 
     $ emem ~/Desktop/notes
 
@@ -143,13 +142,13 @@ Add the following expression to `(ns ...)`:
 (:require [emem.core :as mm])
 ```
 
-To convert the file `README.md` to `README.html`:
+To convert `README.md` to `README.html`:
 
 ```clojure
 (mm/convert "README.md")
 ```
 
-To convert the file `README.md` to `foo.html`:
+To convert `README.md` to `foo.html`:
 
 ```clojure
 (mm/convert "README.md" "foo.html")
@@ -161,7 +160,7 @@ To convert multiple files:
 (mm/convert ["foo.md" "bar.md" "baz.md"])
 ```
 
-To convert multiple files to `reminders.html`, using a custom title:
+To convert multiple files to `reminders.html`, with a custom title:
 
 ```clojure
 (mm/convert ["buy.md" "projects.md" "fitness.md"]
