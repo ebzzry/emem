@@ -240,6 +240,12 @@
   ([opts out]
    (merge-out :out opts out)))
 
+(defn merge-true
+  "Returns a map where the value of KEY is true, merged with with
+  MAP."
+  [map key]
+  (merge map {key true}))
+
 (defn out
   "Returns *out* if \"-\" is present in OPTS, on key :out. Otherwise,
   return value of :out of OPTS."
@@ -341,14 +347,3 @@
   "Returns true if *out* is present in ARGS."
   [args]
   (some #{*out*} args))
-
-(defn merge-true
-  "Returns a map where the value of KEY is true, merged with with
-  MAP."
-  [map key]
-  (merge map {key true}))
-
-(defn convec
-  ""
-  [& args]
-  (vec (apply concat args)))
