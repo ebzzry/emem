@@ -54,7 +54,9 @@
            ["Usage: emem [OPTION]... [MARKDOWN_FILE]..."
             ""
             "Options:"
-            text])))
+            text
+            ""
+            "See https://github.com/ebzzry/emem for more information"])))
 
 (defn- display-errors
   "Displays the errors encountered during command parsing."
