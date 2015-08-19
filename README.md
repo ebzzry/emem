@@ -28,8 +28,8 @@ _emem_ is a trivial Markdown to HTML converter.
 
 #### Standalone JAR
 
-If you already have Leiningen installed, proceed to the next step. If
-not, follow the installation instructions at
+If you already have Leiningen installed, proceed to the next
+step. Otherwise, follow the installation instructions at
 <http://leiningen.org/#install>.
 
 To build the JAR, run the following inside the checkout directory:
