@@ -347,3 +347,28 @@
   "Returns true if *out* is present in ARGS."
   [args]
   (some #{*out*} args))
+
+(defn expand-args
+  "Returns all files under args, with depth of one, whose extension
+  name matches EXTENSION."
+  [args extension]
+  (loop [input args, acc []]
+    (cond
+      (empty? input) (seq acc)
+
+      (file? (first input))
+      (recur (rest input)
+             (conj acc (list (abs-base-name (first input)))))
+
+      (dir? (first input))
+      (recur (rest input)
+             (conj acc (list-names-ext (first input)
+                                         (str "." extension)))))))
+
+(defn expand
+  "Returns a vector of files under args, with extension name matching
+  EXTENSION."
+  [paths extension]
+  (if (empty? paths)
+    []
+    (vec (apply concat (expand-args paths extension)))))
