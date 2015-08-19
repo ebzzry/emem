@@ -315,11 +315,6 @@
   [path]
   (first (abs-split-name path)))
 
-(defn abs-file-extension
-  "Returns the extension name of PATH."
-  [path]
-  (last (abs-split-name path)))
-
 (defn list-objects
   "List directory entries in PATH."
   [path]
