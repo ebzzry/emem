@@ -168,7 +168,7 @@ To merge multiple files, to `reminders.html`:
             :out "reminders.html")
 ```
 
-Convert a Markdown string to HTML:
+To convert a Markdown string to an HTML string:
 
 ```clojure
 (mm/markdown "# Blah")
