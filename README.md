@@ -160,12 +160,11 @@ To convert multiple files:
 (mm/convert ["foo.md" "bar.md" "baz.md"])
 ```
 
-To convert multiple files to `reminders.html`, with a custom title:
+To merge multiple files, to `reminders.html`:
 
 ```clojure
 (mm/convert ["buy.md" "projects.md" "fitness.md"]
             :merge true
-            :title "AAAAH!!!"
             :out "reminders.html")
 ```
 
