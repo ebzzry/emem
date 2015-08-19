@@ -114,9 +114,5 @@
   (is (= true (seq? (u/get-resources "etc"))))
   (is (= true (seq? (u/get-resources ".")))))
 
-(deftest out
-  (is (= (u/out {:out "foo"}) {:out "foo"}))
-  (is (= (:out (u/out {:in "foo"})) *out*)))
-
-(deftest modtime
-  (is (= java.lang.Long (class (u/modtime ".")))))
+(deftest mod-time
+  (is (= java.lang.Long (class (u/mod-time ".")))))

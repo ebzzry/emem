@@ -11,7 +11,7 @@ _emem_ is a trivial Markdown to HTML converter.
 ### Leiningen
 
 ```clojure
-[emem "0.2.2-SNAPSHOT"]
+[emem "0.2.3-SNAPSHOT"]
 ```
 
 ### Maven
@@ -20,7 +20,7 @@ _emem_ is a trivial Markdown to HTML converter.
 <dependency>
   <groupId>emem</groupId>
   <artifactId>emem</artifactId>
-  <version>0.2.2-SNAPSHOT</version>
+  <version>0.2.3-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -35,12 +35,12 @@ $ lein uberjar
 ```
 
 The JAR of interest here is the standalone one, located at
-`./target/uberjar/emem-0.2.2-SNAPSHOT-standalone.jar`. This JAR
+`./target/uberjar/emem-0.2.3-SNAPSHOT-standalone.jar`. This JAR
 contains _emem_ itself, plus all the dependencies. Copy this file to
 `~/bin`, as `emem.jar`.
 
 ```bash
-$ cp target/uberjar/emem-0.2.2-*-standalone.jar  ~/bin/emem.jar
+$ cp target/uberjar/emem-0.2.3-*-standalone.jar  ~/bin/emem.jar
 ```
 
 Next, create a shell script to reduce typing.
@@ -86,17 +86,21 @@ To convert `README.md` to `README.html`:
 
     $ emem README.md
 
+To convert all `.md` files in the current directory:
+
+    $ emem .
+
 To convert all `.md` files in the directory `~/Desktop/notes/`, to
 HTML:
 
-    $ emem -d ~/Desktop/notes
+    $ emem ~/Desktop/notes
 
 In continuous mode, _emem_ will wait for changes to your files. When a
 change has been detected, it automatically rebuilds the HTML files. It
 will remain to monitor for changes, until <kbd>Ctrl-C</kbd> is
 pressed:
 
-    $ emem -cd ~/Desktop/notes
+    $ emem -c ~/Desktop/notes
 
 The continuous mode works great when used with browser extensions that
 reload a page when a page gets updated. The ones I can suggest are:
@@ -145,7 +149,19 @@ To convert the file `README.md` to `README.html`:
 (mm/convert "README.md")
 ```
 
-To convert multiple sources to `reminders.html`, using a custom title:
+To convert the file `README.md` to `foo.html`:
+
+```clojure
+(mm/convert "README.md" "foo.html")
+```
+
+To convert multiple files:
+
+```clojure
+(mm/convert ["foo.md" "bar.md" "baz.md"])
+```
+
+To convert multiple files to `reminders.html`, using a custom title:
 
 ```clojure
 (mm/convert ["buy.md" "projects.md" "fitness.md"]
