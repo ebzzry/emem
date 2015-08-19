@@ -65,20 +65,20 @@
    (str "The following errors occurred:\n\n"
         (s/join \newline errors))))
 
-(defn version
+(defn- version
   "Displays program version."
   []
   (with-open [in (u/find-resource "etc/VERSION")]
     (let [ver (slurp in)]
       (spit *out* ver))))
 
-(defn get-styles
+(defn- get-styles
   "Returns the available styles for the syntax highlighter."
   []
   (sort compare (remove #{"main" "ewan"}
                  (map u/root (u/get-resources "static/css")))))
 
-(defn list-styles
+(defn- list-styles
   "Displays the available styles for the syntax highlighter."
   []
   (doseq [style (get-styles)]
@@ -175,7 +175,7 @@
     nil
     (str (u/abs-file-name path) ".html")))
 
-(defn write-html
+(defn- write-html
   "Writes the HTML to file."
   [opts args]
   (u/msg "[*] Writing output..." 1 (verb opts))
