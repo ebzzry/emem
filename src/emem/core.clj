@@ -243,11 +243,13 @@
   "Invoke LAUNCH on ARGS. If either :continuous and :no-resources, or
   if force is true, parallelize LAUNCH on arguments."
   [opts args]
-  (doseq [arg args]
-    (if (and (:continuous opts)
-             (:no-resources opts))
-      (future (launch opts [arg]))
-      (launch opts [arg]))))
+  (if (empty? args)
+    (launch opts args)
+    (doseq [arg args]
+      (if (and (:continuous opts)
+               (:no-resources opts))
+        (future (launch opts [arg]))
+        (launch opts [arg])))))
 
 (defn- expand-md
   "Returns a vector of absolute paths of Markdown files, found in
