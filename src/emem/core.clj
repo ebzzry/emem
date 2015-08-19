@@ -189,7 +189,7 @@
         (f out)))))
 
 (defn- stage
-  "FIXME: better doc"
+  "Verifies options, and conditionalizes installation of resources."
   [opts args f exit]
   (u/msg "[*] Setting up stage..." 1 (verb opts))
   (cond
