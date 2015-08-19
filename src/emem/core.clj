@@ -249,34 +249,11 @@
       (future (launch opts [arg]))
       (launch opts [arg]))))
 
-(defn- list-md
-  "Returns a sequence of all .md files under DIRECTORY"
-  [directory]
-  (u/list-names-ext directory ".md"))
-
-(defn- expand-args
-  "Returns a list of sequences containing Markdown files, and ones
-  under directories."
-  [args]
-  (loop [input args
-         acc []]
-    (cond
-      (empty? input) (seq acc)
-
-      (u/file? (first input))
-      (recur (rest input)
-             (conj acc (list (u/abs-base-name (first input)))))
-
-      (u/dir? (first input))
-      (recur (rest input) (conj acc (list-md (first input)))))))
-
-(defn- expand
+(defn- expand-md
   "Returns a vector of absolute paths of Markdown files, found in
   traversing PATHS, including directories."
   [paths]
-  (if (empty? paths)
-    []
-    (vec (apply concat (expand-args paths)))))
+  (u/expand paths "md"))
 
 (defn convert
   "Converts Markdown inputs to HTML.
@@ -309,7 +286,8 @@
     (vector? in)
     (let [options (apply sorted-map args)
           argsn (count in)
-          args? (> argsn 1)]
+          args? (> argsn 1)
+          xargs (expand-md in)]
       (cond
         ;; resources, only
         (:resources options)
@@ -317,19 +295,19 @@
 
         ;; merge
         (and args? (:merge options))
-        (multi-launch options (expand in))
+        (multi-launch options xargs)
 
         ;; multi parallel
         (and args? (u/common-directory? in))
         (do  (install-resources (u/abs-parent (first in)))
              (multi-launch (u/merge-true options :no-resources)
-                           (expand in)))
+                           xargs))
 
         ;; multi serial
         args?
-        (multi-launch options (expand in))
+        (multi-launch options xargs)
 
-        :else (multi-launch options (expand in))))))
+        :else (multi-launch options xargs)))))
 
 (defn -main
   [& args]
@@ -337,7 +315,7 @@
         (parse-opts args cli-opts)
         argsn (count arguments)
         args? (> argsn 1)
-        xargs (expand arguments)]
+        xargs (expand-md arguments)]
     (cond
       (:help options) (u/exit #(display-usage summary))
       (:version options) (u/exit version)
