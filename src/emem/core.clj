@@ -26,7 +26,7 @@
    [nil "--header TEXT"     "document header"]
    ["-t" "--titlehead TEXT" "the same as --title TEXT --header TEXT"]
 
-   ["-I" "--favicon ICO" "favicon resource"]
+   ["-I" "--icon ICO"    "favicon resource"]
    ["-C" "--css CSS"     "CSS resource"]
    ["-S" "--style STYLE" "style id for the syntax highlighter"]
    ["-L" "--list-styles" "list available styles for the syntax highlighter"]
@@ -128,7 +128,7 @@
                   (when-let [line (u/first-line (first args))]
                     line))
         header (or (:header opts) (:titlehead opts))
-        favicon (or (:favicon opts) "static/ico/glider.ico")
+        icon (or (:icon opts) "static/ico/glider.ico")
         css (or (:css opts) "static/css/main.css")
         style (str "static/css/"
                    (or (:style opts) default-style)
@@ -142,7 +142,7 @@
        ;; u/quo
        (when (not (:plain opts))
          (hi/html
-          [:link {:rel "icon" :href favicon :type "image/x-icon"}]
+          [:link {:rel "icon" :href icon :type "image/x-icon"}]
           [:link {:rel "stylesheet" :href css :media "all"}]
           (when-not (= (:style opts) "-")
             (hi/html
@@ -266,18 +266,18 @@
   "Converts Markdown inputs to HTML.
 
   Options:
-  :out String                   output file
-  :install-resources Boolean    install the resource files only
-  :no-resources Boolean         build full HTML; don't install resources
-  :raw Boolean                  emit 1:1 Markdown-HTML equivalence
-  :plain Boolean                build plain HTML; don't use CSS and JS
-  :merge Boolean                merge and process the files into one file
-  :title String                 document title
-  :header String                document header
-  :titlehead String             the same as :title String :header String
-  :favicon String               favicon resource
-  :css String                   CSS resource
-  :style String                 style id for the syntax highlighter"
+  :out String                output file
+  :install-resources Boolean install the resource files only
+  :no-resources Boolean      build full HTML; don't install resources
+  :raw Boolean               emit 1:1 Markdown-HTML equivalence
+  :plain Boolean             build plain HTML; don't use CSS and JS
+  :merge Boolean             merge and process the files into one file
+  :title String              document title
+  :header String             document header
+  :titlehead String          the same as :title String :header String
+  :icon String               icon resource
+  :css String                CSS resource
+  :style String              style id for the syntax highlighter"
   [in & args]
   (cond
     ;; (convert "README.md")
