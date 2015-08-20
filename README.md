@@ -85,8 +85,8 @@ specify `1.1.0`.
 
 #### Builds
 
-If you are unable to build the JAR or EXE, you may be able to get the
-latest version from <https://goo.gl/oDqZAo>.
+If you are unable to build the JAR or EXE, you can get the latest
+version from <https://goo.gl/oDqZAo>.
 
 
 ## Usage
