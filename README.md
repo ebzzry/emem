@@ -3,7 +3,9 @@ emem
 
 [![Build Status](https://travis-ci.org/ebzzry/emem.svg)](https://travis-ci.org/ebzzry/emem)
 
-_emem_ is a trivial Markdown to HTML converter.
+_emem_ is a trivial Markdown to HTML converter. This library leverages
+on [markdown-clj](https://github.com/yogthos/markdown-clj), and
+[hiccup](https://github.com/weavejester/hiccup) to produce HTML.
 
 
 ## Installation
