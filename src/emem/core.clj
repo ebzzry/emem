@@ -262,6 +262,33 @@
   [paths]
   (u/expand paths "md"))
 
+(defn- dump
+  "Converts Markdown inputs to HTML."
+  [opts args]
+  (let [argsn (count args)
+        args? (> argsn 1)
+        xargs (expand-md args)]
+    (cond
+      ;; install resources
+      (:install-resources opts)
+      (u/exit #(install-resources (:dir opts)))
+
+      ;; merge
+      (and args? (:merge opts))
+      (multi-launch opts xargs)
+
+      ;; multi parallel
+      (and args? (u/common-directory? args))
+      (do  (install-resources (u/abs-parent (first args)))
+           (multi-launch (u/merge-true opts :no-resources)
+                         xargs))
+
+      ;; multi serial
+      args?
+      (multi-launch opts xargs)
+
+      :else (multi-launch opts xargs))))
+
 (defn convert
   "Converts Markdown inputs to HTML.
 
@@ -291,61 +318,18 @@
     ;; (convert ["README.md" "TODO.md"])
     ;; (convert [] ...)
     (vector? in)
-    (let [options (apply sorted-map args)
-          argsn (count in)
-          args? (> argsn 1)
-          xargs (expand-md in)]
-      (cond
-        ;; install resources
-        (:install-resources options)
-        (u/exit install-resources (:dir options))
-
-        ;; merge
-        (and args? (:merge options))
-        (multi-launch options xargs)
-
-        ;; multi parallel
-        (and args? (u/common-directory? in))
-        (do  (install-resources (u/abs-parent (first in)))
-             (multi-launch (u/merge-true options :no-resources)
-                           xargs))
-
-        ;; multi serial
-        args?
-        (multi-launch options xargs)
-
-        :else (multi-launch options xargs)))))
+    (let [options (apply sorted-map args)]
+      (dump options in))))
 
 (defn -main
   [& args]
   (let [{:keys [options arguments errors summary]}
-        (parse-opts args cli-opts)
-        argsn (count arguments)
-        args? (> argsn 1)
-        xargs (expand-md arguments)]
+        (parse-opts args cli-opts)]
     (cond
+      errors (u/exit #(display-errors errors) 1)
+      
       (:help options) (u/exit #(display-usage summary))
       (:version options) (u/exit version)
       (:styles options) (u/exit list-styles)
 
-      ;; install resources
-      (:install-resources options)
-      (u/exit #(install-resources (:dir options)))
-
-      ;; merge
-      (and args? (:merge options))
-      (multi-launch options xargs)
-
-      ;; multi parallel
-      (and args? (u/common-directory? arguments))
-      (do  (install-resources (u/abs-parent (first arguments)))
-           (multi-launch (u/merge-true options :no-resources)
-                         xargs))
-
-      ;; multi serial
-      args?
-      (multi-launch options xargs)
-
-      errors (u/exit #(display-errors errors) 1)
-      
-      :else (multi-launch options xargs))))
+      :else (dump options arguments))))
