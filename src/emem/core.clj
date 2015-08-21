@@ -330,6 +330,6 @@
       
       (:help options) (u/exit #(display-usage summary))
       (:version options) (u/exit version)
-      (:styles options) (u/exit list-styles)
+      (:list-styles options) (u/exit list-styles)
 
       :else (dump options arguments))))
