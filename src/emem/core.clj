@@ -151,7 +151,8 @@
              [:script "hljs.initHighlightingOnLoad();"]))))]
       [:body
        (u/quo header [:h1 header])
-       text]])))
+       [:div {:id "content"}        
+        text]]])))
 
 (defn markdown
   "Returns a Markdown string converted to HTML."
