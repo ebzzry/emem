@@ -16,10 +16,10 @@
   "<h1>Some Title</h1><h2>Section 1</h2><p>Lorem ipsum dolor sit <em>amet</em>, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. <strong>Nullam</strong> malesuada erat ut turpis. <i>Suspendisse</i> urna nibh, viverra non, semper suscipit, posuere a, pede.</p><pre><code>$ foo bar baz\n# qux quux\n</code></pre><h2>Section 2</h2><blockquote><p> Donec nec justo eget felis facilisis fermentum. Aliquam porttitor  mauris sit amet orci. Aenean dignissim pellentesque felis. </p></blockquote><pre><code>blah blah blah\n</code></pre>")
 
 (def text-expect-1b
-  "<html><head><title># foo **bar** baz</title><meta content=\"text/html;charset=utf-8\" http-equiv=\"Content-Type\" /></head><body><h1>foo <strong>bar</strong> baz</h1></body></html>")
+  "<html><head><title># foo **bar** baz</title><meta content=\"text/html;charset=utf-8\" http-equiv=\"Content-Type\" /></head><body><div id=\"content\"><h1>foo <strong>bar</strong> baz</h1></div></body></html>")
 
 (def text-expect-2b
-  "<html><head><title>Some Title</title><meta content=\"text/html;charset=utf-8\" http-equiv=\"Content-Type\" /></head><body><h1>Some Title</h1><h2>Section 1</h2><p>Lorem ipsum dolor sit <em>amet</em>, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. <strong>Nullam</strong> malesuada erat ut turpis. <i>Suspendisse</i> urna nibh, viverra non, semper suscipit, posuere a, pede.</p><pre><code>$ foo bar baz\n# qux quux\n</code></pre><h2>Section 2</h2><blockquote><p> Donec nec justo eget felis facilisis fermentum. Aliquam porttitor  mauris sit amet orci. Aenean dignissim pellentesque felis. </p></blockquote><pre><code>blah blah blah\n</code></pre></body></html>")
+  "<html><head><title>Some Title</title><meta content=\"text/html;charset=utf-8\" http-equiv=\"Content-Type\" /></head><body><div id=\"content\"><h1>Some Title</h1><h2>Section 1</h2><p>Lorem ipsum dolor sit <em>amet</em>, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. <strong>Nullam</strong> malesuada erat ut turpis. <i>Suspendisse</i> urna nibh, viverra non, semper suscipit, posuere a, pede.</p><pre><code>$ foo bar baz\n# qux quux\n</code></pre><h2>Section 2</h2><blockquote><p> Donec nec justo eget felis facilisis fermentum. Aliquam porttitor  mauris sit amet orci. Aenean dignissim pellentesque felis. </p></blockquote><pre><code>blah blah blah\n</code></pre></div></body></html>")
 
 (defn ftest
   [in out]
