@@ -163,8 +163,10 @@
   "Converts Markdown inputs to HTML strings."
   [opts args]
   (let [text (if (:merge opts)
-               (s/join (map #(markdown (slurp %)) args))
-               (markdown (slurp (first args))))]
+               (do (println "then")
+                   (s/join (map #(markdown (slurp %)) args)))
+               (do (println "else")
+                   (markdown (slurp (first args)))))]
     (if (:raw opts)
       text
       (html-page opts args text))))
@@ -276,7 +278,7 @@
 
       ;; merge
       (and args? (:merge opts))
-      (multi-launch opts xargs)
+      (launch opts xargs)
 
       ;; multi parallel
       (and args? (u/common-directory? args))
@@ -315,6 +317,15 @@
     ;; (convert "README.md" "foo.html")
     (and (= (count args) 1) (every? string? [in (first args)]))
     (convert [in] :out (first args))
+
+    ;; (convert ["foo.md" "bar.md" "baz.md"]
+    ;;          ["mu.html" "ka.html" "mo.html"])
+    (and (vector? in) (vector? (first args)))
+    (let [v1 in
+          v2 (first args)]
+      (and (= (count v1) (count v2))
+           (doseq [[md html] (zipmap v1 v2)]
+             (convert md html))))
 
     ;; (convert ["README.md" "TODO.md"])
     ;; (convert [] ...)
