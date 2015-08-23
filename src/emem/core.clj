@@ -163,10 +163,8 @@
   "Converts Markdown inputs to HTML strings."
   [opts args]
   (let [text (if (:merge opts)
-               (do (println "then")
-                   (s/join (map #(markdown (slurp %)) args)))
-               (do (println "else")
-                   (markdown (slurp (first args)))))]
+               (s/join (map #(markdown (slurp %)) args))
+               (markdown (slurp (first args))))]
     (if (:raw opts)
       text
       (html-page opts args text))))
