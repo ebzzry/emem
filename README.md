@@ -13,7 +13,7 @@ on [markdown-clj](https://github.com/yogthos/markdown-clj), and
 ### Leiningen
 
 ```clojure
-[emem "0.2.6-SNAPSHOT"]
+[emem "0.2.7-SNAPSHOT"]
 ```
 
 ### Maven
@@ -22,7 +22,7 @@ on [markdown-clj](https://github.com/yogthos/markdown-clj), and
 <dependency>
   <groupId>emem</groupId>
   <artifactId>emem</artifactId>
-  <version>0.2.6-SNAPSHOT</version>
+  <version>0.2.7-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -41,12 +41,12 @@ $ lein uberjar
 ```
 
 The JAR of interest here is the standalone one, located at
-`./target/uberjar/emem-0.2.6-SNAPSHOT-standalone.jar`. This JAR
+`./target/uberjar/emem-0.2.7-SNAPSHOT-standalone.jar`. This JAR
 contains _emem_ itself, plus all the dependencies. Copy this file to
 `~/bin`, as `emem.jar`.
 
 ```bash
-$ cp target/uberjar/emem-0.2.6-*-standalone.jar  ~/bin/emem.jar
+$ cp target/uberjar/emem-0.2.7-*-standalone.jar  ~/bin/emem.jar
 ```
 
 Next, create a shell script to reduce typing.
@@ -171,6 +171,13 @@ To convert multiple files:
 
 ```clojure
 (mm/convert ["foo.md" "bar.md" "baz.md"])
+```
+
+To convert multiple files, to different output names:
+
+```clojure
+(mm/convert ["foo.md" "bar.md" "baz.md"]
+            ["mu.html" "ka.html" "mo.html"])
 ```
 
 To merge multiple files, to `reminders.html`:
