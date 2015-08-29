@@ -1,9 +1,8 @@
 (ns emem.util-test
   (:require [clojure.test :refer :all]
-            [clojure.java.io :as io]
-            [emem.util :as u])
-  (:import [java.io File]
-           [java.io ByteArrayInputStream File]))
+            [clojure.java.io :as io])
+  (:use emem.util)
+  (:import [java.io File ByteArrayInputStream File]))
 
 (def text-input-1
   "# foo **bar** baz")
@@ -13,106 +12,106 @@
 
 (defn make-temp
   []
-  (let [temp (u/mktemp)
-        text (u/string-input-stream "# foo\n\n## bar\n### baz\n")]
+  (let [temp (mktemp)
+        text (string-input-stream "# foo\n\n## bar\n### baz\n")]
     (spit temp (slurp text))
     temp))
 
-(deftest quo
-  (is (= (u/quo (= 1 1) true) true))
-  (is (= (u/quo (= 1 0) true) "")))
+(deftest quo-test
+  (is (= (quo (= 1 1) true) true))
+  (is (= (quo (= 1 0) true) "")))
 
-(deftest first-line
+(deftest first-line-test
   (is (= "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam rutrum a"
-         (u/first-line (u/find-resource "test/lorem.txt")))))
+         (first-line (find-resource "test/lorem.txt")))))
 
-(deftest last-line
+(deftest last-line-test
   (is (= "non, euismod maximus mauris."
-         (u/last-line (u/find-resource "test/lorem.txt")))))
+         (last-line (find-resource "test/lorem.txt")))))
 
-(deftest file
+(deftest file-test
   (let [t (make-temp)
-        r (class (u/file t))]
-    (u/delete t)
+        r (class (file t))]
+    (delete t)
     (is (= java.io.File r))))
 
-(deftest pwd
-  (is (= java.io.File (class (u/pwd)))))
+(deftest pwd-test
+  (is (= java.io.File (class (pwd)))))
 
-(deftest exists?
-  (is (= true (u/exists? (File. ".")))))
+(deftest exists?-test
+  (is (= true (exists? (File. ".")))))
 
 ;; Unix only
-(deftest abspath
-  (is (= true (.startsWith (u/abspath (File. ".")) "/"))))
+(deftest abspath-test
+  (is (= true (.startsWith (abspath (File. ".")) "/"))))
 
-(deftest parent
-  (is (= nil (u/parent (io/file "/"))))
-  (is (= "/" (u/parent (io/file "/foo/"))))
-  (is (= "/foo" (u/parent (io/file "/foo/bar/")))))
+(deftest parent-test
+  (is (= nil (parent (io/file "/"))))
+  (is (= "/" (parent (io/file "/foo/"))))
+  (is (= "/foo" (parent (io/file "/foo/bar/")))))
 
-(deftest files-exist?
-  (is (= true (u/files-exist? (map io/file ["." ".."]))))
-  (is (= false (u/files-exist? (map io/file ["/foo" ".."])))))
+(deftest files-exist?-test
+  (is (= true (files-exist? (map io/file ["." ".."]))))
+  (is (= false (files-exist? (map io/file ["/foo" ".."])))))
 
-(deftest mktemp
-  (let [t (u/mktemp)
-        r (u/exists? t)]
-    (u/delete t)
+(deftest mktemp-test
+  (let [t (mktemp)
+        r (exists? t)]
+    (delete t)
     (is (= true r))))
 
-(deftest tempv
-  (let [[t] (u/tempv)
-        r (u/exists? t)
-        v (u/tempv ["foo" "bar"])]
-    (u/delete t)
+(deftest tempv-test
+  (let [[t] (tempv)
+        r (exists? t)
+        v (tempv ["foo" "bar"])]
+    (delete t)
     (is (= true r))
     (is (= true (and (every? string? v)
                      (= (count v) 2))))))
 
-(deftest string-input-stream
+(deftest string-input-stream-test
   (is (= ByteArrayInputStream
-         (class (u/string-input-stream text-input-1)))))
+         (class (string-input-stream text-input-1)))))
 
-(deftest string->temp
-  (let [t (io/file (u/string->temp text-input-1))
+(deftest string->temp-test
+  (let [t (io/file (string->temp text-input-1))
         r (slurp t)]
-    (u/delete t)
+    (delete t)
     (is (= r "# foo **bar** baz"))))
 
-(deftest b64-encode
-  (let [t (u/mktemp)]
-    (u/b64-encode (u/find-resource "test/b64-in.txt") t)
+(deftest b64-encode-test
+  (let [t (mktemp)]
+    (b64-encode (find-resource "test/b64-in.txt") t)
     (let [r (slurp t)]
-      (u/delete t)
+      (delete t)
       (is (= "Zm9vIGJhciBiYXoK" r)))))
 
-(deftest b64-decode
-  (let [t (u/mktemp)]
-    (u/b64-decode (u/find-resource "test/b64-out.txt") t)
+(deftest b64-decode-test
+  (let [t (mktemp)]
+    (b64-decode (find-resource "test/b64-out.txt") t)
     (let [r (slurp t)]
-      (u/delete t)
+      (delete t)
       (is (= "foo bar baz\n" r)))))
 
-(deftest gunzip
-  (let [t (u/mktemp)]
-    (u/gunzip (u/find-resource "test/lo.txt.gz") t)
+(deftest gunzip-test
+  (let [t (mktemp)]
+    (gunzip (find-resource "test/lo.txt.gz") t)
     (let [r (slurp t)]
-      (u/delete t)
+      (delete t)
       (is (= "Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n"
              r)))))
 
-(deftest find-first
+(deftest find-first-test
   (let [v1 [62 58 0 99 66 77]]
-    (is (= 99 (u/find-first odd? v1)))))
+    (is (= 99 (find-first odd? v1)))))
 
-(deftest find-resource
+(deftest find-resource-test
   (is (= java.io.BufferedInputStream
-         (class (u/find-resource "etc/VERSION")))))
+         (class (find-resource "etc/VERSION")))))
 
-(deftest get-resources
-  (is (= true (seq? (u/get-resources "etc"))))
-  (is (= true (seq? (u/get-resources ".")))))
+(deftest get-resources-test
+  (is (= true (seq? (get-resources "etc"))))
+  (is (= true (seq? (get-resources ".")))))
 
-(deftest mod-time
-  (is (= java.lang.Long (class (u/mod-time ".")))))
+(deftest mod-time-test
+  (is (= java.lang.Long (class (mod-time ".")))))
