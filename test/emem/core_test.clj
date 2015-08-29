@@ -1,7 +1,7 @@
 (ns emem.core-test
   (:require [clojure.test :refer :all]
-            [emem.util :as u]
-            [emem.core :refer :all]))
+            [emem.core :refer :all])
+  (:use emem.util emem.html))
 
 (def text-input-1
   "# foo **bar** baz")
@@ -23,12 +23,12 @@
 
 (defn ftest
   [in out]
-  (let [temp1 (u/string->temp in)
-        temp2 (u/mktemp)]
-    (convert [temp1] :out (u/abspath temp2) :plain true)
+  (let [temp1 (string->temp in)
+        temp2 (mktemp)]
+    (convert [temp1] :out (abspath temp2) :plain true)
     (let [output (slurp temp2)]
-      (u/delete temp1)
-      (u/delete temp2)
+      (delete temp1)
+      (delete temp2)
       (is (= output out)))))
 
 (deftest file-test-1
