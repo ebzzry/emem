@@ -220,16 +220,18 @@
       (launch opts xargs)
 
       ;; multi parallel
-      (and args? (common-directory? args))
-      (do  (install-resources (abs-parent (first args)))
-           (multi-launch (merge-true opts :no-resources)
+      (or (and args? (common-directory? args))
+          (and (= argsn 1)) (dir? (first args)))
+      (do (install-resources (abs-parent (first args)))
+          (multi-launch (merge-true opts :no-resources)
                          xargs))
 
       ;; multi serial
       args?
       (multi-launch opts xargs)
 
-      :else (multi-launch opts xargs))))
+      :else
+      (multi-launch opts xargs))))
 
 (defn convert
   "Converts Markdown inputs to HTML.
@@ -279,7 +281,11 @@
     (cond
       errors (exit #(display-errors errors) 1)
 
-      (:help options) (exit #(display-usage summary))
+      (or (:help options)
+          (and (= (count arguments) 0)
+               (not (in? arguments))))
+      (exit #(display-usage summary))
+
       (:version options) (exit version)
       (:list-styles options) (exit list-styles)
 
