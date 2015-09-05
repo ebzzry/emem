@@ -1,5 +1,5 @@
 emem
-====
+======================================================================
 
 [![Build Status](https://travis-ci.org/ebzzry/emem.svg)](https://travis-ci.org/ebzzry/emem)
 
@@ -13,7 +13,7 @@ on [markdown-clj](https://github.com/yogthos/markdown-clj), and
 ### Leiningen
 
 ```clojure
-[emem "0.2.9-SNAPSHOT"]
+[emem "0.2.10-SNAPSHOT"]
 ```
 
 ### Maven
@@ -22,7 +22,7 @@ on [markdown-clj](https://github.com/yogthos/markdown-clj), and
 <dependency>
   <groupId>emem</groupId>
   <artifactId>emem</artifactId>
-  <version>0.2.9-SNAPSHOT</version>
+  <version>0.2.10-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -34,19 +34,20 @@ If you already have Leiningen installed, proceed to the next
 step. Otherwise, follow the installation instructions at
 <http://leiningen.org/#install>.
 
-To build the JAR, run the following inside the checkout directory:
+To build the JAR, run the following command inside the checkout
+directory:
 
 ```bash
 $ lein uberjar
 ```
 
 The JAR of interest here is the standalone one, located at
-`./target/uberjar/emem-0.2.9-SNAPSHOT-standalone.jar`. This JAR
+`./target/uberjar/emem-0.2.10-SNAPSHOT-standalone.jar`. This JAR
 contains _emem_ itself, plus all the dependencies. Copy this file to
 `~/bin`, as `emem.jar`.
 
 ```bash
-$ cp target/uberjar/emem-0.2.9-*-standalone.jar  ~/bin/emem.jar
+$ cp target/uberjar/emem-0.2.10-*-standalone.jar  ~/bin/emem.jar
 ```
 
 Next, create a shell script to reduce typing.
