@@ -121,15 +121,15 @@ reload a page when a page gets updated. The ones I can suggest are:
 * [LivePage](https://chrome.google.com/webstore/detail/livepage/pilnojpmdoofaelbinaeodfpjheijkbh/related?hl=en) (Chrome)
 * [Auto Reload](https://addons.mozilla.org/en-US/firefox/addon/auto-reload/?src=api) (Firefox)
 
-_emem_ accepts input from stdin, too. The following command outputs a
-1:1 Markdown:HTML equivalence
+<!-- _emem_ accepts input from stdin, too. The following command outputs a -->
+<!-- 1:1 Markdown:HTML equivalence -->
 
-    $ echo "# Blah" | emem -w
+<!--     $ echo "# Blah" | emem -w -->
 
-To create an HTML listing of the current directory:
+<!-- To create an HTML listing of the current directory: -->
 
-    $ ls -R | sed -e '1i```bash' -e '$a```' \
-    | emem -t `basename $PWD` -o ls.html
+<!--     $ ls -R | sed -e '1i```bash' -e '$a```' \ -->
+<!--     | emem -t `basename $PWD` -o ls.html -->
 
 To change the top-level CSS:
 
