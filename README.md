@@ -122,9 +122,20 @@ reload a page when a page gets updated. The ones I can suggest are:
 * [Auto Reload](https://addons.mozilla.org/en-US/firefox/addon/auto-reload/?src=api) (Firefox)
 
 When ran without arguments, _emem_ will accept input from stdin. The
-following command outputs a 1:1 Markdown:HTML equivalence
+following command accepts any Markdown-valid input, including regular
+text, then outputs to screen the raw HTML equivalent, using the `-w`
+option. It will remain to accept input, until <kbd>Ctrl-D</kbd> is
+pressed:
 
-    $ echo "# Blah" | emem -w
+    $ emem -w
+    # foo
+    **bold**
+    _emph_
+    ^D
+
+The following is an equivalent command of the above:
+
+    $ echo '# foo\n**bold**\n_emph_' | emem -w
 
 To create an HTML listing of the current directory:
 
