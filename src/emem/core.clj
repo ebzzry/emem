@@ -282,8 +282,9 @@
       errors (exit #(display-errors errors) 1)
 
       (or (:help options)
-          (and (= (count arguments) 0)
-               (not (in? arguments))))
+          ;; (and (= (count arguments) 0)
+          ;;      (not (in? arguments)))
+          )
       (exit #(display-usage summary))
 
       (:version options) (exit version)
