@@ -86,10 +86,10 @@ _Header type_, select `Console`, while for _Min JRE version_,
 specify `1.1.0`.
 
 
-#### Builds
+#### Releases
 
-If you are unable to build the JAR or EXE, you can get the latest
-version from <https://goo.gl/oDqZAo>.
+If you are unable to build the JAR or EXE, you can download a release
+from <https://github.com/ebzzry/emem/releases>.
 
 
 ## Usage
