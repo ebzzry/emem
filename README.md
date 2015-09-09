@@ -13,7 +13,7 @@ on [markdown-clj](https://github.com/yogthos/markdown-clj), and
 ### Leiningen
 
 ```clojure
-[emem "0.2.10-SNAPSHOT"]
+[emem "0.2.11-SNAPSHOT"]
 ```
 
 ### Maven
@@ -22,7 +22,7 @@ on [markdown-clj](https://github.com/yogthos/markdown-clj), and
 <dependency>
   <groupId>emem</groupId>
   <artifactId>emem</artifactId>
-  <version>0.2.10-SNAPSHOT</version>
+  <version>0.2.11-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -42,12 +42,12 @@ $ lein uberjar
 ```
 
 The JAR of interest here is the standalone one, located at
-`./target/uberjar/emem-0.2.10-SNAPSHOT-standalone.jar`. This JAR
+`./target/uberjar/emem-0.2.11-SNAPSHOT-standalone.jar`. This JAR
 contains _emem_ itself, plus all the dependencies. Copy this file to
 `~/bin`, as `emem.jar`.
 
 ```bash
-$ cp target/uberjar/emem-0.2.10-*-standalone.jar  ~/bin/emem.jar
+$ cp target/uberjar/emem-0.2.11-*-standalone.jar  ~/bin/emem.jar
 ```
 
 Next, create a shell script to reduce typing.

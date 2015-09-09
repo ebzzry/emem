@@ -222,9 +222,12 @@
       ;; multi parallel
       (or (and args? (common-directory? args))
           (and (= argsn 1)) (dir? (first args)))
-      (do (install-resources (abs-parent (first args)))
-          (multi-launch (merge-true opts :no-resources)
-                         xargs))
+      (let [dir (if (:out opts)
+                  (abs-parent (:out opts))
+                  (abs-parent (first args)))]
+        (install-resources dir)
+        (multi-launch (merge-true opts :no-resources)
+                      xargs))
 
       ;; multi serial
       args?
@@ -280,13 +283,7 @@
         (parse-opts args cli-opts)]
     (cond
       errors (exit #(display-errors errors) 1)
-
-      (or (:help options)
-          ;; (and (= (count arguments) 0)
-          ;;      (not (in? arguments)))
-          )
-      (exit #(display-usage summary))
-
+      (:help options) (exit #(display-usage summary))
       (:version options) (exit version)
       (:list-styles options) (exit list-styles)
 
