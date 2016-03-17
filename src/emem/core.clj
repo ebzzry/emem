@@ -225,7 +225,8 @@
       (let [dir (if (:out opts)
                   (abs-parent (:out opts))
                   (abs-parent (first args)))]
-        (install-resources dir)
+        (or (:no-resources opts)
+            (install-resources dir))
         (multi-launch (merge-true opts :no-resources)
                       xargs))
 
