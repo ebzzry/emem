@@ -190,7 +190,6 @@
   [res]
   (-> res io/resource io/input-stream))
 
-
 (defn find-first
   "Returns first item from sequence that satisfiers F"
   [f seq]
@@ -372,3 +371,76 @@
   (if (empty? paths)
     []
     (vec (apply concat (expand-args paths extension)))))
+
+(defn verb
+  "Provides default value for :verbosity option."
+  [opts]
+  (or (:verbosity opts) 0))
+
+(defn with-resources
+  "Locates the resource files in the classpath."
+  [res f dir]
+  (doseq [[path _] (resources res)]
+    (let [relative-path (subs path 1)
+          file (str res "/" relative-path)]
+      (f file (or dir (pwd))))))
+
+(defn copy-resources
+  "Installs the files required by the HTML file."
+  [opts & [args]]
+  (msg "[*] Copying resources..." 1 (verb opts))
+  (let [dir (-> (:out opts) parent* io/file)
+        f (fn [file dir]
+            (with-open [in (re-stream file)]
+              (let [path (io/file dir file)]
+                (io/make-parents (io/file dir file))
+                (io/copy in (io/file dir file)))))]
+    (with-resources "static" f dir)))
+
+(defn install-resources
+  "Installs the HTML resources relative to PATH."
+  ([]
+   (install-resources (pwd)))
+  ([path]
+   (copy-resources {:out (or path (pwd))})))
+
+(defn random-char
+  "Returns a random alpha character"
+  []
+  (let [chars (map char (concat (range 48 58) (range 66 92) (range 97 123)))]
+    (nth chars (.nextInt (java.util.Random.) (count chars)))))
+
+(defn random-string
+  "Returns a random string of length LENGTH"
+  [length]
+  (apply str (take length (repeatedly random-char))))
+
+(defn temp-dir
+  "Returns a temporary directory path."
+  []
+  (let [base (System/getProperty "java.io.tmpdir")
+        suffix (random-string 20)
+        dir (str base "/tmp." suffix)]
+    dir))
+
+(defn create-temp-dir
+  "Creates a temporary directory and returns string path."
+  []
+  (let [dir (temp-dir)]
+    (.mkdir (io/file dir))
+    dir))
+
+(defn delete-directory
+  "Deletes directory under PATH recursively"
+  [path]
+  (let [func (fn [func f]
+               (when (.isDirectory f)
+                 (doseq [x (.listFiles f)]
+                   (func func x)))
+               (io/delete-file f))]
+    (func func (io/file path))))
+
+(defn slurp-path
+  "Returns a string representation of DIR and PATH"
+  [dir path]
+  (-> (str dir "/" path) io/file slurp))

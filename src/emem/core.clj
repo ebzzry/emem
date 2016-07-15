@@ -12,11 +12,12 @@
 
 (def ^:private cli-opts
   "Specification for the command-line options."
-  [["-o" "--output HTML"          "output file" :id :out] ;
+  [["-o" "--output HTML"          "specify output file" :id :out] ;
    ["-i" "--install-resources"    "install the resources"]
    ["-n" "--no-resources"         "build full HTML; don't install resources"]
    ["-c" "--continuous"           "run in continuous build mode"]
    ["-f" "--refresh MILLISECONDS" "time between rebuilds (default: 200)"]
+   ["-s" "--standalone"           "embed the CSS data with the output files"]
 
    ["-w" "--raw"   "emit 1:1 Markdown-HTML equivalence"]
    ["-p" "--plain" "build plain HTML; don't use CSS and JS"]
@@ -26,9 +27,8 @@
    [nil "--header TEXT"     "document header"]
    ["-t" "--titlehead TEXT" "the same as --title TEXT --header TEXT"]
 
-   ["-I" "--icon ICO"    "favicon resource"]
-   ["-C" "--css CSS"     "CSS resource"]
-   ["-S" "--style STYLE" "style id for the syntax highlighter"]
+   ["-C" "--css CSS"     "specify alternative main CSS resource"]
+   ["-S" "--style STYLE" "specify alternative style for the syntax highlighter"]
    ["-L" "--list-styles" "list available styles for the syntax highlighter"]
 
    ["-v" nil         "increase verbosity"
@@ -36,11 +36,6 @@
     :assoc-fn (fn [m k _] (update-in m [k] inc))]
    ["-V" "--version" "display program version"]
    ["-h" "--help"    "display this help"]])
-
-(defn- verb
-  "Provides default value for :verbosity option."
-  [opts]
-  (or (:verbosity opts) 0))
 
 (defn- display-usage
   "Displays program usage."
@@ -79,33 +74,6 @@
   []
   (doseq [style (get-styles)]
     (println style)))
-
-(defn- with-resources
-  "Locates the resource files in the classpath."
-  [res f dir]
-  (doseq [[path _] (resources res)]
-    (let [relative-path (subs path 1)
-          file (str res "/" relative-path)]
-      (f file (or dir (pwd))))))
-
-(defn- copy-resources
-  "Installs the files required by the HTML file."
-  [opts & [args]]
-  (msg "[*] Copying resources..." 1 (verb opts))
-  (let [dir (-> (:out opts) parent* io/file)
-        f (fn [file dir]
-            (with-open [in (re-stream file)]
-              (let [path (io/file dir file)]
-                (io/make-parents (io/file dir file))
-                (io/copy in (io/file dir file)))))]
-    (with-resources "static" f dir)))
-
-(defn- install-resources
-  "Installs the HTML resources relative to PATH."
-  ([]
-   (install-resources (pwd)))
-  ([path]
-   (copy-resources {:out (or path (pwd))})))
 
 (defn- inputs-ok?
   "Verifies that all inputs exist."
@@ -179,7 +147,8 @@
       (let [out (:out opts)]
         (if (and out (not (out? opts)) (not (= "-" out)))
           (do (or (:no-resources opts)
-                  (install-resources out))
+                  (when-not (:standalone opts)
+                    (install-resources (:dir opts))))
               (f [*in*]))
           (f [*in*])))
       (do (f args)
@@ -226,7 +195,8 @@
                   (abs-parent (:out opts))
                   (abs-parent (first args)))]
         (or (:no-resources opts)
-            (install-resources dir))
+            (when-not (:standalone opts)
+              (install-resources (:dir opts))))
         (multi-launch (merge-true opts :no-resources)
                       xargs))
 
@@ -241,18 +211,18 @@
   "Converts Markdown inputs to HTML.
 
   Options:
-  :out String                output file
+  :out String                specify output file
   :install-resources Boolean install the resource files only
   :no-resources Boolean      build full HTML; don't install resources
+  :standalone Boolean        embed the CSS data with the output files
   :raw Boolean               emit 1:1 Markdown-HTML equivalence
   :plain Boolean             build plain HTML; don't use CSS and JS
   :merge Boolean             merge and process the files into one file
   :title String              document title
   :header String             document header
   :titlehead String          the same as :title String :header String
-  :icon String               icon resource
-  :css String                CSS resource
-  :style String              style id for the syntax highlighter"
+  :css String                specify alternative main CSS resource
+  :style String              specify alternative style for the syntax highlighter"
   [in & args]
   (cond
     ;; (convert "README.md")
