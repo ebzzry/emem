@@ -8,7 +8,8 @@ on [markdown-clj](https://github.com/yogthos/markdown-clj), and
 [hiccup](https://github.com/weavejester/hiccup) to produce HTML.
 
 
-## Installation
+Installation
+------------
 
 ### Leiningen
 
@@ -28,35 +29,48 @@ on [markdown-clj](https://github.com/yogthos/markdown-clj), and
 
 ### Binaries
 
-#### Standalone JAR
+#### Nix
 
-If you already have Leiningen installed, proceed to the next
-step. Otherwise, follow the installation instructions at
-<http://leiningen.org/#install>.
+Install [Nix](https://nixos.org/nix), if you don’t have it, yet:
 
-To build the JAR, run the following command inside the checkout
+```bash
+$ curl http://nixos.org/nix/install | bash
+```
+
+Then, install emem with:
+
+```bash
+$ nix-env -iA nixpkgs.emem
+```
+
+#### Uberjar
+
+If you can’t use Nix, or you just want the JAR file, you can build a
+standalone JAR file that contains all the dependencies. To create
+one, install [Leiningen](http://leiningen.org/#install), first. To
+build the JAR, run the following command inside the checkout
 directory:
 
 ```bash
 $ lein uberjar
 ```
 
-The JAR of interest here is the standalone one, located at
-`./target/uberjar/emem-0.2.17-SNAPSHOT-standalone.jar`. This JAR
-contains _emem_ itself, plus all the dependencies. Copy this file to
-`~/bin`, as `emem.jar`.
+This command generates two JAR files. The file that we need is the
+standalone
+one—`./target/uberjar/emem-0.2.17-SNAPSHOT-standalone.jar`. Copy this
+file to `~/bin`, as `emem.jar`.
 
 ```bash
-$ cp target/uberjar/emem-0.2.17-*-standalone.jar  ~/bin/emem.jar
+$ cp target/uberjar/emem-0.2.17-*-standalone.jar ~/bin/emem.jar
 ```
 
-Next, create a shell script to reduce typing.
+Next, create a shell script to ease typing.
 
 ```bash
 $ emacs ~/bin/emem
 ```
 
-Put the following:
+Then, put the following:
 
 ```bash
 #!/bin/sh
@@ -88,11 +102,12 @@ specify `1.1.0`.
 
 #### Releases
 
-If you are unable to build the JAR or EXE, you can download a release
-from <https://github.com/ebzzry/emem/releases>.
+If you are unable to build a JAR or EXE, you may download a
+[binary release](https://github.com/ebzzry/emem/releases).
 
 
-## Usage
+Usage
+-----
 
 ### CLI
 
@@ -104,9 +119,13 @@ To convert all `.md` files in the current directory:
 
     $ emem .
 
+To convert `README.md` and embed the CSS data to a standalone `README.html`:
+
+    $ emem -s README.md
+
 To convert all `.md` files in the directory `~/Desktop/notes/`:
 
-    $ emem ~/Desktop/notes
+    $ emem ~/Desktop/notes/
 
 In continuous mode, _emem_ will wait for changes to your files. When a
 change has been detected, it automatically rebuilds the HTML files. It
@@ -213,7 +232,8 @@ To learn more about the available options:
 ```
 
 
-## Dependencies
+Dependencies
+------------
 
 * [markdown-clj](https://github.com/yogthos/markdown-clj)
 * [hiccup](https://github.com/weavejester/hiccup)
@@ -222,7 +242,8 @@ To learn more about the available options:
 * [highlight.js](https://github.com/isagalaev/highlight.js)
 
 
-## License
+License
+-------
 
 Copyright © 2015 Rommel Martinez
 
