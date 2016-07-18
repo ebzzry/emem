@@ -104,20 +104,20 @@
   [path]
   (meth isFile (file path)))
 
-(defn parent*
+(defn directory
   "Returns parent path of PATH, if PATH is a regular file;
   otherwise, return PATH."
   [path]
   (if (dir? path)
-    path
-    (-> path file abspath file parent file)))
+    (file path)
+    (-> path abspath parent file)))
 
 (defn files-exist?
   "Returns true if all FILES exist."
   [files]
   (every? exists? files))
 
-(defn mktemp
+(defn temp-file
   "Returns path to a new temp file."
   []
   (File/createTempFile "tmp" ""))
@@ -126,10 +126,9 @@
   "Creates a temp file and returns a vector with its absolute path, if
   ARGS is empty; otherwise, returns ARGS"
   ([]
-   [(abspath (mktemp))])
+   [(abspath (temp-file))])
   ([args]
-   (if (empty? args) [(abspath (mktemp))] args)))
-
+   (if (empty? args) [(abspath (temp-file))] args)))
 
 (defn string-input-stream
   "Returns a ByteArrayInputStream for the given String."
@@ -146,7 +145,7 @@
 (defn string->temp
   "Returns path to temp file to contain STR."
   [str]
-  (let [temp (abspath (mktemp))
+  (let [temp (abspath (temp-file))
         input (string-input-stream str)]
     (spit (file temp) (slurp input))
     temp))
@@ -168,7 +167,7 @@
 (defn b64-decode-temp
   "Decodes a base64 string to a temporary file."
   [src]
-  (let [temp (mktemp)]
+  (let [temp (temp-file)]
     (b64-decode (string-input-stream src) temp)
     (abspath temp)))
 
@@ -389,7 +388,7 @@
   "Installs the files required by the HTML file."
   [opts & [args]]
   (msg "[*] Copying resources..." 1 (verb opts))
-  (let [dir (-> (:out opts) parent* io/file)
+  (let [dir (-> (:out opts) directory io/file)
         f (fn [file dir]
             (with-open [in (re-stream file)]
               (let [path (io/file dir file)]
@@ -415,7 +414,7 @@
   [length]
   (apply str (take length (repeatedly random-char))))
 
-(defn temp-dir
+(defn temp-dir-path
   "Returns a temporary directory path."
   []
   (let [base (System/getProperty "java.io.tmpdir")
@@ -423,10 +422,10 @@
         dir (str base "/tmp." suffix)]
     dir))
 
-(defn create-temp-dir
+(defn temp-dir
   "Creates a temporary directory and returns string path."
   []
-  (let [dir (temp-dir)]
+  (let [dir (temp-dir-path)]
     (.mkdir (io/file dir))
     dir))
 
