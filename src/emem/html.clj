@@ -35,8 +35,8 @@
         ;; quo
         (when (not (:plain opts))
           (if (:standalone opts)
-            (let [temp-dir (create-temp-dir)]
-              (install-resources temp-dir)
+            (let [temp (temp-dir)]
+              (install-resources temp)
               (let [text
                     (str
                      (hi/html
@@ -44,18 +44,17 @@
 
                       ;; main.css
                       [:style {:media "all" :type "text/css"}
-                       (s/replace (slurp-path temp-dir css) "\n" "")])
+                       (s/replace (slurp-path temp css) "\n" "")])
 
                      ;; ewan.css & highlight.pack.js
                      (when-not (= (:style opts) "-")
                        (hi/html
                         [:style {:media "all" :type "text/css"}
-                         (s/replace (slurp-path temp-dir style) "\n" "")]
+                         (s/replace (slurp-path temp style) "\n" "")]
                         ;; [:script {:type "javascript"}
-                        ;;  (slurp-path temp-dir highlight)]
-                        [:script "hljs.initHighlightingOnLoad();"]
-                        )))]
-                (delete-directory temp-dir)
+                        ;;  (slurp-path temp highlight)]
+                        [:script "hljs.initHighlightingOnLoad();"])))]
+                (delete-directory temp)
                 text))
             (hi/html
              ;; favicon
