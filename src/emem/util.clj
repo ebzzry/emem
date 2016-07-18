@@ -376,6 +376,12 @@
   [opts]
   (or (:verbosity opts) 0))
 
+(defn current-directory
+  "Returns the path of the current directory."
+  ;; (-> (java.io.File. ".") .getAbsolutePath)
+  []
+  (.getCanonicalFile (io/file ".")))
+
 (defn with-resources
   "Locates the resource files in the classpath."
   [res f dir]
@@ -388,7 +394,7 @@
   "Installs the files required by the HTML file."
   [opts & [args]]
   (msg "[*] Copying resources..." 1 (verb opts))
-  (let [dir (-> (:out opts) directory io/file)
+  (let [dir (directory (or (:out opts) (current-directory)))
         f (fn [file dir]
             (with-open [in (re-stream file)]
               (let [path (io/file dir file)]

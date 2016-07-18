@@ -148,7 +148,7 @@
         (if (and out (not (out? opts)) (not (= "-" out)))
           (do (or (:no-resources opts)
                   (when-not (:standalone opts)
-                    (install-resources (:foo opts))))
+                    (copy-resources opts)))
               (f [*in*]))
           (f [*in*])))
       (do (f args)
@@ -182,7 +182,7 @@
     (cond
       ;; install resources
       (:install-resources opts)
-      (exit #(install-resources (:foo opts)))
+      (exit #(install-resources))
 
       ;; merge
       (and args? (:merge opts))
@@ -196,7 +196,7 @@
                   (abs-parent (first args)))]
         (or (:no-resources opts)
             (when-not (:standalone opts)
-              (install-resources (:foo opts))))
+              (copy-resources opts)))
         (multi-launch (merge-true opts :no-resources)
                       xargs))
 
