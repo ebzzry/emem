@@ -12,7 +12,7 @@
 
 (defn make-temp
   []
-  (let [temp (mktemp)
+  (let [temp (temp-file)
         text (string-input-stream "# foo\n\n## bar\n### baz\n")]
     (spit temp (slurp text))
     temp))
@@ -54,8 +54,8 @@
   (is (= true (files-exist? (map io/file ["." ".."]))))
   (is (= false (files-exist? (map io/file ["/foo" ".."])))))
 
-(deftest mktemp-test
-  (let [t (mktemp)
+(deftest temp-file-test
+  (let [t (temp-file)
         r (exists? t)]
     (delete t)
     (is (= true r))))
@@ -80,21 +80,21 @@
     (is (= r "# foo **bar** baz"))))
 
 (deftest b64-encode-test
-  (let [t (mktemp)]
+  (let [t (temp-file)]
     (b64-encode (find-resource "test/b64-in.txt") t)
     (let [r (slurp t)]
       (delete t)
       (is (= "Zm9vIGJhciBiYXoK" r)))))
 
 (deftest b64-decode-test
-  (let [t (mktemp)]
+  (let [t (temp-file)]
     (b64-decode (find-resource "test/b64-out.txt") t)
     (let [r (slurp t)]
       (delete t)
       (is (= "foo bar baz\n" r)))))
 
 (deftest gunzip-test
-  (let [t (mktemp)]
+  (let [t (temp-file)]
     (gunzip (find-resource "test/lo.txt.gz") t)
     (let [r (slurp t)]
       (delete t)

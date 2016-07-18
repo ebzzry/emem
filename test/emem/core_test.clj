@@ -24,7 +24,7 @@
 (defn ftest
   [in out]
   (let [temp1 (string->temp in)
-        temp2 (mktemp)]
+        temp2 (temp-file)]
     (convert [temp1] :out (abspath temp2) :plain true)
     (let [output (slurp temp2)]
       (delete temp1)
