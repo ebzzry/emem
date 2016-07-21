@@ -12,7 +12,8 @@
 
 (def ^:private cli-opts
   "Specification for the command-line options."
-  [["-o" "--output HTML"          "specify output file" :id :out] ;
+  [["-o" "--output-file HTML"            "specify output file" :id :out]
+   ["-d" "--output-directory DIRECTORY"  "specify output directory" :id :dir]
    ["-i" "--install-resources"    "install the resources"]
    ["-n" "--no-resources"         "build full HTML; don't install resources"]
    ["-c" "--continuous"           "run in continuous build mode"]
@@ -135,10 +136,19 @@
 (defn- launch
   "Converts a Markdown file to HTML."
   [opts args]
-  (let [options (merge-options
+  (let [input (first args)
+        options (merge-options
                  opts
-                 (or (html-name (first args))
-                     *out*))
+                 (or
+                  ;; (if (and (:out opts)
+                  ;;          (directory? (:out opts)))
+                  ;;   (println (html-name (str (:out opts) "/" (basename input))))
+                  ;;   (html-name input))
+                  (let [dest (:dir opts)]
+                    (if (and dest (directory? dest))
+                      (html-name (str (absolute-path dest) "/" (basename input)))
+                      (html-name input)))
+                  *out*))
         f (fn [inputs]
             (stage options inputs
                    #(write-html options inputs)
@@ -190,7 +200,7 @@
 
       ;; multi parallel
       (or (and args? (common-directory? args))
-          (and (= argsn 1)) (dir? (first args)))
+          (and (= argsn 1)) (directory? (first args)))
       (let [dir (if (:out opts)
                   (abs-parent (:out opts))
                   (abs-parent (first args)))]

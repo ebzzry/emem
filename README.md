@@ -14,7 +14,7 @@ Installation
 ### Leiningen
 
 ```clojure
-[emem "0.2.18-SNAPSHOT"]
+[emem "0.2.19-SNAPSHOT"]
 ```
 
 ### Maven
@@ -23,7 +23,7 @@ Installation
 <dependency>
   <groupId>emem</groupId>
   <artifactId>emem</artifactId>
-  <version>0.2.18-SNAPSHOT</version>
+  <version>0.2.19-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -57,11 +57,11 @@ $ lein uberjar
 
 This command generates two JAR files. The file that we need is the
 standalone
-one—`./target/uberjar/emem-0.2.18-SNAPSHOT-standalone.jar`. Copy this
+one—`./target/uberjar/emem-0.2.19-SNAPSHOT-standalone.jar`. Copy this
 file to `~/bin`, as `emem.jar`.
 
 ```bash
-$ cp target/uberjar/emem-0.2.18-*-standalone.jar ~/bin/emem.jar
+$ cp target/uberjar/emem-0.2.19-*-standalone.jar ~/bin/emem.jar
 ```
 
 Next, create a shell script to ease typing.
@@ -126,6 +126,10 @@ To convert `README.md` and embed the CSS data to a standalone `README.html`:
 To convert all `.md` files in the directory `~/Desktop/notes/`:
 
     $ emem ~/Desktop/notes/
+
+To convert all `.md` files in the current directory, to the `html/` directory:
+
+    $ emem -d html .
 
 In continuous mode, _emem_ will wait for changes to your files. When a
 change has been detected, it automatically rebuilds the HTML files. It

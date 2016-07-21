@@ -68,49 +68,49 @@
 (defn exists?
   "Returns true if PATH exists."
   [path]
-  (meth exists (file path)))
+  (meth exists (io/file path)))
 
 (defn delete
   "Deletes file."
   [path]
-  (meth delete (file path)))
+  (meth delete (io/file path)))
 
 (defn root
   "Returns root name of PATH."
   [path]
-  (let [name (.getName (file path))]
+  (let [name (.getName (io/file path))]
     (let [dot (.lastIndexOf name ".")]
       (if (pos? dot)
         (subs name 0 dot)
         name))))
 
-(defn abspath
+(defn absolute-path
   "Returns absolute path of PATH."
   [path]
-  (meth getAbsolutePath (file path)))
+  (meth getAbsolutePath (io/file path)))
 
 (defn parent
   "Returns parent path of PATH."
   [path]
-  (meth getParent (file path)))
+  (meth getParent (io/file path)))
 
-(defn dir?
+(defn directory?
   "Returns true if PATH is a directory."
   [path]
-  (meth isDirectory (file path)))
+  (meth isDirectory (io/file path)))
 
 (defn file?
   "Returns true if PATH is a File object."
   [path]
-  (meth isFile (file path)))
+  (meth isFile (io/file path)))
 
 (defn directory
   "Returns parent path of PATH, if PATH is a regular file;
   otherwise, return PATH."
   [path]
-  (if (dir? path)
-    (file path)
-    (-> path abspath parent file)))
+  (if (directory? path)
+    path
+    (-> path absolute-path parent)))
 
 (defn files-exist?
   "Returns true if all FILES exist."
@@ -126,9 +126,9 @@
   "Creates a temp file and returns a vector with its absolute path, if
   ARGS is empty; otherwise, returns ARGS"
   ([]
-   [(abspath (temp-file))])
+   [(absolute-path (temp-file))])
   ([args]
-   (if (empty? args) [(abspath (temp-file))] args)))
+   (if (empty? args) [(absolute-path (temp-file))] args)))
 
 (defn string-input-stream
   "Returns a ByteArrayInputStream for the given String."
@@ -145,9 +145,9 @@
 (defn string->temp
   "Returns path to temp file to contain STR."
   [str]
-  (let [temp (abspath (temp-file))
+  (let [temp (absolute-path (temp-file))
         input (string-input-stream str)]
-    (spit (file temp) (slurp input))
+    (spit (io/file temp) (slurp input))
     temp))
 
 (defn b64-encode
@@ -169,7 +169,7 @@
   [src]
   (let [temp (temp-file)]
     (b64-decode (string-input-stream src) temp)
-    (abspath temp)))
+    (absolute-path temp)))
 
 (defn gunzip
   "Decompresses INPUT with GZIP, then writes to OUTPUT."
@@ -244,6 +244,14 @@
   [map key]
   (merge map {key true}))
 
+(defn dest-file
+  "Returns path to directory and regular file, if :dir is present.
+  Otherwise, return path to :out."
+  [opts]
+  (if (:dir opts)
+    (io/file (:dir opts) (:out opts))
+    (io/file (:out opts))))
+
 (defn out
   "Returns *out* if \"-\" is present in OPTS, on key :out. Otherwise,
   return value of :out of OPTS."
@@ -287,7 +295,12 @@
   [path]
   (last (split-name path)))
 
-(defn abs-base-name
+(defn basename
+  "Returns the basename of PATH."
+  [path]
+  (-> path io/file .getName))
+
+(defn absolute-base-name
   "Returns absolute name of PATH, sans directory."
   [path]
   (-> path file .getAbsolutePath))
@@ -296,28 +309,28 @@
   "Returns absolute parent of PATH. If PATH is a directory, return
   PATH."
   [path]
-  (if (dir? path)
+  (if (directory? path)
     path
-    (parent (abs-base-name path))))
+    (parent (absolute-base-name path))))
 
 (defn common-directory?
   "Returns true if ARGS have the same parent directory."
   [args]
   (reduce = (map abs-parent args)))
 
-(defn abs-split-name
+(defn absolute-split-name
   "Returns abs [name path] of PATH"
   [path]
-  (let [name (abs-base-name path)
+  (let [name (absolute-base-name path)
         index (.lastIndexOf name ".")]
     (if (pos? index)
       [(subs name 0 index) (subs name index)]
       [name nil])))
 
-(defn abs-file-name
+(defn absolute-file-name-root
   "Returns absolute name of PATH, sans extension."
   [path]
-  (first (abs-split-name path)))
+  (first (absolute-split-name path)))
 
 (defn list-objects
   "List directory entries in PATH."
@@ -329,7 +342,7 @@
   ([]
    (list-names "."))
   ([path]
-   (map abspath (list-objects path))))
+   (map absolute-path (list-objects path))))
 
 (defn list-names-ext
   "Returns the names of files with file extension EXTENSION."
@@ -356,9 +369,9 @@
 
       (file? (first input))
       (recur (rest input)
-             (conj acc (list (abs-base-name (first input)))))
+             (conj acc (list (absolute-base-name (first input)))))
 
-      (dir? (first input))
+      (directory? (first input))
       (recur (rest input)
              (conj acc (list-names-ext (first input)
                                          (str "." extension)))))))
@@ -394,7 +407,10 @@
   "Installs the files required by the HTML file."
   [opts & [args]]
   (msg "[*] Copying resources..." 1 (verb opts))
-  (let [dir (directory (or (:out opts) (current-directory)))
+  (let [dir (let [dest (:dir opts)]
+              (if (and dest (directory? dest))
+                (io/file (absolute-path dest))
+                (io/file (directory (or (:out opts) (current-directory))))))
         f (fn [file dir]
             (with-open [in (re-stream file)]
               (let [path (io/file dir file)]
@@ -449,3 +465,10 @@
   "Returns a string representation of DIR and PATH"
   [dir path]
   (-> (str dir "/" path) io/file slurp))
+
+(defn suffix-name
+  "Returns the root name of PATH, with suffix SUFFIX"
+  [path suffix]
+  (if (empty? path)
+    nil
+    (str (absolute-file-name-root path) suffix)))

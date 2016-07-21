@@ -25,7 +25,7 @@
   [in out]
   (let [temp1 (string->temp in)
         temp2 (temp-file)]
-    (convert [temp1] :out (abspath temp2) :plain true)
+    (convert [temp1] :out (absolute-path temp2) :plain true)
     (let [output (slurp temp2)]
       (delete temp1)
       (delete temp2)
