@@ -42,8 +42,8 @@
   (is (= true (exists? (File. ".")))))
 
 ;; Unix only
-(deftest abspath-test
-  (is (= true (.startsWith (abspath (File. ".")) "/"))))
+(deftest absolute-path-test
+  (is (= true (.startsWith (absolute-path (File. ".")) "/"))))
 
 (deftest parent-test
   (is (= nil (parent (io/file "/"))))

@@ -203,8 +203,7 @@
       (html-page opts args text))))
 
 (defn html-name
-  "Returns the HTML name of PATH"
+  "Returns the HTML name of PATH."
   [path]
-  (if (empty? path)
-    nil
-    (str (abs-file-name path) ".html")))
+  (suffix-name path ".html"))
+
