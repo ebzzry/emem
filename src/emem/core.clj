@@ -12,12 +12,12 @@
 
 (def ^:private cli-opts
   "Specification for the command-line options."
-  [["-o" "--output-file HTML"            "specify output file" :id :out]
-   ["-d" "--output-directory DIRECTORY"  "specify output directory" :id :dir]
-   ["-i" "--install-resources"    "install the resources"]
-   ["-n" "--no-resources"         "build full HTML; don't install resources"]
+  [["-o" "--output HTML"          "specify output file" :id :out]
+   ["-d" "--directory DIRECTORY"  "specify output directory" :id :dir]
+   ["-r" "--resources"            "build the resource files only" :id :resources]
+   ["-R" "--no-resources"         "build HTML output sans resources"]
    ["-c" "--continuous"           "run in continuous build mode"]
-   ["-f" "--refresh MILLISECONDS" "time between rebuilds (default: 200)"]
+   ["-f" "--refresh MILLISECONDS" "time between rebuilds (default: 200 ms)"]
    ["-s" "--standalone"           "embed the CSS data with the output files"]
 
    ["-w" "--raw"   "emit 1:1 Markdown-HTML equivalence"]
@@ -104,7 +104,7 @@
   [opts args f exit]
   (msg "[*] Setting up stage..." 1 (verb opts))
   (cond
-    (:install-resources opts) (copy-resources opts)
+    (:resources opts) (copy-resources opts)
 
     (inputs-ok? args opts)
     (do (or (:raw opts)
@@ -133,6 +133,11 @@
       (launch options args)
       (recur opts args))))
 
+(defn html-name-path
+  "Returns absolute path to HTML file"
+  [dest input]
+  (html-name (str (absolute-path dest) "/" (basename input))))
+
 (defn- launch
   "Converts a Markdown file to HTML."
   [opts args]
@@ -140,14 +145,28 @@
         options (merge-options
                  opts
                  (or
-                  ;; (if (and (:out opts)
-                  ;;          (directory? (:out opts)))
-                  ;;   (println (html-name (str (:out opts) "/" (basename input))))
-                  ;;   (html-name input))
                   (let [dest (:dir opts)]
-                    (if (and dest (directory? dest))
-                      (html-name (str (absolute-path dest) "/" (basename input)))
-                      (html-name input)))
+                    (cond
+                      ;; directory does not exist, create it
+                      (and dest (not (exists? dest)))
+                      (do (create-directory (absolute-path dest))
+                          (html-name-path dest input))
+
+                      ;; directory exists
+                      (and dest (exists? dest) (directory? dest))
+                      (html-name-path dest input)
+
+                      ;; regular file exists
+                      (and dest (exists? dest) (not (directory? dest)))
+                      (html-name input)
+
+                      ;; :dir is not used
+                      :else
+                      (html-name input))
+                    ;; (if (and dest (exists? dest) (directory? dest))
+                    ;;   (html-name (str (absolute-path dest) "/" (basename input)))
+                    ;;   (html-name input))
+                    )
                   *out*))
         f (fn [inputs]
             (stage options inputs
@@ -191,7 +210,7 @@
         xargs (expand-md args)]
     (cond
       ;; install resources
-      (:install-resources opts)
+      (:resources opts)
       (exit #(install-resources))
 
       ;; merge
@@ -222,8 +241,9 @@
 
   Options:
   :out String                specify output file
-  :install-resources Boolean install the resource files only
-  :no-resources Boolean      build full HTML; don't install resources
+  :directory String          specify output directory
+  :resources Boolean install build the resource files only
+  :no-resources Boolean      build HTML output sans resources
   :standalone Boolean        embed the CSS data with the output files
   :raw Boolean               emit 1:1 Markdown-HTML equivalence
   :plain Boolean             build plain HTML; don't use CSS and JS

@@ -403,14 +403,50 @@
           file (str res "/" relative-path)]
       (f file (or dir (pwd))))))
 
+(defn create-directory
+  "Creates a directory."
+  [path]
+  (let [dir (io/file path)]
+    (.mkdirs dir)))
+
+(defn delete-directory
+  "Deletes directory under PATH recursively"
+  [path]
+  (let [func (fn [func f]
+               (when (.isDirectory f)
+                 (doseq [x (.listFiles f)]
+                   (func func x)))
+               (io/delete-file f))]
+    (func func (io/file path))))
+
+
+(defn directory-select
+  "Extract directory from opts, or choose current directory."
+  [opts]
+  (io/file (directory (or (:out opts) (current-directory)))))
+
 (defn copy-resources
   "Installs the files required by the HTML file."
   [opts & [args]]
   (msg "[*] Copying resources..." 1 (verb opts))
   (let [dir (let [dest (:dir opts)]
-              (if (and dest (directory? dest))
-                (io/file (absolute-path dest))
-                (io/file (directory (or (:out opts) (current-directory))))))
+              (cond
+                ;; directory does not exist
+                (and dest (not (exists? dest)))
+                (do (create-directory (absolute-path dest))
+                    (absolute-path dest))
+
+                ;; directory exists
+                (and dest (exists? dest) (directory? dest))
+                (absolute-path dest)
+
+                ;; regular file exists
+                (and dest (exists? dest) (not (directory? dest)))
+                (directory-select opts)
+
+                ;; :dir is not used
+                :else
+                (directory-select opts)))
         f (fn [file dir]
             (with-open [in (re-stream file)]
               (let [path (io/file dir file)]
@@ -450,16 +486,6 @@
   (let [dir (temp-dir-path)]
     (.mkdir (io/file dir))
     dir))
-
-(defn delete-directory
-  "Deletes directory under PATH recursively"
-  [path]
-  (let [func (fn [func f]
-               (when (.isDirectory f)
-                 (doseq [x (.listFiles f)]
-                   (func func x)))
-               (io/delete-file f))]
-    (func func (io/file path))))
 
 (defn slurp-path
   "Returns a string representation of DIR and PATH"
