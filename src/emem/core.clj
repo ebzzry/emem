@@ -28,9 +28,10 @@
    [nil "--header TEXT"     "document header"]
    ["-t" "--titlehead TEXT" "the same as --title TEXT --header TEXT"]
 
-   ["-C" "--css CSS"     "specify alternative main CSS resource"]
-   ["-S" "--style STYLE" "specify alternative style for the syntax highlighter"]
-   ["-L" "--list-styles" "list available styles for the syntax highlighter"]
+   ["-M" "--css CSS"        "specify alternative main CSS resource"]
+   ["-C" "--inline-css CSS" "specify inline CSS" :id :inline]
+   ["-S" "--style STYLE"    "specify alternative style for the syntax highlighter"]
+   ["-L" "--list-styles"    "list available styles for the syntax highlighter"]
 
    ["-v" nil         "increase verbosity"
     :id :verbosity :default 0
