@@ -114,6 +114,10 @@
                      ;; inline css
                      (inline-css opts)
 
+                     ;; use full page width
+                     (when (:full opts)
+                       (inline-css {:inline "html { max-width: 100%; }"}))
+
                      ;; ewan.css & highlight.pack.js
                      (when-not (= (:style opts) "-")
                        (hi/html
@@ -188,7 +192,16 @@
              [:link {:rel "stylesheet" :href css :media "all"}]
 
              ;; inline css
-             (inline-css)
+             (inline-css opts)
+
+             ;; use full page width
+             (when (:full opts)
+               (inline-css {:inline "html { max-width: 100%; }"}))
+
+             ;; (when (:full opts)
+             ;;   (hi/html
+             ;;    [:style {:media "all" :type "text/css"}
+             ;;     "html { max-width: 100%; }"]))
 
              ;; ewan.css & highlight.pack.js
              (when-not (= (:style opts) "-")

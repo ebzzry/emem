@@ -30,6 +30,7 @@
 
    ["-M" "--css CSS"        "specify alternative main CSS resource"]
    ["-C" "--inline-css CSS" "specify inline CSS" :id :inline]
+   ["-F" "--full-width"     "use full page width" :id :full]
    ["-S" "--style STYLE"    "specify alternative style for the syntax highlighter"]
    ["-L" "--list-styles"    "list available styles for the syntax highlighter"]
 
@@ -253,6 +254,8 @@
   :header String             document header
   :titlehead String          the same as :title String :header String
   :css String                specify alternative main CSS resource
+  :inline String             specify inline CSS
+  :full Boolean              use full page width
   :style String              specify alternative style for the syntax highlighter"
   [in & args]
   (cond
