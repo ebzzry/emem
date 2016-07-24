@@ -14,7 +14,7 @@ Installation
 ### Leiningen
 
 ```clojure
-[emem "0.2.20-SNAPSHOT"]
+[emem "0.2.21-SNAPSHOT"]
 ```
 
 ### Maven
@@ -23,7 +23,7 @@ Installation
 <dependency>
   <groupId>emem</groupId>
   <artifactId>emem</artifactId>
-  <version>0.2.20-SNAPSHOT</version>
+  <version>0.2.21-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -57,11 +57,11 @@ $ lein uberjar
 
 This command generates two JAR files. The file that we need is the
 standalone
-one—`./target/uberjar/emem-0.2.20-SNAPSHOT-standalone.jar`. Copy this
+one—`./target/uberjar/emem-0.2.21-SNAPSHOT-standalone.jar`. Copy this
 file to `~/bin`, as `emem.jar`.
 
 ```bash
-$ cp target/uberjar/emem-0.2.20-*-standalone.jar ~/bin/emem.jar
+$ cp target/uberjar/emem-0.2.21-*-standalone.jar ~/bin/emem.jar
 ```
 
 Next, create a shell script to ease typing.
@@ -119,7 +119,8 @@ To convert all `.md` files in the current directory:
 
     $ emem .
 
-To convert `README.md` and embed the CSS data to a standalone `README.html`:
+To convert `README.md` and embed the CSS data to a standalone
+`README.html`:
 
     $ emem -s README.md
 
@@ -127,19 +128,37 @@ To convert all `.md` files in the directory `~/Desktop/notes/`:
 
     $ emem ~/Desktop/notes/
 
-To convert all `.md` files in the current directory, to the `html/` directory:
+To convert all `.md` files in the current directory, and output them
+to the `html/` directory:
 
     $ emem -d html .
 
-In continuous mode, _emem_ will wait for changes to your files. When a
+To change the top-level CSS:
+
+    $ emem -M custom.css list.md
+
+To change the syntax highlighter CSS:
+
+    $ emem -S zenburn repairs.md
+
+To list the available syntax highlighter styles:
+
+    $ emem -L
+
+To inline CSS:
+
+    $ emem -C 'html { max-width: 100%; }' README.md
+
+To build in continuous mode:
+
+    $ emem -c ~/Desktop/notes/
+
+In continuous mode _emem_ will wait for changes to your files. When a
 change has been detected, it automatically rebuilds the HTML files. It
 will remain to monitor for changes, until <kbd>Ctrl-C</kbd> is
-pressed:
-
-    $ emem -c ~/Desktop/notes
-
-The continuous mode works great when used with browser extensions that
-reload a page when a page gets updated. The ones I can suggest are:
+pressed. The continuous mode works great when used with browser
+extensions that reload a page when a page gets updated. The ones I can
+suggest are:
 
 * [LivePage](https://chrome.google.com/webstore/detail/livepage/pilnojpmdoofaelbinaeodfpjheijkbh/related?hl=en) (Chrome)
 * [Auto Reload](https://addons.mozilla.org/en-US/firefox/addon/auto-reload/?src=api) (Firefox)
@@ -159,23 +178,6 @@ pressed:
 The following is an equivalent command of the above:
 
     $ echo '# foo\n**bold**\n_emph_' | emem -w
-
-To create an HTML listing of the current directory:
-
-    $ ls -R | sed -e '1i```bash' -e '$a```' \
-    | emem -t `basename $PWD` -o ls.html
-
-To change the top-level CSS:
-
-    $ emem -C custom.css list.md
-
-To change the syntax highlighter CSS:
-
-    $ emem -S zenburn repairs.md
-
-To list the available syntax highlighter styles:
-
-    $ emem -L
 
 To learn more about the available options:
 

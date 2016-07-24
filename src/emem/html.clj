@@ -9,6 +9,14 @@
   "Default style for the syntax highlighter."
   "ewan")
 
+(defn inline-css
+  "Prints inline CSS code, if used"
+  [opts]
+  (when (:inline opts)
+    (hi/html
+     [:style {:media "all" :type "text/css"}
+      (:inline opts)])))
+
 (defn html-page
   "Wraps TEXT with HTML necessary for correct page display."
   [opts args text]
@@ -103,6 +111,9 @@
                       [:style {:media "all" :type "text/css"}
                        (s/replace (slurp-path temp css) "\n" "")])
 
+                     ;; inline css
+                     (inline-css opts)
+
                      ;; ewan.css & highlight.pack.js
                      (when-not (= (:style opts) "-")
                        (hi/html
@@ -175,6 +186,9 @@
 
              ;; main.css
              [:link {:rel "stylesheet" :href css :media "all"}]
+
+             ;; inline css
+             (inline-css)
 
              ;; ewan.css & highlight.pack.js
              (when-not (= (:style opts) "-")
