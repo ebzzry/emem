@@ -17,8 +17,9 @@
    ["-r" "--resources"            "build the resource files only" :id :resources]
    ["-R" "--no-resources"         "build HTML output sans resources"]
    ["-c" "--continuous"           "run in continuous build mode"]
-   ["-f" "--refresh MILLISECONDS" "time between rebuilds (default: 200 ms)"]
+   ["-t" "--refresh MILLISECONDS" "time between rebuilds (default: 200 ms)"]
    ["-s" "--standalone"           "embed the CSS data with the output files"]
+   ["-f" "--full-width"     "use full page width" :id :full]
 
    ["-w" "--raw"   "emit 1:1 Markdown-HTML equivalence"]
    ["-p" "--plain" "build plain HTML; don't use CSS and JS"]
@@ -26,11 +27,10 @@
 
    [nil "--title TEXT"      "document title"]
    [nil "--header TEXT"     "document header"]
-   ["-t" "--titlehead TEXT" "the same as --title TEXT --header TEXT"]
+   ["-T" "--titlehead TEXT" "the same as --title TEXT --header TEXT"]
 
    ["-M" "--css CSS"        "specify alternative main CSS resource"]
    ["-C" "--inline-css CSS" "specify inline CSS" :id :inline]
-   ["-F" "--full-width"     "use full page width" :id :full]
    ["-S" "--style STYLE"    "specify alternative style for the syntax highlighter"]
    ["-L" "--list-styles"    "list available styles for the syntax highlighter"]
 
