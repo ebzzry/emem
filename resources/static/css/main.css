@@ -124,3 +124,11 @@ b, strong {
 i, em, emph {
     font-style: italic;
 }
+
+th, td {
+    border-top: 0 solid lightgray;
+    border-bottom: 0 solid lightgray;
+    border-left: 0 solid lightgray;
+    border-right: 0 solid lightgray;
+    padding-right: 0.5em;
+}
