@@ -125,10 +125,16 @@ i, em, emph {
     font-style: italic;
 }
 
+table {
+    margin: 0.5em;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
 th, td {
-    border-top: 0 solid lightgray;
-    border-bottom: 0 solid lightgray;
-    border-left: 0 solid lightgray;
-    border-right: 0 solid lightgray;
-    padding-right: 0.5em;
+    border: 1px solid lightgray;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 0.35em;
+    padding-right: 0.35em;
 }
