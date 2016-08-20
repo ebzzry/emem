@@ -95,16 +95,20 @@ ul, ol {
     padding-left: 2em;
 }
 
-li {
+ul li {
     list-style-type: square;
 }
 
-li li {
+ul li li {
     list-style-type: disc;
 }
 
-li li li {
+ul li li li {
     list-style-type: circle;
+}
+
+ol li {
+    list-style-type: decimal;
 }
 
 p, para, b, strong, i, em, emph {
@@ -135,6 +139,6 @@ th, td {
     border: 1px solid lightgray;
     padding-top: 0;
     padding-bottom: 0;
-    padding-left: 0.35em;
-    padding-right: 0.35em;
+    padding-left: 0.45em;
+    padding-right: 0.45em;
 }
