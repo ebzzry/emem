@@ -38,6 +38,7 @@
        [:head
         (quo title [:title title])
         [:meta {:charset "utf-8"}]
+        [:meta {:http-equiv "Cache-control" :contents "max-age=86400"}]
         [:meta {:name "viewport"
                 :content "width=device-width, initial-scale=1.0, user-scalable=yes"}]
         ;; quo
@@ -79,7 +80,7 @@
                          (s/replace (slurp-path temp style) "\n" "")]
                         ;; [:script {:type "javascript"}
                         ;;  (slurp-path temp highlight)]
-                        [:script "hljs.initHighlightingOnLoad();"])))]
+                        [:script {:async ""} "hljs.initHighlightingOnLoad();"])))]
                 (delete-directory temp)
                 text))
             (hi/html
@@ -121,8 +122,8 @@
              (when-not (= (:style opts) "-")
                (hi/html
                 [:link {:rel "stylesheet" :href style :media "all"}]
-                [:script {:src "static/js/highlight.pack.js"}]
-                [:script "hljs.initHighlightingOnLoad();"])))))]
+                [:script {:async "" :src "static/js/highlight.pack.js"}]
+                [:script {:async ""} "hljs.initHighlightingOnLoad();"])))))]
        [:body
         (quo header [:h1 header])
         [:div {:id "content"}
