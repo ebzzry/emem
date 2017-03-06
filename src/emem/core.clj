@@ -28,6 +28,7 @@
    [nil "--title TEXT"      "document title"]
    [nil "--header TEXT"     "document header"]
    ["-T" "--titlehead TEXT" "the same as --title TEXT --header TEXT"]
+   ["-F" "--file-title"     "use basename of file as document title"]
 
    ["-M" "--css CSS"        "specify alternative main CSS resource"]
    ["-C" "--inline-css CSS" "specify inline CSS" :id :inline]
@@ -41,7 +42,7 @@
    ["-h" "--help"    "display this help"]])
 
 (defn- display-usage
-  "Displays program usage."
+  "Display program usage."
   [text]
   (println
    (s/join \newline
@@ -53,33 +54,33 @@
             "See https://github.com/ebzzry/emem for more information"])))
 
 (defn- display-errors
-  "Displays the errors encountered during command parsing."
+  "Display the errors encountered during command parsing."
   [errors]
   (println
    (str "The following errors occurred:\n\n"
         (s/join \newline errors))))
 
 (defn- version
-  "Displays program version."
+  "Display the program version."
   []
   (with-open [in (find-resource "etc/VERSION")]
     (let [ver (slurp in)]
       (spit *out* ver))))
 
 (defn- get-styles
-  "Returns the available styles for the syntax highlighter."
+  "Return the available styles for the syntax highlighter."
   []
   (sort compare (remove #{"main" "ewan"}
                  (map root (get-resources "static/css")))))
 
 (defn- list-styles
-  "Displays the available styles for the syntax highlighter."
+  "Display the available styles for the syntax highlighter."
   []
   (doseq [style (get-styles)]
     (println style)))
 
 (defn- inputs-ok?
-  "Verifies that all inputs exist."
+  "Verify that all inputs exist."
   [inputs opts]
   (msg "[*] Verifying inputs..." 1 (verb opts))
   (or (when-let [[in & _] inputs]
@@ -87,7 +88,7 @@
       (files-exist? inputs)))
 
 (defn- write-html
-  "Writes the HTML to file."
+  "Write the HTML to file."
   [opts args]
   (msg "[*] Writing output..." 1 (verb opts))
   (let [output (out opts)
@@ -102,7 +103,7 @@
 (defn- write-pdf [] nil)
 
 (defn- stage
-  "Verifies options, and conditionalizes installation of resources."
+  "Verify options and conditionalizes installation of resources."
   [opts args f exit]
   (msg "[*] Setting up stage..." 1 (verb opts))
   (cond
@@ -123,7 +124,7 @@
 (declare launch)
 
 (defn- rebuild
-  "Rebuilds the target if any of the input files are modified."
+  "Rebuild the target if any of the input files are modified."
   [opts args]
   (msg "[*] Rebuilding..." 1 (verb opts))
   (let [times (mod-times args)
@@ -136,12 +137,12 @@
       (recur opts args))))
 
 (defn html-name-path
-  "Returns absolute path to HTML file"
+  "Return absolute path to HTML file"
   [dest input]
   (html-name (str (absolute-path dest) "/" (basename input))))
 
 (defn- launch
-  "Converts a Markdown file to HTML."
+  "Convert a Markdown file to HTML."
   [opts args]
   (let [input (first args)
         options (merge-options
@@ -164,11 +165,7 @@
 
                       ;; :dir is not used
                       :else
-                      (html-name input))
-                    ;; (if (and dest (exists? dest) (directory? dest))
-                    ;;   (html-name (str (absolute-path dest) "/" (basename input)))
-                    ;;   (html-name input))
-                    )
+                      (html-name input)))
                   *out*))
         f (fn [inputs]
             (stage options inputs
@@ -199,13 +196,13 @@
         (launch opts [arg])))))
 
 (defn- expand-md
-  "Returns a vector of absolute paths of Markdown files, found in
+  "Return a vector of absolute paths of Markdown files, found in
   traversing PATHS, including directories."
   [paths]
   (expand paths "md"))
 
 (defn- dump
-  "Converts Markdown inputs to HTML."
+  "Convert Markdown inputs to HTML."
   [opts args]
   (let [argsn (count args)
         args? (> argsn 1)
@@ -227,7 +224,7 @@
                   (abs-parent (first args)))]
         (or (:no-resources opts)
             (when-not (:standalone opts)
-              (copy-resources opts)))
+              (copy-resources (merge-options opts dir))))
         (multi-launch (merge-true opts :no-resources)
                       xargs))
 
@@ -239,12 +236,12 @@
       (multi-launch opts xargs))))
 
 (defn convert
-  "Converts Markdown inputs to HTML.
+  "Convert Markdown inputs to HTML.
 
   Options:
   :out String                specify output file
   :directory String          specify output directory
-  :resources Boolean install build the resource files only
+  :resources Boolean         build the resource files only
   :no-resources Boolean      build HTML output sans resources
   :standalone Boolean        embed the CSS data with the output files
   :raw Boolean               emit 1:1 Markdown-HTML equivalence
@@ -253,6 +250,7 @@
   :title String              document title
   :header String             document header
   :titlehead String          the same as :title String :header String
+  :file-title String         use basename of file as document title
   :css String                specify alternative main CSS resource
   :inline String             specify inline CSS
   :full Boolean              use full page width
