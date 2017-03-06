@@ -10,7 +10,7 @@
   "ewan")
 
 (defn inline-css
-  "Prints inline CSS code, if used"
+  "Print inline CSS code, if used"
   [opts]
   (when (:inline opts)
     (hi/html
@@ -18,10 +18,11 @@
       (:inline opts)])))
 
 (defn html-page
-  "Wraps CONTENT with HTML necessary for correct page display."
+  "Wrap CONTENT with HTML necessary for correct page display."
   [opts args content]
   (let [title (or (:title opts)
                   (:titlehead opts)
+                  (when (:file-title opts) (base-name (first args)))
                   (when (in? args) "")
                   (when-let [line (first-line (first args))]
                     line))
@@ -107,12 +108,12 @@
         [:script "hljs.initHighlightingOnLoad();"]]]))))
 
 (defn markdown
-  "Returns a Markdown string converted to HTML."
+  "Return a Markdown string converted to HTML."
   [str]
   (md/md-to-html-string str))
 
 (defn html
-  "Converts Markdown inputs to HTML strings."
+  "Convert Markdown inputs to HTML strings."
   [opts args]
   (let [text (if (:merge opts)
                (s/join (map #(markdown (slurp %)) args))
@@ -122,7 +123,7 @@
       (html-page opts args text))))
 
 (defn html-name
-  "Returns the HTML name of PATH."
+  "Return the HTML name of PATH."
   [path]
   (suffix-name path ".html"))
 
