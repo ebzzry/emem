@@ -21,6 +21,7 @@
    ["-s" "--standalone"           "embed both the CSS data and JS external reference"]
    ["-a" "--standalone-css"       "embed only the CSS data"]
    ["-f" "--full-width"           "use full page width" :id :full]
+   ["-i" "--icon"                 "use the included favicon"]
 
    ["-w" "--raw"                  "emit 1:1 Markdown-HTML equivalence"]
    ["-p" "--plain"                "build plain HTML; don't use CSS and JS"]
@@ -239,7 +240,7 @@
 (defn convert
   "Convert Markdown inputs to HTML.
 
-  Options:
+Options:
   :out String                specify output file
   :directory String          specify output directory
   :resources Boolean         build the resource files only
@@ -256,6 +257,7 @@
   :css String                specify alternative main CSS resource
   :inline String             specify inline CSS
   :full Boolean              use full page width
+  :icon Boolean              use the included favicon
   :style String              specify alternative style for the syntax highlighter"
   [in & args]
   (cond
