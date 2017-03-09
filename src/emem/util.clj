@@ -491,3 +491,8 @@
   (if (empty? path)
     nil
     (str (absolute-file-name-root path) suffix)))
+
+(defn slurp-remove-newlines
+  "Slurp file removing newlines"
+  [directory file]
+  (s/replace (slurp-path directory file) "\n" ""))

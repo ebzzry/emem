@@ -18,22 +18,23 @@
    ["-R" "--no-resources"         "build HTML output sans resources"]
    ["-c" "--continuous"           "run in continuous build mode"]
    ["-t" "--refresh MILLISECONDS" "time between rebuilds (default: 200 ms)"]
-   ["-s" "--standalone"           "embed the CSS data with the output files"]
-   ["-f" "--full-width"     "use full page width" :id :full]
+   ["-s" "--standalone"           "embed both the CSS data and JS external reference"]
+   ["-a" "--standalone-css"       "embed only the CSS data"]
+   ["-f" "--full-width"           "use full page width" :id :full]
 
-   ["-w" "--raw"   "emit 1:1 Markdown-HTML equivalence"]
-   ["-p" "--plain" "build plain HTML; don't use CSS and JS"]
-   ["-m" "--merge" "merge and process the files into a single output"]
+   ["-w" "--raw"                  "emit 1:1 Markdown-HTML equivalence"]
+   ["-p" "--plain"                "build plain HTML; don't use CSS and JS"]
+   ["-m" "--merge"                "merge and process the files into a single output"]
 
-   [nil "--title TEXT"      "document title"]
-   [nil "--header TEXT"     "document header"]
-   ["-T" "--titlehead TEXT" "the same as --title TEXT --header TEXT"]
-   ["-F" "--file-title"     "use basename of file as document title"]
+   [nil "--title TEXT"            "document title"]
+   [nil "--header TEXT"           "document header"]
+   ["-T" "--titlehead TEXT"       "the same as --title TEXT --header TEXT"]
+   ["-F" "--file-title"           "use basename of file as document title"]
 
-   ["-M" "--css CSS"        "specify alternative main CSS resource"]
-   ["-C" "--inline-css CSS" "specify inline CSS" :id :inline]
-   ["-S" "--style STYLE"    "specify alternative style for the syntax highlighter"]
-   ["-L" "--list-styles"    "list available styles for the syntax highlighter"]
+   ["-M" "--css CSS"              "specify alternative main CSS resource"]
+   ["-C" "--inline-css CSS"       "specify inline CSS" :id :inline]
+   ["-S" "--style STYLE"          "specify alternative style for the syntax highlighter"]
+   ["-L" "--list-styles"          "list available styles for the syntax highlighter"]
 
    ["-v" nil         "increase verbosity"
     :id :verbosity :default 0
@@ -243,7 +244,8 @@
   :directory String          specify output directory
   :resources Boolean         build the resource files only
   :no-resources Boolean      build HTML output sans resources
-  :standalone Boolean        embed the CSS data with the output files
+  :standalone Boolean        embed both the CSS data and JS external reference
+  :standalone-css Boolean    embed only the CSS data
   :raw Boolean               emit 1:1 Markdown-HTML equivalence
   :plain Boolean             build plain HTML; don't use CSS and JS
   :merge Boolean             merge and process the files into one file
