@@ -30,7 +30,7 @@
    [nil "--title TEXT"            "document title"]
    [nil "--header TEXT"           "document header"]
    ["-T" "--titlehead TEXT"       "the same as --title TEXT --header TEXT"]
-   ["-F" "--file-title"           "use basename of file as document title"]
+   ["-F" "--first-line-title"     "use first line of file as document title"]
 
    ["-M" "--css CSS"              "specify alternative main CSS resource"]
    ["-C" "--inline-css CSS"       "specify inline CSS" :id :inline]
@@ -253,7 +253,7 @@ Options:
   :title String              document title
   :header String             document header
   :titlehead String          the same as :title String :header String
-  :file-title String         use basename of file as document title
+  :first-line-title          use first line of file as document title
   :css String                specify alternative main CSS resource
   :inline String             specify inline CSS
   :full Boolean              use full page width

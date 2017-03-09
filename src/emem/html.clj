@@ -22,10 +22,11 @@
   [opts args content]
   (let [title (or (:title opts)
                   (:titlehead opts)
-                  (when (:file-title opts) (base-name (first args)))
+                  (when (:first-line-title opts)
+                    (when-let [line (first-line (first args))]
+                      line))
                   (when (in? args) "")
-                  (when-let [line (first-line (first args))]
-                    line))
+                  (base-name (first args)))
         header (or (:header opts) (:titlehead opts))
         css (or (:css opts) "static/css/main.css")
         style (str "static/css/"
