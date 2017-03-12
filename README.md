@@ -151,7 +151,7 @@ To inline CSS:
 
 To use full page width:
 
-    $ emem -F README.md
+    $ emem -f README.md
 
 To build in continuous mode:
 
@@ -186,6 +186,8 @@ The following is an equivalent command of the above:
 To learn more about the available options:
 
     $ emem -h
+
+An example of how emem is used to generate pages can be found [here](https://github.com/ebzzry/ebzzry.github.io/blob/master/Makefile)
 
 
 ### API
