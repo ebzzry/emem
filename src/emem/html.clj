@@ -45,6 +45,8 @@
         [:meta {:charset "utf-8"}]
         [:meta {:http-equiv "Cache-control" :contents "max-age=86400"}]
         [:meta {:name "viewport" :content "width=device-width,initial-scale=1.0,user-scalable=yes"}]
+        [:meta {:name "robots" :content "noodp,noydir"}]
+        (when (:head opts) (str (:head opts)))
         ;; quo
         (when (not (:plain opts))
           (if (:standalone opts)
@@ -53,8 +55,7 @@
                              (when (:icon opts)
                                (hi/html
                                 ;; favicon
-                                [:link {:rel "apple-touch-icon" :sizes "180x180"
-                                        :href apple-touch-icon-180x180}]
+                                [:link {:rel "apple-touch-icon" :sizes "180x180" :href apple-touch-icon-180x180}]
                                 [:link {:rel "icon" :type "image/png" :sizes "16x16" :href icon-16x16}]
                                 [:link {:rel "icon" :type "image/png" :sizes "32x32" :href icon-32x32}]
                                 [:link {:rel "manifest" :href manifest}]
