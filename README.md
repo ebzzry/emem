@@ -187,7 +187,7 @@ To learn more about the available options:
 
     $ emem -h
 
-An example of how emem is used to generate pages can be found [here](https://github.com/ebzzry/ebzzry.github.io/blob/master/Makefile)
+An example of how emem is used to generate pages can be found [here](https://github.com/ebzzry/ebzzry.github.io/blob/master/Makefile).
 
 
 ### API
