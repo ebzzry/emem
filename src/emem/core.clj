@@ -32,6 +32,8 @@
    ["-T" "--titlehead TEXT"       "the same as --title TEXT --header TEXT"]
    ["-F" "--first-line-title"     "use first line of file as document title"]
 
+   [nil "--head CONTENT"          "insert arbitrary content in the head tag"]
+
    ["-M" "--css CSS"              "specify alternative main CSS resource"]
    ["-C" "--inline-css CSS"       "specify inline CSS" :id :inline]
    ["-S" "--style STYLE"          "specify alternative style for the syntax highlighter"]
@@ -253,6 +255,7 @@ Options:
   :title String              document title
   :header String             document header
   :titlehead String          the same as :title String :header String
+  :head String               insert arbitrary content in the head tag
   :first-line-title          use first line of file as document title
   :css String                specify alternative main CSS resource
   :inline String             specify inline CSS
