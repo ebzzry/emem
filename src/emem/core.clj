@@ -22,20 +22,17 @@
    ["-a" "--standalone-css"       "embed only the CSS data"]
    ["-f" "--full-width"           "use full page width" :id :full]
    ["-i" "--icon"                 "use the included favicon"]
-
    ["-w" "--raw"                  "emit 1:1 Markdown-HTML equivalence"]
    ["-p" "--plain"                "build plain HTML; don't use CSS and JS"]
    ["-m" "--merge"                "merge and process the files into a single output"]
-
-   [nil "--title TEXT"            "document title"]
-   [nil "--header TEXT"           "document header"]
+   ["-l" "--lang"                 "specify document language"]
+   ["-I" "--title TEXT"            "document title"]
+   ["-A" "--header TEXT"           "document header"]
    ["-T" "--titlehead TEXT"       "the same as --title TEXT --header TEXT"]
    ["-F" "--first-line-title"     "use first line of file as document title"]
-
-   ["-H" "--head CONTENT"          "insert arbitrary content in the head tag"]
-   ["-D" "--description TEXT"      "specify meta tag description attribute value"]
-   ["-K" "--keywords TEXT"         "specify meta tag keywords attribute value"]
-
+   ["-H" "--head CONTENT"         "insert arbitrary content in the head tag"]
+   ["-D" "--description TEXT"     "specify meta tag description attribute value"]
+   ["-K" "--keywords TEXT"        "specify meta tag keywords attribute value"]
    ["-M" "--css CSS"              "specify alternative main CSS resource"]
    ["-C" "--inline-css CSS"       "specify inline CSS" :id :inline]
    ["-S" "--style STYLE"          "specify alternative style for the syntax highlighter"]

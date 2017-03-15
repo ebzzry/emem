@@ -40,7 +40,7 @@
      "<!DOCTYPE html>\n"
      (hi/html
       [:html
-       {:lang "en"}
+       {:lang (or (:lang opts) "en")}
        [:head
         (quo title [:title title])
         [:meta {:charset "utf-8"}]
