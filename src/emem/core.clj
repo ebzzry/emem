@@ -12,8 +12,8 @@
 
 (def ^:private cli-opts
   "Specification for the command-line options."
-  [["-o" "--output HTML"          "specify output file" :id :out]
-   ["-d" "--directory DIRECTORY"  "specify output directory" :id :dir]
+  [["-o" "--output HTML"          "specify output file (default: file basename sans extension + .html)" :id :out]
+   ["-d" "--directory DIRECTORY"  "specify output directory (default: file directory)" :id :dir]
    ["-r" "--resources"            "build the resource files only" :id :resources]
    ["-R" "--no-resources"         "build HTML output sans resources"]
    ["-c" "--continuous"           "run in continuous build mode"]
@@ -22,18 +22,18 @@
    ["-a" "--standalone-css"       "embed only the CSS data"]
    ["-f" "--full-width"           "use full page width" :id :full]
    ["-i" "--icon"                 "use the included favicon"]
-   ["-w" "--raw"                  "emit 1:1 Markdown-HTML equivalence"]
-   ["-p" "--plain"                "build plain HTML; don't use CSS and JS"]
-   ["-m" "--merge"                "merge and process the files into a single output"]
-   ["-l" "--lang"                 "specify document language"]
-   ["-I" "--title TEXT"            "document title"]
-   ["-A" "--header TEXT"           "document header"]
+   ["-w" "--raw"                  "emit 1:1 Markdown-HTML equivalence-don't build a complete HTML document"]
+   ["-p" "--plain"                "build plain HTML-don't use CSS and JS"]
+   ["-m" "--merge"                "merge and process the inputs into a single output"]
+   ["-l" "--lang"                 "specify document language (default: en)"]
+   ["-I" "--title TEXT"           "specify document title (default: file basename)"]
+   ["-E" "--header TEXT"          "specify document header (default: none)"]
    ["-T" "--titlehead TEXT"       "the same as --title TEXT --header TEXT"]
-   ["-F" "--first-line-title"     "use first line of file as document title"]
+   ["-F" "--first-line      "     "use first line of file as document title"]
    ["-H" "--head CONTENT"         "insert arbitrary content in the head tag"]
    ["-D" "--description TEXT"     "specify meta tag description attribute value"]
    ["-K" "--keywords TEXT"        "specify meta tag keywords attribute value"]
-   ["-M" "--css CSS"              "specify alternative main CSS resource"]
+   ["-M" "--css CSS"              "specify alternative main CSS"]
    ["-C" "--inline-css CSS"       "specify inline CSS" :id :inline]
    ["-S" "--style STYLE"          "specify alternative style for the syntax highlighter"]
    ["-L" "--list-styles"          "list available styles for the syntax highlighter"]
@@ -251,14 +251,14 @@ Options:
   :raw Boolean               emit 1:1 Markdown-HTML equivalence
   :plain Boolean             build plain HTML; don't use CSS and JS
   :merge Boolean             merge and process the files into one file
+  :lang String               specify document language 
   :title String              document title
   :header String             document header
   :titlehead String          the same as :title String :header String
   :head String               insert arbitrary content in the head tag
   :description TEXT          specify meta tag description attribute value
   :keywords TEXT             specify meta tag keywords attribute value
-
-  :first-line-title          use first line of file as document title
+  :first-line                use first line of file as document title
   :css String                specify alternative main CSS resource
   :inline String             specify inline CSS
   :full Boolean              use full page width
