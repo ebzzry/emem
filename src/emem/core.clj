@@ -29,7 +29,7 @@
    ["-I" "--title TEXT"           "specify document title (default: file basename)"]
    ["-E" "--header TEXT"          "specify document header (default: none)"]
    ["-T" "--titlehead TEXT"       "the same as --title TEXT --header TEXT"]
-   ["-F" "--first-line      "     "use first line of file as document title"]
+   ["-F" "--first-line"           "use first line of file as document title"]
    ["-H" "--head CONTENT"         "insert arbitrary content in the head tag"]
    ["-D" "--description TEXT"     "specify meta tag description attribute value"]
    ["-K" "--keywords TEXT"        "specify meta tag keywords attribute value"]
