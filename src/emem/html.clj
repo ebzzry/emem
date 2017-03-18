@@ -23,7 +23,7 @@
   [opts args content]
   (let [title (or (:title opts)
                   (:titlehead opts)
-                  (when (:first-line-title opts)
+                  (when (:first-line opts)
                     (when-let [line (first-line (first args))]
                       line))
                   (when (in? args) "")
