@@ -12,35 +12,44 @@
 
 (def ^:private cli-opts
   "Specification for the command-line options."
-  [["-o" "--output HTML"          "specify output file (default: file basename sans extension + .html)" :id :out]
-   ["-d" "--directory DIRECTORY"  "specify output directory (default: file directory)" :id :dir]
-   ["-r" "--resources"            "build the resource files only" :id :resources]
-   ["-R" "--no-resources"         "build HTML output sans resources"]
-   ["-c" "--continuous"           "run in continuous build mode"]
-   ["-t" "--refresh MILLISECONDS" "time between rebuilds (default: 200 ms)"]
-   ["-s" "--standalone"           "embed both the CSS data and JS external reference"]
-   ["-a" "--standalone-css"       "embed only the CSS data"]
-   ["-f" "--full-width"           "use full page width" :id :full]
-   ["-i" "--icon"                 "use the included favicon"]
-   ["-w" "--raw"                  "emit 1:1 Markdown-HTML equivalence-don't build a complete HTML document"]
-   ["-p" "--plain"                "build plain HTML-don't use CSS and JS"]
-   ["-m" "--merge"                "merge and process the inputs into a single output"]
-   ["-l" "--lang"                 "specify document language (default: en)"]
-   ["-I" "--title TEXT"           "specify document title (default: file basename)"]
-   ["-E" "--header TEXT"          "specify document header (default: none)"]
-   ["-T" "--titlehead TEXT"       "the same as --title TEXT --header TEXT"]
-   ["-F" "--first-line"           "use first line of file as document title"]
-   ["-H" "--head CONTENT"         "insert arbitrary content in the head tag"]
-   ["-D" "--description TEXT"     "specify meta tag description attribute value"]
-   ["-K" "--keywords TEXT"        "specify meta tag keywords attribute value"]
-   ["-M" "--css CSS"              "specify alternative main CSS"]
-   ["-C" "--inline-css CSS"       "specify inline CSS" :id :inline]
-   ["-S" "--style STYLE"          "specify alternative style for the syntax highlighter"]
-   ["-L" "--list-styles"          "list available styles for the syntax highlighter"]
-
-   ["-v" nil         "increase verbosity"
-    :id :verbosity :default 0
-    :assoc-fn (fn [m k _] (update-in m [k] inc))]
+  [["-o" "--output HTML"              "specify output file (default: file basename sans extension + .html)" :id :out]
+   ["-d" "--directory DIRECTORY"      "specify output directory (default: file directory)" :id :dir]
+   ["-r" "--resources"                "build the resource files only" :id :resources]
+   ["-R" "--no-resources"             "build HTML output sans resources"]
+   ["-c" "--continuous"               "run in continuous build mode"]
+   ["-t" "--refresh MILLISECONDS"     "time between rebuilds (default: 200 ms)"]
+   ["-s" "--standalone"               "embed both the CSS data and JS external reference"]
+   ["-a" "--standalone-css"           "embed only the CSS data"]
+   ["-f" "--full-width"               "use full page width" :id :full]
+   ["-i" "--icon"                     "use the included favicon"]
+   ["-w" "--raw"                      "emit 1:1 Markdown-HTML equivalence-don't build a complete HTML document"]
+   ["-p" "--plain"                    "build plain HTML-don't use CSS and JS"]
+   ["-m" "--merge"                    "merge and process the inputs into a single output"]
+   ["-l" "--lang"                     "specify document language (default: en)"]
+   ["-I" "--title TEXT"               "specify document title (default: file basename)"]
+   ["-E" "--header TEXT"              "specify document header (default: none)"]
+   ["-T" "--titlehead TEXT"           "the same as --title TEXT --header TEXT"]
+   ["-F" "--first-line"               "use first line of file as document title"]
+   ["-H" "--head CONTENT"             "insert arbitrary content in the head tag"]
+   ["-D" "--description TEXT"         "specify meta tag description attribute value"]
+   ["-K" "--keywords TEXT"            "specify meta tag keywords attribute value"]
+   [nil "--og-title VALUE"            "specify OGP title attribute value"]
+   [nil "--og-type VALUE"             "specify OGP type attribute value"]
+   [nil "--og-url VALUE"              "specify OGP url attribute value"]
+   [nil "--og-image VALUE"            "specify OGP image attribute value"]
+   [nil "--og-description VALUE"      "specify OGP description attribute value"]
+   [nil "--og-determiner VALUE"       "specify OGP determiner attribute value"]
+   [nil "--og-locale VALUE"           "specify OGP locale attribute value"]
+   [nil "--og-locale-alternate VALUE" "specify OGP locale:alternate attribute value"]
+   [nil "--og-site-name VALUE"        "specify OGP site_name attribute value"]
+   [nil "--og-audio VALUE"            "specify OGP audio attribute value"]
+   [nil "--og-video VALUE"            "specify OGP video attribute value"]
+   ["-M" "--css CSS"                  "specify alternative main CSS"]
+   ["-C" "--inline-css CSS"           "specify inline CSS" :id :inline]
+   ["-S" "--style STYLE"              "specify alternative style for the syntax highlighter"]
+   ["-L" "--list-styles"              "list available styles for the syntax highlighter"]
+   ["-v" nil                          "increase verbosity"
+    :id :verbosity :default 0 :assoc-fn (fn [m k _] (update-in m [k] inc))]
    ["-V" "--version" "display program version"]
    ["-h" "--help"    "display this help"]])
 
@@ -242,28 +251,39 @@
   "Convert Markdown inputs to HTML.
 
 Options:
-  :out String                specify output file
-  :directory String          specify output directory
-  :resources Boolean         build the resource files only
-  :no-resources Boolean      build HTML output sans resources
-  :standalone Boolean        embed both the CSS data and JS external reference
-  :standalone-css Boolean    embed only the CSS data
-  :raw Boolean               emit 1:1 Markdown-HTML equivalence
-  :plain Boolean             build plain HTML; don't use CSS and JS
-  :merge Boolean             merge and process the files into one file
-  :lang String               specify document language 
-  :title String              document title
-  :header String             document header
-  :titlehead String          the same as :title String :header String
-  :head String               insert arbitrary content in the head tag
-  :description TEXT          specify meta tag description attribute value
-  :keywords TEXT             specify meta tag keywords attribute value
-  :first-line                use first line of file as document title
-  :css String                specify alternative main CSS resource
-  :inline String             specify inline CSS
-  :full Boolean              use full page width
-  :icon Boolean              use the included favicon
-  :style String              specify alternative style for the syntax highlighter"
+  :out String                 specify output file
+  :directory String           specify output directory
+  :resources Boolean          build the resource files only
+  :no-resources Boolean       build HTML output sans resources
+  :standalone Boolean         embed both the CSS data and JS external reference
+  :standalone-css Boolean     embed only the CSS data
+  :full Boolean               use full page width
+  :icon Boolean               use the included favicon
+  :raw Boolean                emit 1:1 Markdown-HTML equivalence-don't build a complete HTML document
+  :plain Boolean              build plain HTML-don't use CSS and JS
+  :merge Boolean              merge and process the files into one file
+  :lang String                specify document language
+  :title String               specify document title
+  :header String              specify document header
+  :titlehead String           the same as :title String :header String
+  :first-line                 use first line of file as document title
+  :head String                insert arbitrary content in the head tag
+  :description String         specify meta tag description attribute value
+  :keywords String            specify meta tag keywords attribute value
+  :og-title String            specify OGP title attribute value
+  :og-type String             specify OGP type attribute value
+  :og-url String              specify OGP url attribute value
+  :og-image String            specify OGP image attribute value
+  :og-description String      specify OPG description attribute value
+  :og-determiner String       specify OGP determiner attribute value
+  :og-locale String           specify OGP locale attribute value
+  :og-locale-alternate String specify OGP locale:alternate attribute value
+  :og-site-name String        specify OGP site_name attribute value
+  :og-audio String            specify OGP audio attribute value
+  :og-video String            specify OGP video attribute value
+  :css String                 specify alternative main CSS resource
+  :inline String              specify inline CSS
+  :style String               specify alternative style for the syntax highlighter"
   [in & args]
   (cond
     ;; (convert "README.md")
