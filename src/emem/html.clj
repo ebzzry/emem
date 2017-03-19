@@ -49,6 +49,19 @@
         (when (:head opts) (str (:head opts)))
         (when (:description opts) (hi/html [:meta {:name "description" :content (:description opts)}]))
         (when (:keywords opts) (hi/html [:meta {:name "keywords" :content (:keywords opts)}]))
+
+        (when (:og-title opts) (hi/html [:meta {:property "og:title" :content (:og-title opts)}]))
+        (when (:og-type opts) (hi/html [:meta {:property "og:type" :content (:og-type opts)}]))
+        (when (:og-url opts) (hi/html [:meta {:property "og:url" :content (:og-url opts)}]))
+        (when (:og-image opts) (hi/html [:meta {:property "og:image" :content (:og-image opts)}]))
+        (when (:og-description opts) (hi/html [:meta {:property "og:description" :content (:og-description opts)}]))
+        (when (:og-determiner opts) (hi/html [:meta {:property "og:determiner" :content (:og-determiner opts)}]))
+        (when (:og-locale opts) (hi/html [:meta {:property "og:locale" :content (:og-locale opts)}]))
+        (when (:og-locale-alternate opts) (hi/html [:meta {:property "og:locale:alternate" :content (:og-locale-alternate opts)}]))
+        (when (:og-site-name opts) (hi/html [:meta {:property "og:site_name" :content (:og-site-name opts)}]))
+        (when (:og-aduio opts) (hi/html [:meta {:property "og:audio" :content (:og-audio opts)}]))
+        (when (:og-video opts) (hi/html [:meta {:property "og:video" :content (:og-video opts)}]))
+
         ;; quo
         (when (not (:plain opts))
           (if (:standalone opts)
