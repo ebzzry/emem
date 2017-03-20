@@ -131,7 +131,11 @@
         (if (:standalone opts)
           [:script {:src "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"}]
           [:script {:src "static/js/highlight.pack.js"}])
-        [:script "hljs.initHighlightingOnLoad();"]]]))))
+        [:script "hljs.initHighlightingOnLoad();"]
+
+        (if (:analytics opts)
+          (hi/html
+           [:script (format "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');ga('create', 'UA-%s', 'auto');ga('send', 'pageview');" (:analytics opts))]))]]))))
 
 (defn markdown
   "Return a Markdown string converted to HTML."
