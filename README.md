@@ -14,7 +14,7 @@ Installation
 ### Leiningen
 
 ```clojure
-[emem "0.2.44-SNAPSHOT"]
+[emem "0.2.45-SNAPSHOT"]
 ```
 
 ### Maven
@@ -23,7 +23,7 @@ Installation
 <dependency>
   <groupId>emem</groupId>
   <artifactId>emem</artifactId>
-  <version>0.2.44-SNAPSHOT</version>
+  <version>0.2.45-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -57,11 +57,11 @@ $ lein uberjar
 
 This command generates two JAR files. The file that we need is the
 standalone
-one—`./target/uberjar/emem-0.2.44-SNAPSHOT-standalone.jar`. Copy this
+one—`./target/uberjar/emem-0.2.45-SNAPSHOT-standalone.jar`. Copy this
 file to `~/bin`, as `emem.jar`.
 
 ```bash
-$ cp target/uberjar/emem-0.2.44-*-standalone.jar ~/bin/emem.jar
+$ cp target/uberjar/emem-0.2.45-*-standalone.jar ~/bin/emem.jar
 ```
 
 Next, create a shell script to ease typing.

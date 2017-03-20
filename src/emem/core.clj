@@ -48,6 +48,7 @@
    ["-C" "--inline-css CSS"           "specify inline CSS" :id :inline]
    ["-S" "--style STYLE"              "specify alternative style for the syntax highlighter"]
    ["-L" "--list-styles"              "list available styles for the syntax highlighter"]
+   ["-A" "--analytics CODE"           "specify Google Analytics code (UA-XXXXXXXX-X)"]
    ["-v" nil                          "increase verbosity"
     :id :verbosity :default 0 :assoc-fn (fn [m k _] (update-in m [k] inc))]
    ["-V" "--version" "display program version"]
@@ -283,7 +284,8 @@ Options:
   :og-video String            specify OGP video attribute value
   :css String                 specify alternative main CSS resource
   :inline String              specify inline CSS
-  :style String               specify alternative style for the syntax highlighter"
+  :style String               specify alternative style for the syntax highlighter
+  :analytics String           specify Google Analytics code"
   [in & args]
   (cond
     ;; (convert "README.md")
