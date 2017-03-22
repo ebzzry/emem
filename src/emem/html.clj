@@ -47,39 +47,38 @@
         [:meta {:name "viewport" :content "width=device-width,initial-scale=1.0,user-scalable=yes"}]
         [:meta {:name "robots" :content "noodp,noydir"}]
         (when (:head opts) (str (:head opts)))
-        (when (:description opts) (hi/html [:meta {:name "description" :content (:description opts)}]))
-        (when (:keywords opts) (hi/html [:meta {:name "keywords" :content (:keywords opts)}]))
+        (when (:description opts) [:meta {:name "description" :content (:description opts)}])
+        (when (:keywords opts) [:meta {:name "keywords" :content (:keywords opts)}])
 
-        (when (:og-title opts) (hi/html [:meta {:property "og:title" :content (:og-title opts)}]))
-        (when (:og-type opts) (hi/html [:meta {:property "og:type" :content (:og-type opts)}]))
-        (when (:og-url opts) (hi/html [:meta {:property "og:url" :content (:og-url opts)}]))
-        (when (:og-image opts) (hi/html [:meta {:property "og:image" :content (:og-image opts)}]))
-        (when (:og-description opts) (hi/html [:meta {:property "og:description" :content (:og-description opts)}]))
-        (when (:og-determiner opts) (hi/html [:meta {:property "og:determiner" :content (:og-determiner opts)}]))
-        (when (:og-locale opts) (hi/html [:meta {:property "og:locale" :content (:og-locale opts)}]))
-        (when (:og-locale-alternate opts) (hi/html [:meta {:property "og:locale:alternate" :content (:og-locale-alternate opts)}]))
-        (when (:og-site-name opts) (hi/html [:meta {:property "og:site_name" :content (:og-site-name opts)}]))
-        (when (:og-aduio opts) (hi/html [:meta {:property "og:audio" :content (:og-audio opts)}]))
-        (when (:og-video opts) (hi/html [:meta {:property "og:video" :content (:og-video opts)}]))
+        (when (:og-title opts) [:meta {:property "og:title" :content (:og-title opts)}])
+        (when (:og-type opts) [:meta {:property "og:type" :content (:og-type opts)}])
+        (when (:og-url opts) [:meta {:property "og:url" :content (:og-url opts)}])
+        (when (:og-image opts) [:meta {:property "og:image" :content (:og-image opts)}])
+        (when (:og-description opts) [:meta {:property "og:description" :content (:og-description opts)}])
+        (when (:og-determiner opts) [:meta {:property "og:determiner" :content (:og-determiner opts)}])
+        (when (:og-locale opts) [:meta {:property "og:locale" :content (:og-locale opts)}])
+        (when (:og-locale-alternate opts) [:meta {:property "og:locale:alternate" :content (:og-locale-alternate opts)}])
+        (when (:og-site-name opts) [:meta {:property "og:site_name" :content (:og-site-name opts)}])
+        (when (:og-aduio opts) [:meta {:property "og:audio" :content (:og-audio opts)}])
+        (when (:og-video opts) [:meta {:property "og:video" :content (:og-video opts)}])
 
         ;; quo
         (when (not (:plain opts))
           (if (:standalone opts)
             (let [pre-body (str
-                            (hi/html
-                             (when (:icon opts)
-                               (hi/html
-                                ;; favicon
-                                [:link {:rel "apple-touch-icon" :sizes "180x180" :href apple-touch-icon-180x180}]
-                                [:link {:rel "icon" :type "image/png" :sizes "16x16" :href icon-16x16}]
-                                [:link {:rel "icon" :type "image/png" :sizes "32x32" :href icon-32x32}]
-                                [:link {:rel "manifest" :href manifest}]
-                                [:link {:rel "mask-icon" :color "#5bbad5" :href mask-icon}]
-                                [:meta {:name "theme-color" :content "#ffffff"}]))
+                            (when (:icon opts)
+                              (hi/html
+                               ;; favicon
+                               [:link {:rel "apple-touch-icon" :sizes "180x180" :href apple-touch-icon-180x180}]
+                               [:link {:rel "icon" :type "image/png" :sizes "16x16" :href icon-16x16}]
+                               [:link {:rel "icon" :type "image/png" :sizes "32x32" :href icon-32x32}]
+                               [:link {:rel "manifest" :href manifest}]
+                               [:link {:rel "mask-icon" :color "#5bbad5" :href mask-icon}]
+                               [:meta {:name "theme-color" :content "#ffffff"}]))
 
-                             ;; main.css
-                             [:style {:media "all" :type "text/css"}
-                              (slurp-remove-newlines temp css)])
+                            ;; main.css
+                            [:style {:media "all" :type "text/css"}
+                             (slurp-remove-newlines temp css)]
 
                             ;; inline css
                             (inline-css opts)
@@ -120,10 +119,9 @@
 
              ;; ewan.css
              (when-not (= (:style opts) "-")
-               (hi/html
-                (if (:standalone-css opts)
-                  [:style {:media "all" :type "text/css"} (slurp-remove-newlines temp style)]
-                  [:link {:rel "stylesheet" :href style :media "all"}]))))))]
+               (if (:standalone-css opts)
+                 [:style {:media "all" :type "text/css"} (slurp-remove-newlines temp style)]
+                 [:link {:rel "stylesheet" :href style :media "all"}])))))]
        (do (delete-directory temp) "")
        [:body
         (quo header [:h1 header])
@@ -133,9 +131,8 @@
           [:script {:src "static/js/highlight.pack.js"}])
         [:script "hljs.initHighlightingOnLoad();"]
 
-        (if (:analytics opts)
-          (hi/html
-           [:script (format "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');ga('create', 'UA-%s', 'auto');ga('send', 'pageview');" (:analytics opts))]))]]))))
+        (when (:analytics opts)
+          [:script (format "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');ga('create', 'UA-%s', 'auto');ga('send', 'pageview');" (:analytics opts))])]]))))
 
 (defn markdown
   "Return a Markdown string converted to HTML."
