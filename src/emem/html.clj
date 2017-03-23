@@ -66,7 +66,8 @@
         (when (not (:plain opts))
           (if (:standalone opts)
             (let [pre-body (str
-                            (when (:icon opts)
+                            (hi/html
+                             (when (:icon opts)
                               (hi/html
                                ;; favicon
                                [:link {:rel "apple-touch-icon" :sizes "180x180" :href apple-touch-icon-180x180}]
@@ -92,7 +93,7 @@
                                ;; ewan.css
                                [:style {:media "all" :type "text/css"} (slurp-remove-newlines temp style)]
                                ;; highlight css
-                               [:link {:rel "stylesheet" :href "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/default.min.css"}])))]
+                               [:link {:rel "stylesheet" :href "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/default.min.css"}]))))]
               pre-body)
             (hi/html
              (when (:icon opts)
