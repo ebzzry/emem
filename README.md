@@ -143,7 +143,7 @@ To change the syntax highlighter CSS:
 
 To list the available syntax highlighter styles:
 
-    $ emem -L
+    $ emem -L | paste - - | expand -t 35
 
 To inline CSS:
 
