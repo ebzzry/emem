@@ -11,7 +11,7 @@
   "ewan")
 
 (defn inline-css
-  "Print inline CSS code, if used"
+  "Print inline CSS code, if used."
   [opts]
   (when (:inline opts)
     (hi/html
@@ -29,11 +29,11 @@
                   (when (in? args) "")
                   (base-name (first args)))
         header (or (:header opts) (:titlehead opts))
-        css (or (:css opts) "static/css/main.css")
-        style (str "static/css/"
+        css (or (:css opts) (root-path opts "static/css/main.css"))
+        style (str (root-path opts "static/css/")
                    (or (:style opts) default-style)
                    ".css")
-        highlight "static/js/highlight.pack.js"
+        highlight (root-path opts "static/js/highlight.pack.js")
         temp (temp-dir)]
     (install-resources temp)
     (str
@@ -99,11 +99,11 @@
              (when (:icon opts)
                (hi/html
                 ;; favicon
-                [:link {:rel "apple-touch-icon" :sizes "180x180" :href "static/ico/apple-touch-icon.png"}]
-                [:link {:rel "icon" :type "image/png" :href "static/ico/favicon-16x16.png" :sizes "16x16"}]
-                [:link {:rel "icon" :type "image/png" :href "static/ico/favicon-32x32.png" :sizes "32x32"}]
-                [:link {:rel "manifest" :href "static/ico/manifest.json"}]
-                [:link {:rel "mask-icon" :color "#5bbad5" :href "static/ico/safari-pinned-tab.svg"}]
+                [:link {:rel "apple-touch-icon" :sizes "180x180" :href (root-path opts "static/ico/apple-touch-icon.png")}]
+                [:link {:rel "icon" :type "image/png" :href (root-path opts "static/ico/favicon-16x16.png") :sizes "16x16"}]
+                [:link {:rel "icon" :type "image/png" :href (root-path opts "static/ico/favicon-32x32.png") :sizes "32x32"}]
+                [:link {:rel "manifest" :href (root-path opts "static/ico/manifest.json")}]
+                [:link {:rel "mask-icon" :color "#5bbad5" :href (root-path opts "static/ico/safari-pinned-tab.svg")}]
                 [:meta {:name "theme-color" :content "#ffffff"}]))
 
              ;; main.css
@@ -129,7 +129,7 @@
         [:div {:id "content"} content]
         (if (:standalone opts)
           [:script {:src "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"}]
-          [:script {:src "static/js/highlight.pack.js"}])
+          [:script {:src (root-path opts "static/js/highlight.pack.js")}])
         [:script "hljs.initHighlightingOnLoad();"]
 
         (when (:analytics opts)
