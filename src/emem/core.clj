@@ -26,6 +26,7 @@
    ["-p" "--plain"                    "build plain HTML-don't use CSS and JS"]
    ["-m" "--merge"                    "merge and process the inputs into a single output"]
    ["-l" "--lang"                     "specify document language (default: en)"]
+   ["-u" "--use-root"                 "use the root path for the resources instead of current directory"]
    ["-I" "--title TEXT"               "specify document title (default: file basename)"]
    ["-E" "--header TEXT"              "specify document header (default: none)"]
    ["-T" "--titlehead TEXT"           "the same as --title TEXT --header TEXT"]
@@ -264,6 +265,7 @@ Options:
   :plain Boolean              build plain HTML-don't use CSS and JS
   :merge Boolean              merge and process the files into one file
   :lang String                specify document language
+  :use-root Boolean           use the root path for the resources instead of current directory
   :title String               specify document title
   :header String              specify document header
   :titlehead String           the same as :title String :header String

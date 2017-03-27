@@ -496,3 +496,17 @@
   "Slurp file removing newlines"
   [directory file]
   (s/replace (slurp-path directory file) "\n" ""))
+
+(defn root-path
+  "Use the server root path if option is enabled."
+  [opts path]
+  (if (:use-root opts)
+    (format "/%s" path)
+    path))
+
+(defn base-path
+  "Specify base path of resources."
+  [opts path]
+  (if (:base-path opts)
+    (format "%s%s" (:base-path opts) path)
+    path))
