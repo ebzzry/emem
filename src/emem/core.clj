@@ -25,7 +25,7 @@
    ["-w" "--raw"                      "emit 1:1 Markdown-HTML equivalence-don't build a complete HTML document"]
    ["-p" "--plain"                    "build plain HTML-don't use CSS and JS"]
    ["-m" "--merge"                    "merge and process the inputs into a single output"]
-   ["-l" "--lang"                     "specify document language (default: en)"]
+   ["-l" "--lang LANG"                "specify document language (default: en)"]
    ["-u" "--use-root"                 "use the root path for the resources instead of current directory"]
    ["-I" "--title TEXT"               "specify document title (default: file basename)"]
    ["-E" "--header TEXT"              "specify document header (default: none)"]
