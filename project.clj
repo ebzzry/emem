@@ -1,4 +1,4 @@
-(defproject emem "0.2.50-SNAPSHOT"
+(defproject emem "0.2.51-SNAPSHOT"
   :description "A trivial Markdown to HTML converter"
   :url "https://github.com/ebzzry/emem"
   :license {:name "Eclipse Public License"
